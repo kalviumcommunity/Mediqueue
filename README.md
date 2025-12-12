@@ -56,7 +56,28 @@ View live queue
 Call next patient  
 Update patient status  
 ## 🏗️ Project Structure
-mediqueue/ ├── lib/ │   ├── main.dart │   ├── models/ │   │   ├── patient.dart │   │   ├── queue.dart │   │   └── hospital.dart │   ├── screens/ │   │   ├── auth/ │   │   ├── patient/ │   │   └── admin/ │   ├── services/ │   │   ├── auth_service.dart │   │   ├── queue_service.dart │   │   └── notification_service.dart │   ├── widgets/ │   └── utils/ ├── functions/ │   └── index.js └── web/     └── admin dashboard
+mediqueue/
+├── lib/
+│   ├── main.dart
+│   ├── models/
+│   │   ├── patient.dart
+│   │   ├── queue.dart
+│   │   └── hospital.dart
+│   ├── screens/
+│   │   ├── auth/
+│   │   ├── patient/
+│   │   └── admin/
+│   ├── services/
+│   │   ├── auth_service.dart
+│   │   ├── queue_service.dart
+│   │   └── notification_service.dart
+│   ├── widgets/
+│   └── utils/
+├── functions/
+│   └── index.js
+└── web/
+    └── admin dashboard
+
 ## 🔧 Firebase Configuration ### **Firestore Collections**
 hospitals — hospital data & counters  
 queues — active patient queues  
