@@ -1,341 +1,89 @@
-# Mediqueue
-# **Project Plan & MVP Document: MediQueue**
-
-## 1.Problem Statement & Solution Overview
-
-Problem Statement:
-
-In Tier-2/3 cities, hospitals still rely on physical queues for appointments, causing:
-
-Long waiting times and crowding in waiting areas
-
-Inefficient patient flow management
-
-Stress for patients and hospital staff
-
-No transparency in queue status
-
-Solution Overview:
-
-QMed Smart Queue is a lightweight digital queueing system that transforms hospital appointment management using:
-
-Mobile-first approach: Patients use smartphones to join queues remotely
-
-Real-time updates: Firebase provides live queue status
-
-Multi-channel notifications: App notifications, SMS, and in-hospital displays
-
-Minimal infrastructure: Cloud-based solution requiring only basic tablets for hospitals
-
-**Why Mobile?**
-
-70%+ smartphone penetration even in Tier-2/3 cities
-
-Patients can wait comfortably elsewhere instead of crowding hospitals
-
-Reduces physical contact - crucial post-pandemic
-
-Familiar interface for users (WhatsApp-like experience)
-
-## 2.Scope & Boundaries
-
-✅ IN SCOPE (MVP)
-
-
-Patient mobile app (Flutter) for queue management
-
-Hospital admin dashboard (Flutter Web)
-
-Simple registration (Name, Phone, optional email)
-
-Firestore for real-time queue data
-
-Basic SMS notifications (via Cloud Functions)
-
-QR code-based hospital registration
-
-Real-time queue position tracking
-
-APK build and Firebase web hosting
-
-
-
-❌ OUT OF SCOPE (Future Phases)
-
-
-Electronic Health Records (EHR) integration
-
-Payment gateway integration
-
-AI-based wait time prediction
-
-Multi-language support (beyond English)
-
-Offline mode for poor connectivity areas
-
-Integration with government health schemes
-
-Advanced analytics and reporting
-
-
-
-## 3. Roles & Responsibilities
-
-                   Role                               Team Member            Key Responsibilities
-          Product Lead & Firebase Specialist       Isaac Reji         Overall coordination, requirements, Firebase setup, Auth, Firestore, Cloud Functions, demo preparation
-          Flutter Development Lead                 Claudia Jerome     Patient app UI/UX, admin dashboard, state management, Flutter Web implementation
-          UI/UX & Testing Lead                     Danushri           App design, wireframes, testing, APK builds, Firebase hosting, documentation
-
-## 4. Sprint Timeline (4 Weeks)
-
-Week 1: Foundation & Design
-
-Focus: Setup, planning, and initial design
-Deliverables:
-
-✅ Project repository setup (GitHub)
-
-✅ Firebase project creation and configuration
-
-✅ App wireframes and UI mockups
-
-✅ Firestore database schema design
-
-✅ Project folder structure in Flutter
-
-✅ Basic splash screen and onboarding UI
-
-Week 2: Core Development
-
-Focus: Registration and basic queue functionality
-Deliverables:
-
-✅ Simple registration system (Name, Phone, optional email)
-
-✅ Patient app: QR scanner for hospital registration
-
-✅ Patient app: Queue joining interface
-
-✅ Firestore CRUD operations for queue management
-
-✅ Basic admin dashboard layout
-
-✅ Real-time queue updates using StreamBuilder
-
-Week 3: Integration & Testing
-
-Focus: Connecting all components and testing
-Deliverables:
-
-✅ Complete queue flow: Join → Wait → Notify → Complete
-
-✅ Admin dashboard: Queue management controls
-
-✅ Cloud Functions for SMS notifications
-
-✅ Error handling and form validation
-
-✅ Manual testing on 2+ devices
-
-✅ Basic widget tests
-
-Week 4: MVP Completion & Deployment
-
-Focus: Polish, testing, and deployment
-Deliverables:
-
-✅ UI polish and animations
-
-✅ APK build for Android
-
-✅ Firebase web hosting for admin dashboard
-
-✅ Demo preparation with sample data
-
-✅ Documentation (README, setup guide)
-
-✅ Final presentation/demo
-
-## 5. MVP Features
-
-**Must-Have Features (Core MVP)**
-
-Patient Mobile App:
-
-
-Simple registration (Name, Phone, optional email)
-
-QR code scanner to select hospital
-
-Join queue with department selection
-
-Real-time queue position display
-
-Push notifications when turn is near
-
-Cancel queue option
-
-
-
-Hospital Admin Dashboard:
-
-
-Real-time queue view
-
-"Call Next Patient" button
-
-Mark patient as completed/no-show
-
-Simple counter management
-
-Today's queue statistics
-
-Backend Services:
-
-
-Firebase Authentication
-
-Firestore real-time database
-
-Cloud Functions for SMS notifications
-
-Basic security rules
-
-Demo-Ready Features
-
-
-Working APK that can be installed and tested
-
-Live admin dashboard (hosted on Firebase)
-
-Sample hospital with test data
-
-End-to-end queue flow demonstration
-
-
-
-## 6. Functional Requirements
-
-FR1: Authentication
-
-
-Users can register using simple form (Name, Phone, optional email)
-
-Session persistence across app restarts
-
-Logout functionality
-
-
-
-FR2: Queue Management
-
-
-Patients can join queue by scanning hospital QR code
-
-Real-time queue position updates
-
-Patients receive notification 2 patients before their turn
-
-Patients can cancel their queue position
-
-
-
-FR3: Hospital Admin
-
-
-Admin can view current queue in real-time
-
-Admin can call next patient with one click
-
-Admin can mark patients as completed/no-show
-
-Admin can see basic queue statistics
-
-
-
-FR4: Notifications
-
-
-In-app push notifications for queue updates
-
-SMS fallback for critical updates (via Cloud Functions)
-
-Sound/vibration alerts for turn notification
-
-
-
-## 7. Non-Functional Requirements
-
-NFR1: Performance
-
-
-App launch time < 3 seconds
-
-Queue updates within 2 seconds
-
-Works on Android 8.0+ devices
-
-APK size < 15MB
-
-
-
-NFR2: Scalability
-
-
-Support 100+ concurrent users per hospital
-
-Firestore reads optimized with pagination
-
-Efficient data structure for real-time updates
-
-
-
-NFR3: Security
-
-
-Firestore security rules implemented
-
-No PII stored in plain text
-
-API keys secured in Firebase environment
-
-
-
-NFR4: Usability
-
-
-Intuitive UI with minimal taps to join queue
-
-Clear visual feedback for all actions
-
-Works in portrait and landscape modes
-
-Accessible font sizes and contrast
-
-
-
-## 8. Success Metrics
-
-Technical Metrics
-
-✅ All MVP features functional by Week 4
-
-✅ APK builds successfully without errors
-
-✅ Firebase integration working end-to-end
-
-✅ Real-time updates working reliably
-
-✅ App tested on minimum 2 Android devices
-
-Team Metrics
-
-✅ All team members contributing code weekly
-
-✅ Daily standups completed
-
-✅ Code reviews conducted for major PRs
-
-✅ Documentation completed
-
-✅ Demo prepared with working example
+# MediQueue – Smart Hospital Queue Management System
+
+## 📱 Overview
+**MediQueue** is a mobile-first digital queueing system designed to modernize hospital appointment management in Tier-2/3 cities. It allows patients to join queues remotely and receive real-time updates, reducing crowding and improving hospital workflow.
+
+## 🎯 Problem Statement
+Patients in many hospitals still experience:
+
+
+Long waiting times  
+Crowded waiting areas  
+Inefficient patient flow management  
+Lack of transparency in queue status  
+Stress for both patients and staff  
+## ✨ Solution MediQueue solves these issues by offering:
+**Mobile-first queueing:** Join queues remotely  
+**Real-time updates:** Live Firestore sync  
+**Multi-channel notifications:** App alerts + SMS  
+**Minimal infrastructure:** Only tablets required for hospitals  
+## 🚀 Features ### **Patient Mobile App**
+Simple registration (Name, Phone, optional Email)  
+QR code scanner for hospital check-in  
+Join queue by department  
+Live queue position tracking  
+Push notifications when turn is near  
+Cancel queue option  
+### **Hospital Admin Dashboard**
+Real-time queue overview  
+**Call Next Patient** button  
+Mark patients as completed/no-show  
+Manage counters  
+Daily queue statistics  
+## 🏗️ Technology Stack | Component | Technology | |----------|------------| | Frontend | Flutter | | Backend | Firebase | | Database | Firestore | | Auth | Firebase Authentication | | Notifications | Cloud Functions (SMS), Push Notifications | | Hosting | Firebase Hosting | | Languages | Dart, JavaScript | ## 📋 Prerequisites
+Flutter SDK (>= 3.0.0)  
+Firebase Project  
+Android Studio / VS Code  
+Android Device/Emulator (API 26+)  
+Node.js (for Cloud Functions)  
+## 🚀 Getting Started ### **1. Clone the Repository**
+bash git clone https://github.com/kalviumcommunity/Mediqueue.git cd mediqueue
+### **2. Install Dependencies**
+bash flutter pub get
+### **3. Firebase Setup**
+Create Firebase project  
+Add Android app  
+Download google-services.json into android/app/  
+Enable Phone Authentication  
+Create Firestore database  
+Deploy Cloud Functions  
+### **4. Environment Configuration** Create a .env file:
+FIREBASE_API_KEY=your_api_key FIREBASE_AUTH_DOMAIN=your_auth_domain FIREBASE_PROJECT_ID=your_project_id
+### **5. Run the App**
+bash flutter run
+## 📱 App Flow ### **Patient Flow** 1. Register using name + phone   2. Scan hospital QR or select nearby   3. Join department queue   4. Track real-time position   5. Receive turn notifications   6. Cancel if needed   ### **Hospital Flow**
+View live queue  
+Call next patient  
+Update patient status  
+## 🏗️ Project Structure
+mediqueue/ ├── lib/ │   ├── main.dart │   ├── models/ │   │   ├── patient.dart │   │   ├── queue.dart │   │   └── hospital.dart │   ├── screens/ │   │   ├── auth/ │   │   ├── patient/ │   │   └── admin/ │   ├── services/ │   │   ├── auth_service.dart │   │   ├── queue_service.dart │   │   └── notification_service.dart │   ├── widgets/ │   └── utils/ ├── functions/ │   └── index.js └── web/     └── admin dashboard
+## 🔧 Firebase Configuration ### **Firestore Collections**
+hospitals — hospital data & counters  
+queues — active patient queues  
+patients — registered patients  
+notifications — notification logs  
+### **Security Rules**
+javascript rules_version = '2'; service cloud.firestore {   match /databases/{database}/documents {     // Add security rules here   } }
+## 📲 Build APK
+bash flutter build apk --release
+## 🌐 Deploy Admin Dashboard
+bash flutter build web firebase deploy --only hosting
+## 👥 Team Members
+**Isaac Reji** — Product Lead & Firebase Specialist  
+**Claudia Jerome** — Flutter Development Lead  
+**Danushri** — UI/UX & Testing Lead  
+## 📅 Development Timeline
+**Week 1:** Foundation & Design  
+**Week 2:** Core Development  
+**Week 3:** Integration & Testing  
+**Week 4:** Deployment & MVP Completion  
+---- # Flutter Setup Verification ## 📋 Setup Process
+✅ **Flutter SDK installed and added to PATH**
+✅ **Android Studio with Flutter/Dart plugins installed**
+✅ **Pixel 6 emulator created (Android 13)**
+✅ **First Flutter app built and running**
+--- ## 📸 Verification Screenshots ### **Flutter Doctor Output** ![flutter_doctor](flutter_doctor.png)   All checks passing — environment ready. ### **Running Application** ![First Flutter App](flutter_app.png)   Default Flutter counter app running successfully on the emulator. --- ## 📝 Reflection The setup process was straightforward but required careful attention to system configurations.   The main challenges involved:
+Setting up proper **PATH environment variables**
+Accepting **Android licenses**  
+Ensuring Android Studio plugins were installed correctly
+Once configured, the Flutter development environment worked smoothly.   The **hot reload** feature especially stood out — it will significantly speed up our development for the **MediQueue hospital queue management system**. This complete and verified setup ensures a consistent and reliable environment for the entire team to begin building and testing our Flutter application. ---
