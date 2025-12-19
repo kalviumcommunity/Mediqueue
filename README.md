@@ -253,3 +253,19 @@ This folder structure separates UI, business logic, and data models, making the 
 
 - **Widgets:**  
   Named based on their responsibility (e.g., `PrimaryButton`, `AdminDashboardScreen`).
+
+
+# 📱 Responsive Welcome Screen – MediQueue
+
+## 📌 Overview
+This screen demonstrates how responsive and adaptive user interfaces can be built in Flutter.  
+The **Welcome Screen** of **MediQueue** dynamically adjusts its layout, spacing, and text sizes to provide a consistent user experience across different screen sizes and orientations, including mobile phones and tablets.
+
+---
+
+## 🛠️ Responsiveness Implementation
+Responsiveness is implemented directly in `welcome_screen.dart` using **MediaQuery** and **LayoutBuilder**.
+
+```dart
+final screenSize = MediaQuery.of(context).size;
+final isTablet = screenSize.width > 600;
