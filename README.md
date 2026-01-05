@@ -269,3 +269,17 @@ Responsiveness is implemented directly in `welcome_screen.dart` using **MediaQue
 ```dart
 final screenSize = MediaQuery.of(context).size;
 final isTablet = screenSize.width > 600;
+
+```
+
+## Flutter & Dart Fundamentals in MediQueue
+
+### StatelessWidget vs StatefulWidget
+In MediQueue, StatelessWidget is used for static UI elements such as logos and labels, while StatefulWidget is used for dynamic components like live queue position and admin controls that update based on real-time data.
+
+### Widget Tree & Reactive UI
+MediQueue follows Flutter’s widget tree structure where UI is composed of nested widgets. When queue data changes in Firestore, Flutter rebuilds only the affected widgets, ensuring smooth real-time updates.
+
+### Why Dart is Ideal for MediQueue
+Dart provides strong typing, null safety, and async/await support, making it suitable for handling real-time data and maintaining application stability in MediQueue.
+
