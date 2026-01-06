@@ -253,3 +253,33 @@ This folder structure separates UI, business logic, and data models, making the 
 
 - **Widgets:**  
   Named based on their responsibility (e.g., `PrimaryButton`, `AdminDashboardScreen`).
+
+
+# 📱 Responsive Welcome Screen – MediQueue
+
+## 📌 Overview
+This screen demonstrates how responsive and adaptive user interfaces can be built in Flutter.  
+The **Welcome Screen** of **MediQueue** dynamically adjusts its layout, spacing, and text sizes to provide a consistent user experience across different screen sizes and orientations, including mobile phones and tablets.
+
+---
+
+## 🛠️ Responsiveness Implementation
+Responsiveness is implemented directly in `welcome_screen.dart` using **MediaQuery** and **LayoutBuilder**.
+
+```dart
+final screenSize = MediaQuery.of(context).size;
+final isTablet = screenSize.width > 600;
+
+```
+
+## Flutter & Dart Fundamentals in MediQueue
+
+### StatelessWidget vs StatefulWidget
+In MediQueue, StatelessWidget is used for static UI elements such as logos and labels, while StatefulWidget is used for dynamic components like live queue position and admin controls that update based on real-time data.
+
+### Widget Tree & Reactive UI
+MediQueue follows Flutter’s widget tree structure where UI is composed of nested widgets. When queue data changes in Firestore, Flutter rebuilds only the affected widgets, ensuring smooth real-time updates.
+
+### Why Dart is Ideal for MediQueue
+Dart provides strong typing, null safety, and async/await support, making it suitable for handling real-time data and maintaining application stability in MediQueue.
+
