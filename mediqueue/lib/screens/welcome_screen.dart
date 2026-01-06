@@ -39,9 +39,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,
-            title: Row(
+            title: const Row(
               mainAxisSize: MainAxisSize.min,
-              children: const [
+              children: [
                 Icon(Icons.medical_services_outlined),
                 SizedBox(width: 8),
                 Text(
@@ -306,11 +306,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   Widget buildStatsSection() {
-    return Wrap(
+    return const Wrap(
       spacing: 24,
       runSpacing: 16,
       alignment: WrapAlignment.spaceAround,
-      children: const [
+      children: [
         _StatItem('20 mins', 'Avg Wait'),
         _StatItem('128', 'Patients'),
         _StatItem('95%', 'Accuracy'),
@@ -335,9 +335,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey.shade200),
       ),
-      child: Column(
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
+        children: [
           Text('Doctor: Dr. Sarah Johnson'),
           Text('Department: General Medicine'),
           Text('Room: 3B'),
