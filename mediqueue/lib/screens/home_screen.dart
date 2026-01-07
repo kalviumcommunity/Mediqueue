@@ -7,6 +7,8 @@ class HomeScreen extends StatelessWidget {
   final AuthService _auth = AuthService();
   final TextEditingController noteController = TextEditingController();
 
+  HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -32,7 +32,7 @@ class MediQueueApp extends StatelessWidget {
       ),
       initialRoute: "/",
       routes: {
-        "/": (context) => SignupScreen(),
+        "/": (context) => const SignupScreen(),
         "/login": (context) => LoginScreen(),
         "/home": (context) => HomeScreen(),
       },
