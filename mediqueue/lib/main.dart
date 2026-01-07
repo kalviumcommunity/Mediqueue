@@ -38,7 +38,6 @@
 // }
 
 
-
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -56,11 +55,12 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  // Run the app
   runApp(const MediQueueApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MediQueueApp extends StatelessWidget {
+  const MediQueueApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +75,7 @@ class MyApp extends StatelessWidget {
         "/": (context) => const SignupScreen(),
         "/login": (context) => LoginScreen(),
         "/home": (context) => HomeScreen(),
+        "/welcome": (context) => WelcomeScreen(),
       },
     );
   }
