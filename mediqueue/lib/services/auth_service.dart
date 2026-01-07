@@ -3,29 +3,83 @@ import 'package:firebase_auth/firebase_auth.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<User?> signUp(String email, String password) async {
+  Future<Map<String, dynamic>> signUp(String email, String password) async {
     try {
       final credential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      return credential.user;
+      return {
+        'success': true,
+        'user': credential.user,
+      };
+    } on FirebaseAuthException catch (e) {
+      String errorMessage;
+      switch (e.code) {
+        case 'weak-password':
+          errorMessage = 'The password provided is too weak.';
+          break;
+        case 'email-already-in-use':
+          errorMessage = 'An account already exists for that email.';
+          break;
+        case 'invalid-email':
+          errorMessage = 'The email address is not valid.';
+          break;
+        default:
+          errorMessage = e.message ?? 'An error occurred during signup.';
+      }
+      return {
+        'success': false,
+        'error': errorMessage,
+      };
     } catch (e) {
-      print(e);
-      return null;
+      return {
+        'success': false,
+        'error': 'An unexpected error occurred: ${e.toString()}',
+      };
     }
   }
 
-  Future<User?> login(String email, String password) async {
+  Future<Map<String, dynamic>> login(String email, String password) async {
     try {
       final credential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      return credential.user;
+      return {
+        'success': true,
+        'user': credential.user,
+      };
+    } on FirebaseAuthException catch (e) {
+      String errorMessage;
+      switch (e.code) {
+        case 'user-not-found':
+          errorMessage = 'No user found with this email.';
+          break;
+        case 'wrong-password':
+          errorMessage = 'Incorrect password.';
+          break;
+        case 'invalid-email':
+          errorMessage = 'The email address is not valid.';
+          break;
+        case 'user-disabled':
+          errorMessage = 'This account has been disabled.';
+          break;
+        case 'invalid-credential':
+          errorMessage = 'Invalid email or password.';
+          break;
+        default:
+          errorMessage = e.message ?? 'An error occurred during login.';
+      }
+      return {
+        'success': false,
+        'error': errorMessage,
+      };
     } catch (e) {
-      print(e);
-      return null;
+      return {
+        'success': false,
+        'error': 'An unexpected error occurred: ${e.toString()}',
+      };
     }
   }
 
