@@ -283,3 +283,44 @@
   ### Why Dart is Ideal for MediQueue
   Dart provides strong typing, null safety, and async/await support, making it suitable for handling real-time data and maintaining application stability in MediQueue.
 
+# 📱 Using Hot Reload, Debug Console, and Flutter DevTools Effectively
+
+## 🧩 Project Title
+Flutter Development Tools Demonstration
+
+---
+
+## 📖 Project Description
+This project demonstrates the effective usage of **Flutter Hot Reload**, **Debug Console**, and **Flutter DevTools** to enhance development efficiency, debugging, and performance analysis.  
+The demonstration was performed using an existing Flutter project from **Sprint-2**.
+
+---
+
+## ⚙️ Tools & Technologies Used
+- Flutter SDK  
+- Dart  
+- Android Emulator / Physical Device  
+- VS Code / Android Studio  
+- Flutter DevTools  
+
+---
+
+## 🚀 Features Demonstrated
+
+### 1️⃣ Hot Reload
+Hot Reload allows developers to instantly apply code changes to a running Flutter application without restarting it or losing its current state.
+
+**Steps Performed:**
+1. Ran the Flutter app using `flutter run`
+2. Modified a widget’s text or color
+3. Saved the file
+4. Observed immediate UI updates using Hot Reload
+
+**Example Code Change:**
+```dart
+// Before
+Text('Hello, Flutter!');
+
+// After
+Text('Welcome to Hot Reload!');
+
