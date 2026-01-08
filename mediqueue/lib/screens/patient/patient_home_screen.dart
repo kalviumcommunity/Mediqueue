@@ -191,6 +191,8 @@ class PatientHomeScreen extends StatelessWidget {
         onTap: (index) {
           if (index == 1) {
             Navigator.pushNamed(context, '/join-queue');
+          } else if (index == 2) {
+            Navigator.pushNamed(context, '/patient-profile');
           }
         },
       ),

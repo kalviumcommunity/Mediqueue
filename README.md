@@ -324,3 +324,39 @@ Text('Hello, Flutter!');
 // After
 Text('Welcome to Hot Reload!');
 
+# 📱 MediQueue – Patient Profile Screen
+
+## 🧩 Project Title
+Responsive Patient Profile Screen (MediQueue)
+
+## 📖 Project Description
+This project demonstrates the creation of a responsive Patient Profile screen using Flutter layout widgets such as Container, Row, Column, and MediaQuery.  
+The screen is part of the MediQueue application and adapts smoothly across different device sizes.
+
+## ⚙️ Tools & Technologies Used
+- Flutter  
+- Dart  
+- Material UI  
+- Android Emulator / Physical Device  
+
+## 🚀 Features Demonstrated
+
+### Responsive Layout Design
+The profile screen adjusts its layout based on screen width to ensure a consistent user experience on mobile and larger devices.
+
+### Key Concepts Used
+- Column for vertical layout  
+- Row for icon–text alignment  
+- Container and Card for structured UI  
+- MediaQuery for responsiveness  
+
+### Example Code
+```dart
+Row(
+  children: [
+    Icon(Icons.email),
+    Text('claudia@email.com'),
+  ],
+);
+
+
