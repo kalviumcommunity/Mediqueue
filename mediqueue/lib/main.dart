@@ -45,6 +45,7 @@ import 'screens/patient/patient_home_screen.dart';
 import 'screens/patient/join_queue_screen.dart';
 import 'screens/admin/admin_dashboard_screen.dart';
 import 'screens/admin/manage_queue_screen.dart';
+import 'screens/patient/patient_profile_screen.dart';
 
 void main() async {
   // Ensure Flutter bindings are initialized
@@ -91,6 +92,7 @@ class MediQueueApp extends StatelessWidget {
         "/join-queue": (context) => const JoinQueueScreen(),
         "/admin-dashboard": (context) => const AdminDashboardScreen(),
         "/manage-queue": (context) => const ManageQueueScreen(),
+        "/patient-profile": (context) => const PatientProfileScreen(),
       },
       // Handle unknown routes
       onUnknownRoute: (settings) {
