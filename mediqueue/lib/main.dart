@@ -1,6 +1,3 @@
-
-
-
 // import 'package:flutter/material.dart';
 // import 'package:provider/provider.dart';
 // import 'screens/welcome_screen.dart';
@@ -37,7 +34,6 @@
 //   }
 // }
 
-
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -45,6 +41,10 @@ import 'screens/welcome_screen.dart';
 import 'screens/signup_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/patient/patient_home_screen.dart';
+import 'screens/patient/join_queue_screen.dart';
+import 'screens/admin/admin_dashboard_screen.dart';
+import 'screens/admin/manage_queue_screen.dart';
 
 void main() async {
   // Ensure Flutter bindings are initialized
@@ -65,17 +65,38 @@ class MediQueueApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'MediQueue - Smart Hospital Queue Management',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
         useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blue,
+          brightness: Brightness.light,
+        ),
+        appBarTheme: const AppBarTheme(
+          centerTitle: true,
+          elevation: 0,
+        ),
       ),
+      // Initial route - Welcome screen
       initialRoute: "/",
+      // Named routes for navigation
       routes: {
-        "/": (context) => const SignupScreen(),
-        "/login": (context) => LoginScreen(),
+        "/": (context) => const WelcomeScreen(),
+        "/signup": (context) => const SignupScreen(),
+        "/login": (context) => const LoginScreen(),
         "/home": (context) => HomeScreen(),
-        "/welcome": (context) => WelcomeScreen(),
+        "/patient-home": (context) => const PatientHomeScreen(),
+        "/join-queue": (context) => const JoinQueueScreen(),
+        "/admin-dashboard": (context) => const AdminDashboardScreen(),
+        "/manage-queue": (context) => const ManageQueueScreen(),
+      },
+      // Handle unknown routes
+      onUnknownRoute: (settings) {
+        return MaterialPageRoute(
+          builder: (context) => const WelcomeScreen(),
+        );
       },
     );
   }
