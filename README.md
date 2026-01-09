@@ -388,3 +388,24 @@ Consistent design across screens
 Less duplicated code
 Easier updates and maintenance
 Faster development
+
+
+# Widget Tree & Reactive UI – TeamName
+##Overview
+
+This demo showcases Flutter’s widget tree and reactive UI model. Widgets are organized hierarchically, and changes in state automatically update only the affected parts of the UI.
+
+Key Concepts:-
+Widget Tree: Hierarchical structure of UI elements, from parent containers to child widgets.
+Reactive UI: Flutter efficiently rebuilds only widgets affected by state changes.
+State Management: Demonstrated using setState() to trigger UI updates dynamically.
+
+Demo:-
+Interactive elements update the UI without redrawing the whole screen.
+Example interactions include changing text, toggling visibility, or updating counters.
+Screenshots capture both the initial state and the updated state after interaction.
+
+Reflection:-
+Using a widget tree keeps UI structured and maintainable.
+Reactive updates enhance performance and ensure smooth user experiences.
+Modular widget design allows code reuse and easier feature additions.
