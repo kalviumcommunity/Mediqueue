@@ -359,4 +359,32 @@ Row(
   ],
 );
 
+# Reusable Custom Widgets – TeamName
+## Overview
 
+This Flutter project demonstrates reusable custom widgets to make UI modular, maintainable, and consistent. Instead of duplicating code, widgets like buttons and cards can be reused across multiple screens.
+
+Problem:-
+
+Repeated UI code causes:
+Inconsistent design
+Hard-to-maintain code
+Slower development
+
+Solution:-
+
+Create custom widgets:
+Stateless – e.g., CustomButton (configurable label, color, action)
+Stateful – e.g., LikeButton (toggles state on tap)
+
+Features:-
+
+Reusable buttons, cards, and toggles
+Modular UI for fast development
+Easy maintenance and consistent design
+
+Benefits:-
+Consistent design across screens
+Less duplicated code
+Easier updates and maintenance
+Faster development
