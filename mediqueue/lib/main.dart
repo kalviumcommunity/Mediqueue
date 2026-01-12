@@ -36,6 +36,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:mediqueue/screens/patient/hospital_details_screen.dart';
 import 'firebase_options.dart';
 import 'screens/welcome_screen.dart';
 import 'screens/signup_screen.dart';
@@ -93,6 +94,7 @@ class MediQueueApp extends StatelessWidget {
         "/admin-dashboard": (context) => const AdminDashboardScreen(),
         "/manage-queue": (context) => const ManageQueueScreen(),
         "/patient-profile": (context) => const PatientProfileScreen(),
+        "/hospital-details": (context) => const HospitalDetailsScreen(),
       },
       // Handle unknown routes
       onUnknownRoute: (settings) {

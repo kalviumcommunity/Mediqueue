@@ -409,3 +409,26 @@ Reflection:-
 Using a widget tree keeps UI structured and maintainable.
 Reactive updates enhance performance and ensure smooth user experiences.
 Modular widget design allows code reuse and easier feature additions.
+
+Responsive Layout
+Overview
+This demo shows a responsive layout in Flutter using Container, Row, and Column.
+The layout adapts to different screen sizes for phones and tablets.
+
+Key Concepts
+Container: Holds widgets with padding, size, and color.
+Row: Horizontal arrangement of widgets.
+Column: Vertical arrangement of widgets.
+MediaQuery & Expanded: Make layout responsive.
+
+Demo
+Header Section at the top.
+Two-Panel Layout scales proportionally and stacks on small screens.
+
+Reflection
+Layout adapts well across devices.
+Expanded and MediaQuery help maintain proportions.
+
+Submission
+Branch: responsive-layout
+Commit: feat: responsive layout using Container, Row, Column

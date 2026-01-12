@@ -1,179 +1,253 @@
+
+
+
+// import 'package:flutter/material.dart';
+// import '../../models/hospital_model.dart';
+
+// class PatientHomeScreen extends StatelessWidget {
+//   const PatientHomeScreen({super.key});
+
+//   // Temporary dummy data (later replace with Firestore)
+//   List<HospitalModel> get nearbyHospitals => [
+//         HospitalModel(
+//           id: '1',
+//           name: 'City General Hospital',
+//           address: 'Main Road, Chennai',
+//           distance: 1.2,
+//           departments: [
+//             'General Medicine',
+//             'Cardiology',
+//             'Orthopedics',
+//           ],
+//         ),
+//         HospitalModel(
+//           id: '2',
+//           name: 'Central Medical Center',
+//           address: 'MG Street, Chennai',
+//           distance: 2.8,
+//           departments: [
+//             'Pediatrics',
+//             'Dermatology',
+//           ],
+//         ),
+//       ];
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('Patient Dashboard'),
+//       ),
+//       body: SingleChildScrollView(
+//         padding: const EdgeInsets.all(16),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             _buildWelcomeCard(),
+//             const SizedBox(height: 24),
+
+//             const Text(
+//               'Nearby Hospitals',
+//               style: TextStyle(
+//                 fontSize: 20,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//             const SizedBox(height: 16),
+
+//             ...nearbyHospitals.map(
+//               (hospital) => _buildHospitalCard(context, hospital),
+//             ),
+//           ],
+//         ),
+//       ),
+//       bottomNavigationBar: BottomNavigationBar(
+//         currentIndex: 0,
+//         items: const [
+//           BottomNavigationBarItem(
+//             icon: Icon(Icons.home),
+//             label: 'Home',
+//           ),
+//           BottomNavigationBarItem(
+//             icon: Icon(Icons.queue),
+//             label: 'My Queue',
+//           ),
+//           BottomNavigationBarItem(
+//             icon: Icon(Icons.person),
+//             label: 'Profile',
+//           ),
+//         ],
+//         onTap: (index) {
+//           if (index == 1) {
+//             Navigator.pushNamed(context, '/join-queue');
+//           } else if (index == 2) {
+//             Navigator.pushNamed(context, '/patient-profile');
+//           }
+//         },
+//       ),
+//     );
+//   }
+
+//   // ---------------- WELCOME CARD ----------------
+
+//   Widget _buildWelcomeCard() {
+//     return Card(
+//       shape: RoundedRectangleBorder(
+//         borderRadius: BorderRadius.circular(16),
+//       ),
+//       child: Container(
+//         padding: const EdgeInsets.all(20),
+//         decoration: BoxDecoration(
+//           gradient: LinearGradient(
+//             colors: [
+//               Colors.blue.shade600,
+//               Colors.blue.shade400,
+//             ],
+//           ),
+//           borderRadius: BorderRadius.circular(16),
+//         ),
+//         child: const Row(
+//           children: [
+//             Icon(
+//               Icons.waving_hand,
+//               color: Colors.white,
+//               size: 36,
+//             ),
+//             SizedBox(width: 16),
+//             Text(
+//               'Welcome Back!',
+//               style: TextStyle(
+//                 color: Colors.white,
+//                 fontSize: 22,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+
+//   // ---------------- HOSPITAL CARD ----------------
+
+//   Widget _buildHospitalCard(BuildContext context, HospitalModel hospital) {
+//     return Card(
+//       margin: const EdgeInsets.only(bottom: 16),
+//       shape: RoundedRectangleBorder(
+//         borderRadius: BorderRadius.circular(16),
+//       ),
+//       child: ListTile(
+//         contentPadding: const EdgeInsets.all(16),
+//         leading: const Icon(
+//           Icons.local_hospital,
+//           color: Colors.red,
+//           size: 32,
+//         ),
+//         title: Text(
+//           hospital.name,
+//           style: const TextStyle(
+//             fontSize: 18,
+//             fontWeight: FontWeight.bold,
+//           ),
+//         ),
+//         subtitle: Padding(
+//           padding: const EdgeInsets.only(top: 6),
+//           child: Text(
+//             '${hospital.distance} km • ${hospital.address}',
+//             style: TextStyle(
+//               color: Colors.grey.shade600,
+//             ),
+//           ),
+//         ),
+//         trailing: const Icon(
+//           Icons.arrow_forward_ios,
+//           size: 16,
+//         ),
+//         onTap: () {
+//           Navigator.pushNamed(
+//             context,
+//             '/hospital-details',
+//             arguments: hospital,
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }
+
+
 import 'package:flutter/material.dart';
+import '../../models/hospital_model.dart';
 
 class PatientHomeScreen extends StatelessWidget {
   const PatientHomeScreen({super.key});
+
+  // Temporary dummy data (later replace with Firestore)
+  List<HospitalModel> get nearbyHospitals => [
+        HospitalModel(
+          id: '1',
+          name: 'City General Hospital',
+          address: 'Main Road, Chennai',
+          distance: 1.2,
+          departments: [
+            'General Medicine',
+            'Cardiology',
+            'Orthopedics',
+          ],
+        ),
+        HospitalModel(
+          id: '2',
+          name: 'Central Medical Center',
+          address: 'MG Street, Chennai',
+          distance: 2.8,
+          departments: [
+            'Pediatrics',
+            'Dermatology',
+          ],
+        ),
+      ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Patient Dashboard'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('No new notifications')),
-              );
-            },
-          ),
-        ],
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.blue.shade50,
-              Colors.white,
-            ],
-          ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Welcome Card
-                Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Colors.blue.shade600, Colors.blue.shade400],
-                      ),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.waving_hand,
-                          color: Colors.white,
-                          size: 40,
-                        ),
-                        const SizedBox(width: 16),
-                        const Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Welcome Back!',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                'Manage your appointments easily',
-                                style: TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                // Quick Actions Section
-                const Text(
-                  'Quick Actions',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF424242),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // Action Buttons Grid
-                GridView.count(
-                  crossAxisCount: 2,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16,
-                  childAspectRatio: 1.2,
-                  children: [
-                    _buildActionCard(
-                      context,
-                      icon: Icons.add_circle_outline,
-                      title: 'Join Queue',
-                      subtitle: 'Add to hospital queue',
-                      color: Colors.green,
-                      onTap: () {
-                        Navigator.pushNamed(context, '/join-queue');
-                      },
-                    ),
-                    _buildActionCard(
-                      context,
-                      icon: Icons.qr_code_scanner,
-                      title: 'Scan QR',
-                      subtitle: 'Quick check-in',
-                      color: Colors.purple,
-                      onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('QR Scanner opening...')),
-                        );
-                      },
-                    ),
-                    _buildActionCard(
-                      context,
-                      icon: Icons.history,
-                      title: 'My History',
-                      subtitle: 'Past appointments',
-                      color: Colors.orange,
-                      onTap: () {
-                        _showHistoryDialog(context);
-                      },
-                    ),
-                    _buildActionCard(
-                      context,
-                      icon: Icons.local_hospital,
-                      title: 'Find Hospital',
-                      subtitle: 'Nearby hospitals',
-                      color: Colors.red,
-                      onTap: () {
-                        _showHospitalDialog(context);
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-
-                // Current Queue Status
-                const Text(
-                  'Current Queue Status',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF424242),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                _buildQueueStatusCard(),
-              ],
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildWelcomeCard(),
+            const SizedBox(height: 24),
+            const Text(
+              'Nearby Hospitals',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
+            const SizedBox(height: 16),
+            // Grid of square cards
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, // 2 cards per row
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                childAspectRatio: 1, // makes the cards square
+              ),
+              itemCount: nearbyHospitals.length,
+              itemBuilder: (context, index) {
+                return _buildHospitalCard(context, nearbyHospitals[index]);
+              },
+            ),
+          ],
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 0,
-        selectedItemColor: Colors.blue,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -199,158 +273,97 @@ class PatientHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActionCard(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required Color color,
-    required VoidCallback onTap,
-  }) {
+  // ---------------- WELCOME CARD ----------------
+
+  Widget _buildWelcomeCard() {
     return Card(
-      elevation: 3,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.blue.shade600,
+              Colors.blue.shade400,
+            ],
+          ),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: const Row(
+          children: [
+            Icon(
+              Icons.waving_hand,
+              color: Colors.white,
+              size: 36,
+            ),
+            SizedBox(width: 16),
+            Text(
+              'Welcome Back!',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ---------------- HOSPITAL CARD ----------------
+
+  Widget _buildHospitalCard(BuildContext context, HospitalModel hospital) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          '/hospital-details',
+          arguments: hospital,
+        );
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        elevation: 3,
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  icon,
-                  color: color,
-                  size: 32,
-                ),
-              ),
+              // Icon removed as requested
+              // const Icon(
+              //   Icons.local_hospital,
+              //   color: Colors.red,
+              //   size: 36,
+              // ),
               const SizedBox(height: 12),
               Text(
-                title,
+                hospital.name,
+                textAlign: TextAlign.center,
                 style: const TextStyle(
-                  fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF424242),
+                  fontSize: 16,
                 ),
-                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 8),
               Text(
-                subtitle,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey.shade600,
-                ),
+                '${hospital.distance} km • ${hospital.address}',
                 textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.grey.shade600,
+                  fontSize: 12,
+                ),
               ),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildQueueStatusCard() {
-    return Card(
-      elevation: 3,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Icon(Icons.info_outline, color: Colors.blue.shade600),
-                const SizedBox(width: 8),
-                const Text(
-                  'No Active Queue',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'You are not currently in any queue. Join a queue to see your position and estimated wait time.',
-              style: TextStyle(
-                color: Colors.grey.shade600,
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showHistoryDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Appointment History'),
-        content: const Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: Icon(Icons.check_circle, color: Colors.green),
-              title: Text('General Checkup'),
-              subtitle: Text('Dec 15, 2025 - Completed'),
-            ),
-            ListTile(
-              leading: Icon(Icons.check_circle, color: Colors.green),
-              title: Text('Dental Consultation'),
-              subtitle: Text('Nov 20, 2025 - Completed'),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showHospitalDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Nearby Hospitals'),
-        content: const Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: Icon(Icons.local_hospital, color: Colors.red),
-              title: Text('City General Hospital'),
-              subtitle: Text('2.5 km away'),
-            ),
-            ListTile(
-              leading: Icon(Icons.local_hospital, color: Colors.red),
-              title: Text('Central Medical Center'),
-              subtitle: Text('3.8 km away'),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-        ],
       ),
     );
   }
