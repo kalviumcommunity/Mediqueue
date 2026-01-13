@@ -202,49 +202,104 @@ class _SignupScreenState extends State<SignupScreen> {
                   Row(
                     children: [
                       Expanded(
-                        child: RadioListTile<String>(
-                          title: const Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.person, size: 20),
-                              SizedBox(width: 8),
-                              Text('Patient'),
-                            ],
-                          ),
-                          value: 'patient',
-                          groupValue: _selectedRole,
-                          onChanged: _isLoading
+                        child: GestureDetector(
+                          onTap: _isLoading
                               ? null
-                              : (value) {
+                              : () {
                                   setState(() {
-                                    _selectedRole = value!;
+                                    _selectedRole = 'patient';
                                   });
                                 },
-                          contentPadding: EdgeInsets.zero,
-                          dense: true,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 4),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 20,
+                                  height: 20,
+                                  margin:
+                                      const EdgeInsets.only(left: 12, right: 8),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: _selectedRole == 'patient'
+                                          ? Colors.blue
+                                          : Colors.grey,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: _selectedRole == 'patient'
+                                      ? Center(
+                                          child: Container(
+                                            width: 10,
+                                            height: 10,
+                                            decoration: const BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.blue,
+                                            ),
+                                          ),
+                                        )
+                                      : null,
+                                ),
+                                const Icon(Icons.person, size: 20),
+                                const SizedBox(width: 8),
+                                const Text('Patient'),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                       Expanded(
-                        child: RadioListTile<String>(
-                          title: const Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.admin_panel_settings, size: 20),
-                              SizedBox(width: 8),
-                              Text('Admin'),
-                            ],
-                          ),
-                          value: 'admin',
-                          groupValue: _selectedRole,
-                          onChanged: _isLoading
+                        child: GestureDetector(
+                          onTap: _isLoading
                               ? null
-                              : (value) {
+                              : () {
                                   setState(() {
-                                    _selectedRole = value!;
+                                    _selectedRole = 'admin';
                                   });
                                 },
-                          contentPadding: EdgeInsets.zero,
-                          dense: true,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 4),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 20,
+                                  height: 20,
+                                  margin:
+                                      const EdgeInsets.only(left: 12, right: 8),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: _selectedRole == 'admin'
+                                          ? Colors.blue
+                                          : Colors.grey,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: _selectedRole == 'admin'
+                                      ? Center(
+                                          child: Container(
+                                            width: 10,
+                                            height: 10,
+                                            decoration: const BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.blue,
+                                            ),
+                                          ),
+                                        )
+                                      : null,
+                                ),
+                                const Icon(Icons.admin_panel_settings,
+                                    size: 20),
+                                const SizedBox(width: 8),
+                                const Text('Admin'),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ],
