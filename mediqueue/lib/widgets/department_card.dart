@@ -78,7 +78,7 @@ class DepartmentCard extends StatelessWidget {
         leading: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: (dept['color'] as Color).withOpacity(0.1),
+            color: (dept['color'] as Color).withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(
@@ -101,8 +101,7 @@ class DepartmentCard extends StatelessWidget {
             fontSize: 13,
           ),
         ),
-        trailing:
-            const Icon(Icons.arrow_forward_ios, size: 18),
+        trailing: const Icon(Icons.arrow_forward_ios, size: 18),
       ),
     );
   }
