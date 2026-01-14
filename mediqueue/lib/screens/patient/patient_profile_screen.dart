@@ -211,7 +211,6 @@
 // //   }
 // // }
 
-
 // import 'package:flutter/material.dart';
 // import 'queue_details_screen.dart';
 
@@ -509,7 +508,6 @@
 //   }
 // }
 
-
 import 'package:flutter/material.dart';
 
 class PatientProfileScreen extends StatefulWidget {
@@ -627,7 +625,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Card(
         elevation: 4,
-        shadowColor: Colors.blue.withOpacity(0.1),
+        shadowColor: Colors.blue.withValues(alpha: 0.1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
         ),
@@ -669,7 +667,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Card(
         elevation: 4,
-        shadowColor: Colors.blue.withOpacity(0.1),
+        shadowColor: Colors.blue.withValues(alpha: 0.1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
         ),
@@ -723,7 +721,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
       children: [
         Ink(
           decoration: ShapeDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
             shape: const CircleBorder(),
           ),
           child: IconButton(
@@ -749,7 +747,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Card(
         elevation: 4,
-        shadowColor: Colors.blue.withOpacity(0.1),
+        shadowColor: Colors.blue.withValues(alpha: 0.1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
         ),
@@ -765,8 +763,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                 margin: const EdgeInsets.symmetric(vertical: 5),
                 child: ListTile(
                   title: Text("Hospital: ${queue['hospitalName']}"),
-                  subtitle: Text(
-                      "Queue Number: ${queue['queueNumber']}\n"
+                  subtitle: Text("Queue Number: ${queue['queueNumber']}\n"
                       "Date: ${queue['date']}\n"
                       "Status: ${queue['status']}"),
                   // Removed navigation onTap
