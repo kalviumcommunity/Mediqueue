@@ -1,31 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
-
-  Future<void> _handleRoleSelection(BuildContext context, String role) async {
-    // Check if user is logged in
-    final user = FirebaseAuth.instance.currentUser;
-
-    if (user != null) {
-      // User is logged in, navigate to appropriate dashboard
-      if (role == 'patient') {
-        Navigator.pushNamed(context, '/patient-home');
-      } else {
-        Navigator.pushNamed(context, '/admin-dashboard');
-      }
-    } else {
-      // User is not logged in, redirect to login with role info
-      await Navigator.pushNamed(
-        context,
-        '/login',
-        arguments: {'intendedRole': role},
-      );
-
-      // If login was successful, the login screen handles navigation
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +33,7 @@ class WelcomeScreen extends StatelessWidget {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.blue.withValues(alpha: 0.2),
+                          color: Colors.blue.withOpacity(0.2),
                           blurRadius: 20,
                           spreadRadius: 5,
                         ),
@@ -112,47 +88,90 @@ class WelcomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 48),
 
-                  // User Type Selection Card
+                  // Call-to-Action Card
                   Card(
                     elevation: 4,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(20.0),
+                      padding: const EdgeInsets.all(24.0),
                       child: Column(
                         children: [
                           const Text(
-                            'Choose Your Role',
+                            'Get Started',
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 20,
                               fontWeight: FontWeight.w600,
                               color: Color(0xFF424242),
                             ),
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Join thousands managing their hospital visits',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                          const SizedBox(height: 24),
 
-                          // Patient Button
-                          _buildNavigationButton(
-                            context,
-                            label: 'I\'m a Patient',
-                            icon: Icons.person,
-                            color: Colors.blue,
-                            onPressed: () {
-                              _handleRoleSelection(context, 'patient');
-                            },
+                          // Login Button
+                          SizedBox(
+                            width: double.infinity,
+                            height: 56,
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/login');
+                              },
+                              icon: const Icon(Icons.login, size: 24),
+                              label: const Text(
+                                'Login',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                elevation: 2,
+                              ),
+                            ),
                           ),
                           const SizedBox(height: 16),
 
-                          // Admin/Hospital Staff Button
-                          _buildNavigationButton(
-                            context,
-                            label: 'Hospital Staff',
-                            icon: Icons.admin_panel_settings,
-                            color: Colors.green,
-                            onPressed: () {
-                              _handleRoleSelection(context, 'admin');
-                            },
+                          // Sign Up Button
+                          SizedBox(
+                            width: double.infinity,
+                            height: 56,
+                            child: OutlinedButton.icon(
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/signup');
+                              },
+                              icon: const Icon(Icons.person_add, size: 24),
+                              label: const Text(
+                                'Sign Up',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.blue,
+                                side: const BorderSide(
+                                  color: Colors.blue,
+                                  width: 2,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -160,24 +179,14 @@ class WelcomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
 
-                  // Auth Links
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/login');
-                        },
-                        child: const Text('Login'),
-                      ),
-                      const Text('|'),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/signup');
-                        },
-                        child: const Text('Sign Up'),
-                      ),
-                    ],
+                  // Footer text
+                  Text(
+                    'Experience hassle-free hospital visits',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey.shade500,
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
                 ],
               ),
@@ -202,38 +211,6 @@ class WelcomeScreen extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildNavigationButton(
-    BuildContext context, {
-    required String label,
-    required IconData icon,
-    required Color color,
-    required VoidCallback onPressed,
-  }) {
-    return SizedBox(
-      width: double.infinity,
-      height: 56,
-      child: ElevatedButton.icon(
-        onPressed: onPressed,
-        icon: Icon(icon, size: 28),
-        label: Text(
-          label,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: color,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          elevation: 2,
-        ),
-      ),
     );
   }
 }
