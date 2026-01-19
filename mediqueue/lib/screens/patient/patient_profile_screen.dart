@@ -629,11 +629,11 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
+        child: const Padding(
+          padding: EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text(
                 'Patient Information',
                 style: TextStyle(

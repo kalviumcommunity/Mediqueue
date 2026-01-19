@@ -712,9 +712,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       context: context,
       builder: (_) => AlertDialog(
         title: const Text('Daily Report'),
-        content: Column(
+        content: const Column(
           mainAxisSize: MainAxisSize.min,
-          children: const [
+          children: [
             _ReportRow('Total Patients Today', '127'),
             _ReportRow('Average Wait Time', '28 minutes'),
             _ReportRow('Completed Appointments', '98'),
