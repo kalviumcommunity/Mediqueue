@@ -1,15 +1,23 @@
 class HospitalModel {
   final String id;
   final String name;
-  final String address;
-  final double distance; // in km
-  final List<String> departments;
+  final String location;
+  final List<Map<String, dynamic>> departments;
 
   HospitalModel({
     required this.id,
     required this.name,
-    required this.address,
-    required this.distance,
+    required this.location,
     required this.departments,
   });
+
+  factory HospitalModel.fromMap(String id, Map<String, dynamic> data) {
+    return HospitalModel(
+      id: id,
+      name: data['name'],
+      location: data['location'],
+      departments:
+          List<Map<String, dynamic>>.from(data['departments']),
+    );
+  }
 }

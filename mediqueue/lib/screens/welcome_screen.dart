@@ -119,24 +119,60 @@ class WelcomeScreen extends StatelessWidget {
                           const SizedBox(height: 24),
 
                           // Login Button
-                          CustomActionButton(
-                            label: 'Login',
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/login');
-                            },
-                            icon: Icons.login,
-                            type: ButtonType.primary,
+                          SizedBox(
+                            width: double.infinity,
+                            height: 56,
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/auth');
+                              },
+                              icon: const Icon(Icons.login, size: 24),
+                              label: const Text(
+                                'Login',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                elevation: 2,
+                              ),
+                            ),
                           ),
                           const SizedBox(height: 16),
 
                           // Sign Up Button
-                          CustomActionButton(
-                            label: 'Sign Up',
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/signup');
-                            },
-                            icon: Icons.person_add,
-                            type: ButtonType.secondary,
+                          SizedBox(
+                            width: double.infinity,
+                            height: 56,
+                            child: OutlinedButton.icon(
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/auth');
+                              },
+                              icon: const Icon(Icons.person_add, size: 24),
+                              label: const Text(
+                                'Sign Up',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.blue,
+                                side: const BorderSide(
+                                  color: Colors.blue,
+                                  width: 2,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),

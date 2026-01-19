@@ -1,94 +1,89 @@
 import 'package:flutter/material.dart';
+import '../utils/app_colors.dart';
 
-/// A reusable custom text field widget that provides consistent styling
-/// and behavior across the MediQueue app.
-///
-/// Features:
-/// - Consistent visual design with proper spacing and borders
-/// - Support for different input types (text, email, password)
-/// - Built-in validation display
-/// - Customizable icons and labels
-///
-/// Example usage:
-/// ```dart
-/// CustomTextField(
-///   controller: emailController,
-///   label: 'Email',
-///   prefixIcon: Icons.email,
-///   keyboardType: TextInputType.emailAddress,
-/// )
-/// ```
 class CustomTextField extends StatelessWidget {
-  final TextEditingController controller;
   final String label;
-  final IconData? prefixIcon;
+  final String hintText;
   final bool obscureText;
-  final TextInputType keyboardType;
-  final bool enabled;
-  final String? helperText;
-  final String? Function(String?)? validator;
-  final int maxLines;
+  final TextEditingController? controller;
+  final IconData? prefixIcon;
+  final Widget? suffixIcon;
+  final TextInputType? keyboardType;
 
   const CustomTextField({
-    Key? key,
-    required this.controller,
+    super.key,
     required this.label,
-    this.prefixIcon,
+    required this.hintText,
     this.obscureText = false,
-    this.keyboardType = TextInputType.text,
-    this.enabled = true,
-    this.helperText,
-    this.validator,
-    this.maxLines = 1,
-  }) : super(key: key);
+    this.controller,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.keyboardType,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        helperText: helperText,
-        prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(
-            color: Colors.grey.shade300,
-            width: 1.5,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: AppColors.black,
+            letterSpacing: -0.2,
           ),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(
-            color: Colors.blue,
-            width: 2,
+        const SizedBox(height: 8),
+        Container(
+          height: 52,
+          decoration: BoxDecoration(
+            color: Colors.grey[50],
+            border: Border.all(color: AppColors.lightGrey, width: 1.5),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              children: [
+                if (prefixIcon != null)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: Icon(
+                      prefixIcon,
+                      size: 20,
+                      color: AppColors.grey,
+                    ),
+                  ),
+                Expanded(
+                  child: TextField(
+                    controller: controller,
+                    obscureText: obscureText,
+                    keyboardType: keyboardType,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: AppColors.black,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: hintText,
+                      hintStyle: TextStyle(
+                        color: AppColors.grey,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                  ),
+                ),
+                if (suffixIcon != null) suffixIcon!,
+              ],
+            ),
           ),
         ),
-        disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(
-            color: Colors.grey.shade200,
-            width: 1.5,
-          ),
-        ),
-        filled: true,
-        fillColor: enabled ? Colors.white : Colors.grey.shade100,
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 16,
-        ),
-      ),
-      obscureText: obscureText,
-      keyboardType: keyboardType,
-      enabled: enabled,
-      maxLines: maxLines,
-      style: TextStyle(
-        fontSize: 16,
-        color: enabled ? Colors.black87 : Colors.grey,
-      ),
+      ],
     );
   }
 }
