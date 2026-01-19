@@ -3,14 +3,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:mediqueue/screens/patient/hospital_details_screen.dart';
 import 'firebase_options.dart';
 import 'screens/welcome_screen.dart';
-import 'screens/signup_screen.dart';
-import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/patient/patient_home_screen.dart';
 import 'screens/patient/join_queue_screen.dart';
 import 'screens/admin/admin_dashboard_screen.dart';
 import 'screens/admin/manage_queue_screen.dart';
 import 'screens/patient/patient_profile_screen.dart';
+import 'screens/auth_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,12 +40,12 @@ class MediQueueApp extends StatelessWidget {
           centerTitle: true,
           elevation: 0,
         ),
+        fontFamily: 'Inter',
       ),
       initialRoute: "/",
       routes: {
         "/": (context) => const WelcomeScreen(),
-        "/signup": (context) => const SignupScreen(),
-        "/login": (context) => const LoginScreen(),
+        "/auth": (context) => const AuthScreen(),
         "/home": (context) => HomeScreen(),
         "/patient-home": (context) => PatientHomeScreen(), // ❌ no const
         "/join-queue": (context) => const JoinQueueScreen(),
