@@ -424,10 +424,10 @@
 //   }
 // }
 
-
-
 import 'package:flutter/material.dart';
 import '/widgets/department_card.dart';
+import '/widgets/info_card.dart';
+import '/widgets/custom_action_button.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
@@ -515,99 +515,90 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             children: [
               _buildWelcomeCard(),
               const SizedBox(height: 24),
-
               const Text(
                 'Overview',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
-
               Row(
                 children: [
                   Expanded(
-                    child: _buildStatCard(
-                      'Total Patients',
-                      totalPatients.toString(),
-                      Icons.people,
-                      Colors.blue,
+                    child: InfoCard(
+                      title: 'Total Patients',
+                      value: totalPatients.toString(),
+                      icon: Icons.people,
+                      color: Colors.blue,
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: _buildStatCard(
-                      'Avg. Wait',
-                      '$avgWaitTime min',
-                      Icons.schedule,
-                      Colors.orange,
+                    child: InfoCard(
+                      title: 'Avg. Wait',
+                      value: '$avgWaitTime min',
+                      icon: Icons.schedule,
+                      color: Colors.orange,
                     ),
                   ),
                 ],
               ),
-
               const SizedBox(height: 12),
-
               Row(
                 children: [
                   Expanded(
-                    child: _buildStatCard(
-                      'Departments',
-                      queueData.length.toString(),
-                      Icons.domain,
-                      Colors.purple,
+                    child: InfoCard(
+                      title: 'Departments',
+                      value: queueData.length.toString(),
+                      icon: Icons.domain,
+                      color: Colors.purple,
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: _buildStatCard(
-                      'Completed',
-                      '47',
-                      Icons.check_circle,
-                      Colors.green,
+                    child: InfoCard(
+                      title: 'Completed',
+                      value: '47',
+                      icon: Icons.check_circle,
+                      color: Colors.green,
                     ),
                   ),
                 ],
               ),
-
               const SizedBox(height: 24),
-
               const Text(
                 'Quick Actions',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
-
               Row(
                 children: [
                   Expanded(
-                    child: _buildActionButton(
-                      context,
-                      'Manage Queue',
-                      Icons.queue,
-                      Colors.blue,
-                      () => Navigator.pushNamed(context, '/manage-queue'),
+                    child: CustomActionButton(
+                      label: 'Manage Queue',
+                      onPressed: () =>
+                          Navigator.pushNamed(context, '/manage-queue'),
+                      icon: Icons.queue,
+                      type: ButtonType.primary,
+                      backgroundColor: Colors.blue,
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: _buildActionButton(
-                      context,
-                      'Reports',
-                      Icons.assessment,
-                      Colors.green,
-                      () => _showReportsDialog(context),
+                    child: CustomActionButton(
+                      label: 'Reports',
+                      onPressed: () => _showReportsDialog(context),
+                      icon: Icons.assessment,
+                      type: ButtonType.primary,
+                      backgroundColor: Colors.green,
                     ),
                   ),
                 ],
               ),
-
               const SizedBox(height: 24),
-
               const Text(
                 'Department Queues',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
-
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -667,42 +658,6 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildStatCard(
-      String label, String value, IconData icon, Color color) {
-    return Card(
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Icon(icon, color: color, size: 32),
-            const SizedBox(height: 8),
-            Text(value,
-                style:
-                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            Text(label, style: TextStyle(color: Colors.grey.shade600)),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildActionButton(BuildContext context, String label, IconData icon,
-      Color color, VoidCallback onPressed) {
-    return ElevatedButton.icon(
-      onPressed: onPressed,
-      icon: Icon(icon),
-      label: Text(label),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: color,
-        foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
