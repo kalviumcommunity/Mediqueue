@@ -53,7 +53,7 @@ class CustomActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final defaultBgColor = backgroundColor ?? Colors.blue;
-    final defaultFgColor = foregroundColor ?? 
+    final defaultFgColor = foregroundColor ??
         (type == ButtonType.primary ? Colors.white : Colors.blue);
 
     Widget buttonChild = isLoading

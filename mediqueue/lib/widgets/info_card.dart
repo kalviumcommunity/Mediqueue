@@ -73,8 +73,8 @@ class InfoCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: useGradient 
-                      ? Colors.white.withOpacity(0.3) 
+                  color: useGradient
+                      ? Colors.white.withOpacity(0.3)
                       : color.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -85,7 +85,7 @@ class InfoCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
-              
+
               // Value text
               Text(
                 value,
@@ -96,14 +96,14 @@ class InfoCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              
+
               // Title text
               Text(
                 title,
                 style: TextStyle(
                   fontSize: 14,
-                  color: useGradient 
-                      ? Colors.white.withOpacity(0.9) 
+                  color: useGradient
+                      ? Colors.white.withOpacity(0.9)
                       : Colors.grey.shade600,
                   fontWeight: FontWeight.w500,
                 ),

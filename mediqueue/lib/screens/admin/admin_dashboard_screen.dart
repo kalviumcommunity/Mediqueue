@@ -574,7 +574,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                   Expanded(
                     child: CustomActionButton(
                       label: 'Manage Queue',
-                      onPressed: () => Navigator.pushNamed(context, '/manage-queue'),
+                      onPressed: () =>
+                          Navigator.pushNamed(context, '/manage-queue'),
                       icon: Icons.queue,
                       type: ButtonType.primary,
                       backgroundColor: Colors.blue,
