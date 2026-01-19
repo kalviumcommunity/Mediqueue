@@ -123,7 +123,7 @@ class WelcomeScreen extends StatelessWidget {
                             height: 56,
                             child: ElevatedButton.icon(
                               onPressed: () {
-                                Navigator.pushNamed(context, '/login');
+                                Navigator.pushNamed(context, '/auth');
                               },
                               icon: const Icon(Icons.login, size: 24),
                               label: const Text(
@@ -151,7 +151,7 @@ class WelcomeScreen extends StatelessWidget {
                             height: 56,
                             child: OutlinedButton.icon(
                               onPressed: () {
-                                Navigator.pushNamed(context, '/signup');
+                                Navigator.pushNamed(context, '/auth');
                               },
                               icon: const Icon(Icons.person_add, size: 24),
                               label: const Text(

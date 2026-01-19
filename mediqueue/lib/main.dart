@@ -1,52 +1,16 @@
-// import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
-// import 'screens/welcome_screen.dart';
-// import 'screens/user_input_form.dart';
-// import 'providers/patient_counter.dart';
-// import 'providers/queue_provider.dart';
-
-// void main() {
-//   runApp(
-//     MultiProvider(
-//       providers: [
-//         ChangeNotifierProvider(create: (_) => PatientCounter()),
-//         ChangeNotifierProvider(create: (_) => QueueProvider()),
-//       ],
-//       child: const MediQueueApp(),
-//     ),
-//   );
-// }
-
-// class MediQueueApp extends StatelessWidget {
-//   const MediQueueApp({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'MediQueue',
-//       debugShowCheckedModeBanner: false,
-//       theme: ThemeData(
-//         primarySwatch: Colors.blue,
-//         useMaterial3: true,
-//       ),
-//       home: const WelcomeScreen(),
-//     );
-//   }
-// }
 
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:mediqueue/screens/patient/hospital_details_screen.dart';
 import 'firebase_options.dart';
 import 'screens/welcome_screen.dart';
-import 'screens/signup_screen.dart';
-import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/patient/patient_home_screen.dart';
 import 'screens/patient/join_queue_screen.dart';
 import 'screens/admin/admin_dashboard_screen.dart';
 import 'screens/admin/manage_queue_screen.dart';
 import 'screens/patient/patient_profile_screen.dart';
+import 'screens/auth_screen.dart';
 
 void main() async {
   // Ensure Flutter bindings are initialized
@@ -80,14 +44,14 @@ class MediQueueApp extends StatelessWidget {
           centerTitle: true,
           elevation: 0,
         ),
+        fontFamily: 'Inter',
       ),
       // Initial route - Welcome screen
       initialRoute: "/",
       // Named routes for navigation
       routes: {
         "/": (context) => const WelcomeScreen(),
-        "/signup": (context) => const SignupScreen(),
-        "/login": (context) => const LoginScreen(),
+        "/auth": (context) => const AuthScreen(),
         "/home": (context) => HomeScreen(),
         "/patient-home": (context) => const PatientHomeScreen(),
         "/join-queue": (context) => const JoinQueueScreen(),
