@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
+import '../widgets/custom_text_field.dart';
+import '../widgets/custom_action_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -112,24 +114,18 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             const SizedBox(height: 32),
-            TextField(
+            CustomTextField(
               controller: emailController,
-              decoration: const InputDecoration(
-                labelText: "Email",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.email),
-              ),
+              label: "Email",
+              prefixIcon: Icons.email,
               keyboardType: TextInputType.emailAddress,
               enabled: !_isLoading,
             ),
             const SizedBox(height: 16),
-            TextField(
+            CustomTextField(
               controller: passwordController,
-              decoration: const InputDecoration(
-                labelText: "Password",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.lock),
-              ),
+              label: "Password",
+              prefixIcon: Icons.lock,
               obscureText: true,
               enabled: !_isLoading,
             ),
@@ -271,35 +267,12 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              height: 56,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : _handleLogin,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: _isLoading
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : const Text(
-                        "Login",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-              ),
+            CustomActionButton(
+              label: "Login",
+              onPressed: _handleLogin,
+              icon: Icons.login,
+              type: ButtonType.primary,
+              isLoading: _isLoading,
             ),
             const SizedBox(height: 12),
             Row(

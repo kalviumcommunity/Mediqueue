@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
+import '../widgets/custom_text_field.dart';
+import '../widgets/custom_action_button.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
@@ -138,36 +140,27 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
             ),
             const SizedBox(height: 32),
-            TextField(
+            CustomTextField(
               controller: nameController,
-              decoration: const InputDecoration(
-                labelText: "Full Name",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person),
-              ),
+              label: "Full Name",
+              prefixIcon: Icons.person,
               enabled: !_isLoading,
             ),
             const SizedBox(height: 16),
-            TextField(
+            CustomTextField(
               controller: emailController,
-              decoration: const InputDecoration(
-                labelText: "Email",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.email),
-              ),
+              label: "Email",
+              prefixIcon: Icons.email,
               keyboardType: TextInputType.emailAddress,
               enabled: !_isLoading,
             ),
             const SizedBox(height: 16),
-            TextField(
+            CustomTextField(
               controller: passwordController,
-              decoration: const InputDecoration(
-                labelText: "Password",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.lock),
-                helperText: "At least 6 characters",
-              ),
+              label: "Password",
+              prefixIcon: Icons.lock,
               obscureText: true,
+              helperText: "At least 6 characters",
               enabled: !_isLoading,
             ),
             const SizedBox(height: 20),
@@ -308,35 +301,12 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              height: 56,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : _handleSignup,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: _isLoading
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : const Text(
-                        "Sign Up",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-              ),
+            CustomActionButton(
+              label: "Sign Up",
+              onPressed: _handleSignup,
+              icon: Icons.person_add,
+              type: ButtonType.primary,
+              isLoading: _isLoading,
             ),
             const SizedBox(height: 12),
             Row(

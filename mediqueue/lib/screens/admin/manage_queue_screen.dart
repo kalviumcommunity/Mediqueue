@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../widgets/status_badge.dart';
+import '../../widgets/custom_action_button.dart';
 
 class ManageQueueScreen extends StatefulWidget {
   const ManageQueueScreen({super.key});
@@ -225,25 +227,13 @@ class _ManageQueueScreenState extends State<ManageQueueScreen> {
           // Call Next Button
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: SizedBox(
-              width: double.infinity,
+            child: CustomActionButton(
+              label: 'Call Next Patient',
+              onPressed: patients.isEmpty ? null : _callNextPatient,
+              icon: Icons.notifications_active,
+              type: ButtonType.primary,
+              backgroundColor: Colors.green,
               height: 60,
-              child: ElevatedButton.icon(
-                onPressed: patients.isEmpty ? null : _callNextPatient,
-                icon: const Icon(Icons.notifications_active, size: 28),
-                label: const Text(
-                  'Call Next Patient',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  elevation: 4,
-                ),
-              ),
             ),
           ),
 
@@ -322,30 +312,30 @@ class _ManageQueueScreenState extends State<ManageQueueScreen> {
             ),
             if (isFirst) ...[
               const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: Colors.green,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Text(
-                  'NEXT',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+              const StatusBadge(
+                status: QueueStatus.active,
+                label: 'NEXT',
+                compact: true,
               ),
             ],
           ],
         ),
-        subtitle: Text(
-          'ID: ${patient['id']} • Joined: ${patient['time']}',
-          style: TextStyle(
-            color: Colors.grey.shade600,
-            fontSize: 13,
-          ),
+        subtitle: Row(
+          children: [
+            Expanded(
+              child: Text(
+                'ID: ${patient['id']} • Joined: ${patient['time']}',
+                style: TextStyle(
+                  color: Colors.grey.shade600,
+                  fontSize: 13,
+                ),
+              ),
+            ),
+            StatusBadge(
+              status: QueueStatus.waiting,
+              compact: true,
+            ),
+          ],
         ),
         children: [
           Padding(
