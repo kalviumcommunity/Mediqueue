@@ -16,9 +16,9 @@ class HospitalDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Departments',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
 
@@ -29,7 +29,7 @@ class HospitalDetailsScreen extends StatelessWidget {
                   final dept = hospital.departments[index];
                   return Card(
                     child: ListTile(
-                      title: Text(dept),
+                      title: Text(dept as String),
                       trailing: const Icon(Icons.arrow_forward),
                       onTap: () {
                         Navigator.pushNamed(

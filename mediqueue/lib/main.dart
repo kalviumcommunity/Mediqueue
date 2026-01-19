@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:mediqueue/screens/patient/hospital_details_screen.dart';
@@ -13,16 +12,13 @@ import 'screens/patient/patient_profile_screen.dart';
 import 'screens/auth_screen.dart';
 
 void main() async {
-  // Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Run the app
-  runApp(const MediQueueApp());
+  runApp(MediQueueApp());
 }
 
 class MediQueueApp extends StatelessWidget {
@@ -46,26 +42,21 @@ class MediQueueApp extends StatelessWidget {
         ),
         fontFamily: 'Inter',
       ),
-      // Initial route - Welcome screen
       initialRoute: "/",
-      // Named routes for navigation
       routes: {
         "/": (context) => const WelcomeScreen(),
         "/auth": (context) => const AuthScreen(),
         "/home": (context) => HomeScreen(),
-        "/patient-home": (context) => const PatientHomeScreen(),
+        "/patient-home": (context) => PatientHomeScreen(), // ❌ no const
         "/join-queue": (context) => const JoinQueueScreen(),
         "/admin-dashboard": (context) => const AdminDashboardScreen(),
         "/manage-queue": (context) => const ManageQueueScreen(),
         "/patient-profile": (context) => const PatientProfileScreen(),
         "/hospital-details": (context) => const HospitalDetailsScreen(),
       },
-      // Handle unknown routes
-      onUnknownRoute: (settings) {
-        return MaterialPageRoute(
-          builder: (context) => const WelcomeScreen(),
-        );
-      },
+      onUnknownRoute: (settings) => MaterialPageRoute(
+        builder: (context) => const WelcomeScreen(),
+      ),
     );
   }
 }
