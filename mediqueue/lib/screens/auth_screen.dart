@@ -104,7 +104,32 @@ class _AuthScreenState extends State<AuthScreen>
   Widget _buildLogoSection() {
     return Column(
       children: [
-        // Unique and aesthetic MediQueue text
+        // Logo Image
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primaryBlue.withOpacity(0.15),
+                blurRadius: 15,
+                spreadRadius: 3,
+              ),
+            ],
+          ),
+          child: ClipOval(
+            child: Image.asset(
+              'assets/images/logo.png',
+              width: 80,
+              height: 80,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+
+        // MediQueue text
         Column(
           children: [
             Row(
