@@ -427,6 +427,7 @@ class _AuthScreenState extends State<AuthScreen>
             hintText: "Enter your email",
             controller: _emailController,
             prefixIcon: Icons.email_outlined,
+            helperText: '', enabled: true,
           ),
 
           const SizedBox(height: 16),
@@ -450,6 +451,7 @@ class _AuthScreenState extends State<AuthScreen>
                 });
               },
             ),
+            helperText: '', enabled: true,
           ),
 
           // User Type Selection
@@ -531,6 +533,7 @@ class _AuthScreenState extends State<AuthScreen>
             hintText: "Enter your email",
             controller: _emailController,
             prefixIcon: Icons.email_outlined,
+            helperText: '', enabled: true,
           ),
 
           const SizedBox(height: 16),
@@ -553,7 +556,7 @@ class _AuthScreenState extends State<AuthScreen>
                   _obscurePassword = !_obscurePassword;
                 });
               },
-            ),
+            ), enabled: true, helperText: '',
           ),
 
           // User Type Selection for Login

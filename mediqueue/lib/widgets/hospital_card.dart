@@ -1,3 +1,4 @@
+
 // import 'package:flutter/material.dart';
 // import '../utils/app_colors.dart';
 
@@ -115,6 +116,7 @@ class HospitalCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
+            // ignore: deprecated_member_use
             color: Colors.black.withOpacity(0.05),
             blurRadius: 8,
             offset: const Offset(0, 4),
