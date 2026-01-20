@@ -18,7 +18,7 @@ class CustomTextField extends StatelessWidget {
     this.controller,
     this.prefixIcon,
     this.suffixIcon,
-    this.keyboardType,
+    this.keyboardType, required bool enabled, required String helperText,
   });
 
   @override
@@ -40,7 +40,7 @@ class CustomTextField extends StatelessWidget {
           height: 52,
           decoration: BoxDecoration(
             color: Colors.grey[50],
-            border: Border.all(color: AppColors.lightGrey, width: 1.5),
+            border: Border.all(color: AppColors.lightGrey ?? Colors.grey, width: 1.5),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Padding(
@@ -61,7 +61,7 @@ class CustomTextField extends StatelessWidget {
                     controller: controller,
                     obscureText: obscureText,
                     keyboardType: keyboardType,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       color: AppColors.black,
                       fontWeight: FontWeight.w500,
