@@ -30,7 +30,7 @@ class WelcomeScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: Colors.blue.shade50,
+                      color: Colors.white,
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
@@ -40,10 +40,13 @@ class WelcomeScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: Icon(
-                      Icons.medical_services_rounded,
-                      size: 80,
-                      color: Colors.blue.shade600,
+                    child: ClipOval(
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 24),
