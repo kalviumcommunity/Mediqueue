@@ -48,7 +48,7 @@ class MediQueueApp extends StatelessWidget {
         "/auth": (context) => const AuthScreen(),
         "/home": (context) => HomeScreen(),
         "/patient-home": (context) => PatientHomeScreen(), // ❌ no const
-        "/join-queue": (context) => const JoinQueueScreen(),
+        "/join-queue": (context) => const JoinQueueScreen(departmentName: '',),
         "/admin-dashboard": (context) => const AdminDashboardScreen(),
         "/manage-queue": (context) => const ManageQueueScreen(),
         "/patient-profile": (context) => const PatientProfileScreen(),
