@@ -424,6 +424,8 @@
 //   }
 // }
 
+// ignore_for_file: prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
 import '/widgets/department_card.dart';
 import '/widgets/info_card.dart';
@@ -606,15 +608,20 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                 itemBuilder: (context, index) {
                   final dept = queueData[index];
                   return DepartmentCard(
-                    dept: dept,
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/manage-queue',
-                        arguments: dept['department'],
-                      );
-                    },
-                  );
+                      title: dept['department'],
+                      subtitle:
+                          '${dept['count']} patients • Avg ${dept['avgWait']} min wait',
+                      icon: dept['icon'],
+                      color: dept['color'],
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/manage-queue',
+                          arguments: dept['department'],
+                        );
+                      }, dept: dept, iconColor: dept['color'],
+                    );
+
                 },
               ),
             ],

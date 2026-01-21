@@ -8,7 +8,7 @@ class DepartmentCard extends StatelessWidget {
   const DepartmentCard({
     super.key,
     required this.dept,
-    required this.onTap,
+    required this.onTap, required String title, required String subtitle, required Color iconColor, required IconData icon, required color,
   });
 
   @override

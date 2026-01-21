@@ -1305,7 +1305,7 @@ class PatientHomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const JoinQueueScreen(),
+                        builder: (_) => const JoinQueueScreen(departmentName: '',),
                       ),
                     );
                   },
@@ -1324,7 +1324,7 @@ class PatientHomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const JoinQueueScreen(),
+                        builder: (_) => const JoinQueueScreen(departmentName: '',),
                       ),
                     );
                   },
@@ -1343,7 +1343,7 @@ class PatientHomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const JoinQueueScreen(),
+                        builder: (_) => const JoinQueueScreen(departmentName: '',),
                       ),
                     );
                   },
@@ -1362,7 +1362,7 @@ class PatientHomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const JoinQueueScreen(),
+                        builder: (_) => const JoinQueueScreen(departmentName: '',),
                       ),
                     );
                   },
@@ -1381,7 +1381,7 @@ class PatientHomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const JoinQueueScreen(),
+                        builder: (_) => const JoinQueueScreen(departmentName: '',),
                       ),
                     );
                   },
@@ -1400,7 +1400,7 @@ class PatientHomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const JoinQueueScreen(),
+                        builder: (_) => const JoinQueueScreen(departmentName: '',),
                       ),
                     );
                   },
@@ -1419,7 +1419,7 @@ class PatientHomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const JoinQueueScreen(),
+                        builder: (_) => const JoinQueueScreen(departmentName: '',),
                       ),
                     );
                   },

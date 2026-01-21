@@ -1098,11 +1098,11 @@
 //   }
 // }
 
-import 'package:flutter/material.dart';
+  import 'package:flutter/material.dart';
 import 'join_queue_status_screen.dart';
 
 class JoinQueueScreen extends StatefulWidget {
-  const JoinQueueScreen({super.key});
+  const JoinQueueScreen({super.key, required String departmentName});
 
   @override
   State<JoinQueueScreen> createState() => _JoinQueueScreenState();
@@ -1116,25 +1116,49 @@ class _JoinQueueScreenState extends State<JoinQueueScreen> {
       "name": "Cardiology",
       "subtitle": "Heart & Vascular",
       "icon": Icons.favorite,
-      "color": Colors.red,
+      "color": Colors.lightBlue,
+      "doctors": 3,
+      "status": "available",
     },
     {
       "name": "Neurology",
       "subtitle": "Brain & Nervous System",
       "icon": Icons.psychology,
       "color": Colors.teal,
+      "doctors": 2,
+      "status": "available",
     },
     {
       "name": "Orthopedics",
       "subtitle": "Bones & Joints",
       "icon": Icons.accessibility,
-      "color": Colors.blue,
+      "color": Colors.indigo,
+      "doctors": 4,
+      "status": "available",
     },
     {
       "name": "Pediatrics",
       "subtitle": "Children's Health",
       "icon": Icons.child_care,
       "color": Colors.orange,
+      "doctors": 5,
+      "status": "available",
+    },
+    {
+      "name": "Ophthalmology",
+      "subtitle": "Eye Care",
+      "icon": Icons.remove_red_eye,
+      "color": Colors.deepOrange,
+      "doctors": 1,
+      "status": "available",
+    },
+    {
+      "name": "Emergency",
+      "subtitle": "Urgent Care",
+      "icon": Icons.local_hospital,
+      "color": Colors.red,
+      "doctors": 0,
+      "status": "walkin",
     },
   ];
 

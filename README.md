@@ -466,6 +466,85 @@ Expanded and MediaQuery help maintain proportions.
 Submission
 Branch: responsive-layout
 Commit: feat: responsive layout using Container, Row, Column
+
+Multi-Screen Navigation & Widget Tree Demo 
+
+Overview:-
+This Flutter app demonstrates multi-screen navigation using Navigator and named routes, along with a basic understanding of widget tree, reactive UI, and responsive layouts.
+
+Features:-
+Multi-screen navigation with Navigator.pushNamed() and Navigator.pop()
+Named routes defined in main.dart
+Widget tree and reactive UI using setState()
+Responsive layouts with Row, Column, and Expanded
+
+Example Screens
+Home Screen
+ElevatedButton(
+  onPressed: () => Navigator.pushNamed(context, '/second'),
+  child: Text('Go to Second Screen'),
+)
+
+Second Screen
+ElevatedButton(
+  onPressed: () => Navigator.pop(context),
+  child: Text('Back to Home'),
+)
+
+Routes in main.dart
+MaterialApp(
+  initialRoute: '/',
+  routes: {
+    '/': (context) => HomeScreen(),
+    '/second': (context) => SecondScreen(),
+  },
+)
+
+Reflection:-
+Navigator manages a stack of screens efficiently.
+Named routes make navigation scalable and maintainable in larger apps.
+
+Scrollable Views with ListView & GridView
+Overview
+This Flutter app demonstrates how to build scrollable user interfaces using ListView and GridView. It showcases efficient scrolling for lists and grids, suitable for feeds, galleries, and catalogs, while maintaining smooth performance and responsive layouts.
+
+Features
+Vertical and horizontal scrolling using ListView
+Efficient rendering with ListView.builder
+Grid layouts using GridView
+Dynamic grids using GridView.builder
+Combined ListView and GridView on a single screen
+Smooth and responsive scrolling behavior
+
+Example Implementations
+ListView.builder
+ListView.builder(
+  itemCount: 10,
+  itemBuilder: (context, index) {
+    return ListTile(
+      title: Text('Item $index'),
+    );
+  },
+);
+
+GridView.builder
+GridView.builder(
+  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 2,
+  ),
+  itemCount: 6,
+  itemBuilder: (context, index) {
+    return Container(
+      color: Colors.primaries[index % Colors.primaries.length],
+      child: Center(child: Text('Tile $index')),
+    );
+  },
+);
+
+Reflection
+ListView and GridView improve UI efficiency by rendering scrollable content cleanly.
+Builder constructors are recommended for large data because they load only visible widgets.
+Avoid nesting multiple scrollable widgets without proper constraints to prevent performance issues.
 ---
 
 # 🖼️ Asset Management in MediQueue
