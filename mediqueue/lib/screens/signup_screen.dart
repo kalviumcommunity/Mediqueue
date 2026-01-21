@@ -144,7 +144,7 @@ class _SignupScreenState extends State<SignupScreen> {
               controller: nameController,
               label: "Full Name",
               prefixIcon: Icons.person,
-              enabled: !_isLoading,
+              enabled: !_isLoading, hintText: '', helperText: '',
             ),
             const SizedBox(height: 16),
             CustomTextField(
@@ -152,7 +152,7 @@ class _SignupScreenState extends State<SignupScreen> {
               label: "Email",
               prefixIcon: Icons.email,
               keyboardType: TextInputType.emailAddress,
-              enabled: !_isLoading,
+              enabled: !_isLoading, hintText: '', helperText: '',
             ),
             const SizedBox(height: 16),
             CustomTextField(
@@ -161,7 +161,7 @@ class _SignupScreenState extends State<SignupScreen> {
               prefixIcon: Icons.lock,
               obscureText: true,
               helperText: "At least 6 characters",
-              enabled: !_isLoading,
+              enabled: !_isLoading, hintText: '',
             ),
             const SizedBox(height: 20),
 

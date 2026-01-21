@@ -119,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
               label: "Email",
               prefixIcon: Icons.email,
               keyboardType: TextInputType.emailAddress,
-              enabled: !_isLoading,
+              enabled: !_isLoading, hintText: '', helperText: '',
             ),
             const SizedBox(height: 16),
             CustomTextField(
@@ -127,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
               label: "Password",
               prefixIcon: Icons.lock,
               obscureText: true,
-              enabled: !_isLoading,
+              enabled: !_isLoading, hintText: '', helperText: '',
             ),
             const SizedBox(height: 20),
 
