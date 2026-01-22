@@ -1227,11 +1227,7 @@ class PatientHomeScreen extends StatelessWidget {
             onMenuTap: () {
               _scaffoldKey.currentState?.openDrawer(); // opens drawer safely
             },
-            onPowerTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Power clicked')),
-              );
-            },
+            // Removed onPowerTap
           ),
 
           // Search bar

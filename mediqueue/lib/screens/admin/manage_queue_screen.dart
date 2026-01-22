@@ -558,7 +558,7 @@ class _ManageQueueScreenState extends State<ManageQueueScreen> {
                 onPressed: queue.isEmpty ? null : _callNextPatient,
                 icon: const Icon(Icons.volume_up),
                 label: const Text(
-                  'Call Next Patient',
+                  'Notify Next Patient',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
                 style: ElevatedButton.styleFrom(
