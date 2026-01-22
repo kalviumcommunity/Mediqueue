@@ -9,6 +9,8 @@ class CustomTextField extends StatelessWidget {
   final IconData? prefixIcon;
   final Widget? suffixIcon;
   final TextInputType? keyboardType;
+  final bool enabled;
+  final String? helperText; // Make this optional since you're not using it
 
   const CustomTextField({
     super.key,
@@ -18,7 +20,9 @@ class CustomTextField extends StatelessWidget {
     this.controller,
     this.prefixIcon,
     this.suffixIcon,
-    this.keyboardType, required bool enabled, required String helperText,
+    this.keyboardType,
+    this.enabled = true,
+    this.helperText, // Remove "required" since it's not used
   });
 
   @override
@@ -40,7 +44,10 @@ class CustomTextField extends StatelessWidget {
           height: 52,
           decoration: BoxDecoration(
             color: Colors.grey[50],
-            border: Border.all(color: AppColors.lightGrey ?? Colors.grey, width: 1.5),
+            border: Border.all(
+              color: AppColors.lightGrey ?? Colors.grey,
+              width: 1.5,
+            ),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Padding(
@@ -61,6 +68,7 @@ class CustomTextField extends StatelessWidget {
                     controller: controller,
                     obscureText: obscureText,
                     keyboardType: keyboardType,
+                    enabled: enabled, // Add this line
                     style: TextStyle(
                       fontSize: 16,
                       color: AppColors.black,
@@ -83,6 +91,18 @@ class CustomTextField extends StatelessWidget {
             ),
           ),
         ),
+        // Optional: Add helper text if provided
+        if (helperText != null && helperText!.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 4, left: 4),
+            child: Text(
+              helperText!,
+              style: TextStyle(
+                fontSize: 12,
+                color: AppColors.grey,
+              ),
+            ),
+          ),
       ],
     );
   }

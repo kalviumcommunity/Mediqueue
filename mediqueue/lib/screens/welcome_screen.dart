@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../widgets/custom_action_button.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
