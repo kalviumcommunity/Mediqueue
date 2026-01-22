@@ -1225,28 +1225,21 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
       drawer: _buildDrawer(context),
       body: Stack(
         children: [
-          // ✅ ProfileHeader with menu button using GlobalKey
-          ProfileHeader(
-            name: 'Sarah Johnson',
-            role: 'Patient',
-            icon: Icons.person,
-            backgroundColor: AppColors.primaryBlue,
-            onMenuTap: () {
-              _scaffoldKey.currentState?.openDrawer(); // opens drawer safely
-            },
-            // Removed onPowerTap
-          ),
-
-          // Search bar
-          Container(
-            color: AppColors.primaryBlue,
-            padding: const EdgeInsets.all(16),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(14),
+          // Main content
+          Column(
+            children: [
+              // ✅ ProfileHeader with menu button using GlobalKey
+              ProfileHeader(
+                name: 'Sarah Johnson',
+                role: 'Patient',
+                icon: Icons.person,
+                backgroundColor: AppColors.primaryBlue,
+                onMenuTap: () {
+                  _scaffoldKey.currentState?.openDrawer();
+                },
               ),
+
+              // Search bar
               Container(
                 color: AppColors.primaryBlue,
                 padding: const EdgeInsets.all(16),
@@ -1265,10 +1258,13 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                   ),
                 ),
               ),
+
+              // Hospital list
               Expanded(
                 child: ListView(
                   padding: const EdgeInsets.all(16),
                   children: [
+                    // Header
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -1332,6 +1328,8 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                       ],
                     ),
                     const SizedBox(height: 16),
+
+                    // Hospital cards
                     HospitalCard(
                       iconBg: const Color(0xFFD8D5FF),
                       icon: Icons.add,
@@ -1352,6 +1350,7 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                         );
                       },
                     ),
+
                     HospitalCard(
                       iconBg: const Color(0xFFCFF5EF),
                       icon: Icons.local_hospital,
@@ -1372,6 +1371,7 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                         );
                       },
                     ),
+
                     HospitalCard(
                       iconBg: const Color(0xFFFFE0CC),
                       icon: Icons.healing,
@@ -1392,6 +1392,7 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                         );
                       },
                     ),
+
                     HospitalCard(
                       iconBg: const Color(0xFFE3F2FD),
                       icon: Icons.local_hospital_outlined,
@@ -1412,6 +1413,7 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                         );
                       },
                     ),
+
                     HospitalCard(
                       iconBg: const Color(0xFFFCE4EC),
                       icon: Icons.favorite,
@@ -1432,6 +1434,7 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                         );
                       },
                     ),
+
                     HospitalCard(
                       iconBg: const Color(0xFFE8F5E9),
                       icon: Icons.medical_services,
@@ -1452,6 +1455,7 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                         );
                       },
                     ),
+
                     HospitalCard(
                       iconBg: const Color(0xFFFFF3E0),
                       icon: Icons.child_care,
@@ -1477,6 +1481,8 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
               ),
             ],
           ),
+
+          // Logout Overlay - This should be at the END of Stack
           if (_isLoggingOut)
             Container(
               color: Colors.black.withOpacity(0.5),
@@ -1524,6 +1530,7 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
     );
   }
 
+  // ✅ Drawer
   Drawer _buildDrawer(BuildContext context) {
     return Drawer(
       shape: const RoundedRectangleBorder(
@@ -1543,6 +1550,7 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                 ),
               ),
               const SizedBox(height: 30),
+
               _drawerItem(
                 context,
                 Icons.person,
@@ -1556,6 +1564,7 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                   );
                 },
               ),
+
               _drawerItem(
                 context,
                 Icons.notifications,
@@ -1568,6 +1577,7 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                   );
                 },
               ),
+
               _drawerItem(
                 context,
                 Icons.history,
@@ -1580,6 +1590,7 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                   );
                 },
               ),
+
               _drawerItem(
                 context,
                 Icons.map_outlined,
@@ -1593,6 +1604,7 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                   );
                 },
               ),
+
               _drawerItem(
                 context,
                 Icons.add_location_alt,
@@ -1606,13 +1618,18 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                   );
                 },
               ),
+
               const SizedBox(height: 10),
+
+              // Logout Button - UPDATED
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
                   onPressed: () async {
+                    // Close drawer
                     Navigator.pop(context);
 
+                    // Show overlay
                     setState(() {
                       _isLoggingOut = true;
                     });
@@ -1627,10 +1644,12 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                       // Overlay will disappear when screen changes to AuthScreen
                       // Success message will be shown in AuthScreen
                     } catch (e) {
+                      // Hide overlay on error
                       setState(() {
                         _isLoggingOut = false;
                       });
 
+                      // Show error message
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text('Logout failed: ${e.toString()}'),
@@ -1663,7 +1682,7 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
       BuildContext context, IconData icon, String title, VoidCallback onTap) {
     return InkWell(
       onTap: () {
-        Navigator.pop(context);
+        Navigator.pop(context); // Close drawer
         onTap();
       },
       child: Padding(
