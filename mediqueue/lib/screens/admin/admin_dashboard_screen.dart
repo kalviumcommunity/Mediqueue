@@ -1,5 +1,1409 @@
+
+
+
+
+
+// // // import 'package:flutter/material.dart';
+// // // import '/widgets/department_card.dart';
+// // // import '/widgets/info_card.dart';
+// // // import '/widgets/custom_action_button.dart';
+
+// // // class AdminDashboardScreen extends StatefulWidget {
+// // //   const AdminDashboardScreen({super.key});
+
+// // //   @override
+// // //   State<AdminDashboardScreen> createState() => _AdminDashboardScreenState();
+// // // }
+
+// // // class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
+// // //   final List<Map<String, dynamic>> queueData = [
+// // //     {
+// // //       'department': 'Emergency',
+// // //       'count': 24,
+// // //       'avgWait': 15,
+// // //       'icon': Icons.local_hospital,
+// // //       'color': Colors.blue,
+// // //     },
+// // //     {
+// // //       'department': 'Cardiology',
+// // //       'count': 18,
+// // //       'avgWait': 28,
+// // //       'icon': Icons.favorite,
+// // //       'color': Colors.pink,
+// // //     },
+// // //     {
+// // //       'department': 'Neurology',
+// // //       'count': 12,
+// // //       'avgWait': 35,
+// // //       'icon': Icons.psychology,
+// // //       'color': Colors.green,
+// // //     },
+// // //     {
+// // //       'department': 'Pediatrics',
+// // //       'count': 16,
+// // //       'avgWait': 22,
+// // //       'icon': Icons.child_care,
+// // //       'color': Colors.red,
+// // //     },
+// // //     {
+// // //       'department': 'Ophthalmology',
+// // //       'count': 9,
+// // //       'avgWait': 18,
+// // //       'icon': Icons.remove_red_eye,
+// // //       'color': Colors.lightGreen,
+// // //     },
+// // //   ];
+
+// // //   @override
+// // //   Widget build(BuildContext context) {
+// // //     final totalPatients =
+// // //         queueData.fold<int>(0, (sum, item) => sum + item['count'] as int);
+
+// // //     final avgWaitTime =
+// // //         queueData.fold<int>(0, (sum, item) => sum + item['avgWait'] as int) ~/
+// // //             queueData.length;
+
+// // //     return Scaffold(
+// // //       backgroundColor: const Color(0xFFF5F6FA),
+
+// // //       // ✅ GRADIENT APP BAR
+// // //       appBar: AppBar(
+// // //         elevation: 0,
+// // //         automaticallyImplyLeading: false,
+// // //         toolbarHeight: 90,
+// // //         flexibleSpace: Container(
+// // //           decoration: const BoxDecoration(
+// // //             gradient: LinearGradient(
+// // //               colors: [
+// // //                 Color.fromRGBO(13, 27, 140, 1),
+// // //                 Color.fromRGBO(90, 140, 255, 1),
+// // //               ],
+// // //             ),
+// // //           ),
+// // //         ),
+// // //         title: Row(
+// // //           children: [
+// // //             const CircleAvatar(
+// // //               radius: 22,
+// // //               backgroundColor: Colors.white,
+// // //               child: Text(
+// // //                 'A',
+// // //                 style: TextStyle(
+// // //                   color: Color.fromRGBO(13, 27, 140, 1),
+// // //                   fontWeight: FontWeight.bold,
+// // //                 ),
+// // //               ),
+// // //             ),
+// // //             const SizedBox(width: 12),
+// // //             const Column(
+// // //               crossAxisAlignment: CrossAxisAlignment.start,
+// // //               mainAxisSize: MainAxisSize.min,
+// // //               children: [
+// // //                 Text(
+// // //                   'Dr. Sarah Johnson',
+// // //                   style: TextStyle(
+// // //                     fontSize: 16,
+// // //                     fontWeight: FontWeight.w600,
+// // //                     color: Colors.white,
+// // //                   ),
+// // //                 ),
+// // //                 Text(
+// // //                   'Hospital Administrator',
+// // //                   style: TextStyle(
+// // //                     fontSize: 13,
+// // //                     color: Colors.white70,
+// // //                   ),
+// // //                 ),
+// // //               ],
+// // //             ),
+// // //             const Spacer(),
+// // //             IconButton(
+// // //               icon: const Icon(Icons.notifications_none, color: Colors.white),
+// // //               onPressed: () {},
+// // //             ),
+// // //             IconButton(
+// // //               icon: const Icon(Icons.settings_outlined, color: Colors.white),
+// // //               onPressed: () {},
+// // //             ),
+// // //           ],
+// // //         ),
+// // //       ),
+
+// // //       // ✅ BODY CONTENT
+// // //       body: SingleChildScrollView(
+// // //         padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
+// // //         child: Column(
+// // //           crossAxisAlignment: CrossAxisAlignment.start,
+// // //           children: [
+// // //             // 🔹 Queue Overview
+// // //             const Text(
+// // //               'Queue Overview',
+// // //               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+// // //             ),
+// // //             const SizedBox(height: 16),
+
+// // //             Row(
+// // //               children: [
+// // //                 Expanded(
+// // //                   child: InfoCard(
+// // //                     title: 'Total Patients',
+// // //                     value: totalPatients.toString(),
+// // //                     icon: Icons.people,
+// // //                     color: Colors.blue,
+// // //                   ),
+// // //                 ),
+// // //                 const SizedBox(width: 12),
+// // //                 Expanded(
+// // //                   child: InfoCard(
+// // //                     title: 'Avg Wait Time',
+// // //                     value: '${avgWaitTime}m',
+// // //                     icon: Icons.schedule,
+// // //                     color: Colors.purple,
+// // //                   ),
+// // //                 ),
+// // //               ],
+// // //             ),
+
+// // //             const SizedBox(height: 12),
+
+// // //             Row(
+// // //               children: [
+// // //                 Expanded(
+// // //                   child: InfoCard(
+// // //                     title: 'Departments',
+// // //                     value: queueData.length.toString(),
+// // //                     icon: Icons.domain,
+// // //                     color: Colors.green,
+// // //                   ),
+// // //                 ),
+// // //                 const SizedBox(width: 12),
+// // //                 Expanded(
+// // //                   child: InfoCard(
+// // //                     title: 'Completed Today',
+// // //                     value: '89',
+// // //                     icon: Icons.check_circle,
+// // //                     color: Colors.red,
+// // //                   ),
+// // //                 ),
+// // //               ],
+// // //             ),
+
+// // //             const SizedBox(height: 32),
+
+// // //             // 🔹 Quick Actions
+// // //             const Text(
+// // //               'Quick Actions',
+// // //               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+// // //             ),
+// // //             const SizedBox(height: 16),
+
+// // //             Row(
+// // //               children: [
+// // //                 Expanded(
+// // //                   child: CustomActionButton(
+// // //                     label: 'Manage Queues',
+// // //                     onPressed: () =>
+// // //                         Navigator.pushNamed(context, '/manage-queue'),
+// // //                     icon: Icons.edit,
+// // //                     backgroundColor: Colors.blue,
+// // //                     height: 52,
+// // //                   ),
+// // //                 ),
+// // //                 const SizedBox(width: 10),
+// // //                 Expanded(
+// // //                   child: CustomActionButton(
+// // //                     label: 'View Reports',
+// // //                     onPressed: () => _showReportsDialog(context),
+// // //                     icon: Icons.bar_chart,
+// // //                     type: ButtonType.secondary,
+// // //                     foregroundColor: Colors.black,
+// // //                     height: 52,
+// // //                   ),
+// // //                 ),
+// // //               ],
+// // //             ),
+
+// // //             const SizedBox(height: 32),
+
+// // //             // 🔹 Department Queues
+// // //             Row(
+// // //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+// // //               children: const [
+// // //                 Text(
+// // //                   'Department Queues',
+// // //                   style:
+// // //                       TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+// // //                 ),
+// // //                 Text(
+// // //                   'View All',
+// // //                   style: TextStyle(
+// // //                     fontSize: 14,
+// // //                     color: Colors.blue,
+// // //                     fontWeight: FontWeight.w500,
+// // //                   ),
+// // //                 ),
+// // //               ],
+// // //             ),
+
+// // //             const SizedBox(height: 16),
+
+// // //             ListView.builder(
+// // //               shrinkWrap: true,
+// // //               physics: const NeverScrollableScrollPhysics(),
+// // //               itemCount: queueData.length,
+// // //               itemBuilder: (context, index) {
+// // //                 final dept = queueData[index];
+// // //                 return DepartmentCard(
+// // //                   dept: dept,
+// // //                   onTap: () {
+// // //                     Navigator.pushNamed(
+// // //                       context,
+// // //                       '/manage-queue',
+// // //                       arguments: dept['department'],
+// // //                     );
+// // //                   },
+// // //                   title: '',
+// // //                   subtitle: '',
+// // //                   iconColor: dept['color'],
+// // //                   icon: dept['icon'],
+// // //                   color: dept['color'],
+// // //                 );
+// // //               },
+// // //             ),
+// // //           ],
+// // //         ),
+// // //       ),
+// // //     );
+// // //   }
+
+// // //   void _showReportsDialog(BuildContext context) {
+// // //     showDialog(
+// // //       context: context,
+// // //       builder: (_) => AlertDialog(
+// // //         title: const Text('Daily Report'),
+// // //         content: const Column(
+// // //           mainAxisSize: MainAxisSize.min,
+// // //           children: [
+// // //             _ReportRow('Total Patients Today', '127'),
+// // //             _ReportRow('Average Wait Time', '28 minutes'),
+// // //             _ReportRow('Completed Appointments', '98'),
+// // //             _ReportRow('No Shows', '5'),
+// // //             _ReportRow('Cancelled', '12'),
+// // //           ],
+// // //         ),
+// // //         actions: [
+// // //           TextButton(
+// // //             onPressed: () => Navigator.pop(context),
+// // //             child: const Text('Close'),
+// // //           ),
+// // //         ],
+// // //       ),
+// // //     );
+// // //   }
+// // // }
+
+// // // class _ReportRow extends StatelessWidget {
+// // //   final String label;
+// // //   final String value;
+
+// // //   const _ReportRow(this.label, this.value);
+
+// // //   @override
+// // //   Widget build(BuildContext context) {
+// // //     return Padding(
+// // //       padding: const EdgeInsets.symmetric(vertical: 6),
+// // //       child: Row(
+// // //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+// // //         children: [
+// // //           Text(label),
+// // //           Text(
+// // //             value,
+// // //             style: const TextStyle(fontWeight: FontWeight.bold),
+// // //           ),
+// // //         ],
+// // //       ),
+// // //     );
+// // //   }
+// // // }
+
+
+
+
+// // // import 'package:flutter/material.dart';
+// // // import '/widgets/department_card.dart';
+// // // import '/widgets/info_card.dart';
+// // // import '/widgets/custom_action_button.dart';
+
+// // // class AdminDashboardScreen extends StatefulWidget {
+// // //   const AdminDashboardScreen({super.key});
+
+// // //   @override
+// // //   State<AdminDashboardScreen> createState() => _AdminDashboardScreenState();
+// // // }
+
+// // // class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
+// // //   final List<Map<String, dynamic>> queueData = [
+// // //     {
+// // //       'department': 'Emergency',
+// // //       'count': 24,
+// // //       'avgWait': 15,
+// // //       'icon': Icons.local_hospital,
+// // //       'color': Colors.blue,
+// // //     },
+// // //     {
+// // //       'department': 'Cardiology',
+// // //       'count': 18,
+// // //       'avgWait': 28,
+// // //       'icon': Icons.favorite,
+// // //       'color': Colors.pink,
+// // //     },
+// // //     {
+// // //       'department': 'Neurology',
+// // //       'count': 12,
+// // //       'avgWait': 35,
+// // //       'icon': Icons.psychology,
+// // //       'color': Colors.green,
+// // //     },
+// // //     {
+// // //       'department': 'Pediatrics',
+// // //       'count': 16,
+// // //       'avgWait': 22,
+// // //       'icon': Icons.child_care,
+// // //       'color': Colors.red,
+// // //     },
+// // //     {
+// // //       'department': 'Ophthalmology',
+// // //       'count': 9,
+// // //       'avgWait': 18,
+// // //       'icon': Icons.remove_red_eye,
+// // //       'color': Colors.lightGreen,
+// // //     },
+// // //   ];
+
+// // //   @override
+// // //   Widget build(BuildContext context) {
+// // //     final totalPatients =
+// // //         queueData.fold<int>(0, (sum, item) => sum + item['count'] as int);
+
+// // //     final avgWaitTime =
+// // //         queueData.fold<int>(0, (sum, item) => sum + item['avgWait'] as int) ~/
+// // //             queueData.length;
+
+// // //     return Scaffold(
+// // //       backgroundColor: const Color(0xFFF5F6FA),
+
+// // //       // 🔷 GRADIENT APP BAR
+// // //       appBar: AppBar(
+// // //         elevation: 0,
+// // //         automaticallyImplyLeading: false,
+// // //         toolbarHeight: 90,
+// // //         flexibleSpace: Container(
+// // //           decoration: const BoxDecoration(
+// // //             gradient: LinearGradient(
+// // //               colors: [
+// // //                 Color.fromRGBO(13, 27, 140, 1),
+// // //                 Color.fromRGBO(90, 140, 255, 1),
+// // //               ],
+// // //             ),
+// // //           ),
+// // //         ),
+// // //         title: Row(
+// // //           children: [
+// // //             const CircleAvatar(
+// // //               radius: 22,
+// // //               backgroundColor: Colors.white,
+// // //               child: Text(
+// // //                 'A',
+// // //                 style: TextStyle(
+// // //                   color: Color.fromRGBO(13, 27, 140, 1),
+// // //                   fontWeight: FontWeight.bold,
+// // //                 ),
+// // //               ),
+// // //             ),
+// // //             const SizedBox(width: 12),
+// // //             const Column(
+// // //               crossAxisAlignment: CrossAxisAlignment.start,
+// // //               mainAxisSize: MainAxisSize.min,
+// // //               children: [
+// // //                 Text(
+// // //                   'Dr. Sarah Johnson',
+// // //                   style: TextStyle(
+// // //                     fontSize: 16,
+// // //                     fontWeight: FontWeight.w600,
+// // //                     color: Colors.white,
+// // //                   ),
+// // //                 ),
+// // //                 Text(
+// // //                   'Hospital Administrator',
+// // //                   style: TextStyle(
+// // //                     fontSize: 13,
+// // //                     color: Colors.white70,
+// // //                   ),
+// // //                 ),
+// // //               ],
+// // //             ),
+// // //           ],
+// // //         ),
+// // //       ),
+
+// // //       // 🔷 BODY
+// // //       body: SingleChildScrollView(
+// // //         padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
+// // //         child: Column(
+// // //           crossAxisAlignment: CrossAxisAlignment.start,
+// // //           children: [
+// // //             const Text(
+// // //               'Queue Overview',
+// // //               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+// // //             ),
+// // //             const SizedBox(height: 16),
+
+// // //             Row(
+// // //               children: [
+// // //                 Expanded(
+// // //                   child: InfoCard(
+// // //                     title: 'Total Patients',
+// // //                     value: totalPatients.toString(),
+// // //                     icon: Icons.people,
+// // //                     color: Colors.blue,
+// // //                   ),
+// // //                 ),
+// // //                 const SizedBox(width: 12),
+// // //                 Expanded(
+// // //                   child: InfoCard(
+// // //                     title: 'Avg Wait Time',
+// // //                     value: '${avgWaitTime}m',
+// // //                     icon: Icons.schedule,
+// // //                     color: Colors.purple,
+// // //                   ),
+// // //                 ),
+// // //               ],
+// // //             ),
+
+// // //             const SizedBox(height: 12),
+
+// // //             Row(
+// // //               children: [
+// // //                 Expanded(
+// // //                   child: InfoCard(
+// // //                     title: 'Departments',
+// // //                     value: queueData.length.toString(),
+// // //                     icon: Icons.domain,
+// // //                     color: Colors.green,
+// // //                   ),
+// // //                 ),
+// // //                 const SizedBox(width: 12),
+// // //                 Expanded(
+// // //                   child: InfoCard(
+// // //                     title: 'Completed Today',
+// // //                     value: '89',
+// // //                     icon: Icons.check_circle,
+// // //                     color: Colors.red,
+// // //                   ),
+// // //                 ),
+// // //               ],
+// // //             ),
+
+// // //             const SizedBox(height: 32),
+
+// // //             const Text(
+// // //               'Quick Actions',
+// // //               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+// // //             ),
+// // //             const SizedBox(height: 16),
+
+// // //             Row(
+// // //               children: [
+// // //                 Expanded(
+// // //                   child: CustomActionButton(
+// // //                     label: 'Manage Queues',
+// // //                     onPressed: () =>
+// // //                         Navigator.pushNamed(context, '/manage-queue'),
+// // //                     icon: Icons.edit,
+// // //                     backgroundColor: Colors.blue,
+// // //                     height: 52,
+// // //                   ),
+// // //                 ),
+// // //                 const SizedBox(width: 10),
+// // //                 Expanded(
+// // //                   child: CustomActionButton(
+// // //                     label: 'View Reports',
+// // //                     onPressed: () => _showReportsDialog(context),
+// // //                     icon: Icons.bar_chart,
+// // //                     type: ButtonType.secondary,
+// // //                     foregroundColor: Colors.black,
+// // //                     height: 52,
+// // //                   ),
+// // //                 ),
+// // //               ],
+// // //             ),
+
+// // //             const SizedBox(height: 32),
+
+// // //             Row(
+// // //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+// // //               children: const [
+// // //                 Text(
+// // //                   'Department Queues',
+// // //                   style: TextStyle(
+// // //                       fontSize: 18, fontWeight: FontWeight.bold),
+// // //                 ),
+// // //                 Text(
+// // //                   'View All',
+// // //                   style: TextStyle(
+// // //                     fontSize: 14,
+// // //                     color: Colors.blue,
+// // //                     fontWeight: FontWeight.w500,
+// // //                   ),
+// // //                 ),
+// // //               ],
+// // //             ),
+
+// // //             const SizedBox(height: 16),
+
+// // //             ListView.builder(
+// // //               shrinkWrap: true,
+// // //               physics: const NeverScrollableScrollPhysics(),
+// // //               itemCount: queueData.length,
+// // //               itemBuilder: (context, index) {
+// // //                 final dept = queueData[index];
+// // //                 return DepartmentCard(
+// // //                   dept: dept,
+// // //                   onTap: () {
+// // //                     Navigator.pushNamed(
+// // //                       context,
+// // //                       '/manage-queue',
+// // //                       arguments: dept['department'],
+// // //                     );
+// // //                   },
+// // //                   title: '',
+// // //                   subtitle: '',
+// // //                   iconColor: dept['color'],
+// // //                   icon: dept['icon'],
+// // //                   color: dept['color'],
+// // //                 );
+// // //               },
+// // //             ),
+// // //           ],
+// // //         ),
+// // //       ),
+// // //     );
+// // //   }
+
+// // //   // ✅ FIXED DAILY REPORT DIALOG
+// // //   void _showReportsDialog(BuildContext context) {
+// // //     showDialog(
+// // //       context: context,
+// // //       barrierColor: Colors.black54,
+// // //       builder: (_) => Center(
+// // //         child: Material(
+// // //           color: Colors.transparent,
+// // //           child: Container(
+// // //             width: MediaQuery.of(context).size.width * 0.85,
+// // //             padding: const EdgeInsets.all(20),
+// // //             decoration: BoxDecoration(
+// // //               color: Colors.white,
+// // //               borderRadius: BorderRadius.circular(18),
+// // //             ),
+// // //             child: Column(
+// // //               mainAxisSize: MainAxisSize.min,
+// // //               crossAxisAlignment: CrossAxisAlignment.start,
+// // //               children: [
+// // //                 const Text(
+// // //                   'Daily Report',
+// // //                   style:
+// // //                       TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+// // //                 ),
+// // //                 const SizedBox(height: 6),
+// // //                 const Text(
+// // //                   "Today's Overview - March 15, 2024",
+// // //                   style: TextStyle(color: Colors.grey),
+// // //                 ),
+// // //                 const SizedBox(height: 16),
+// // //                 const Divider(),
+
+// // //                 _reportItem(
+// // //                   'Total Patients Today',
+// // //                   'Active and completed visits',
+// // //                   '127',
+// // //                   Colors.blue,
+// // //                 ),
+// // //                 _reportItem(
+// // //                   'Average Wait Time',
+// // //                   'From check-in to appointment',
+// // //                   '18 min',
+// // //                   Colors.blueAccent,
+// // //                 ),
+// // //                 _reportItem(
+// // //                   'Completed Appointments',
+// // //                   'Successfully finished today',
+// // //                   '94',
+// // //                   Colors.green,
+// // //                 ),
+// // //                 _reportItem(
+// // //                   'No-Shows',
+// // //                   "Patients who didn't arrive",
+// // //                   '8',
+// // //                   Colors.orange,
+// // //                 ),
+// // //                 _reportItem(
+// // //                   'Cancelled Appointments',
+// // //                   'Cancelled by patients or staff',
+// // //                   '12',
+// // //                   Colors.red,
+// // //                 ),
+// // //               ],
+// // //             ),
+// // //           ),
+// // //         ),
+// // //       ),
+// // //     );
+// // //   }
+
+// // //   Widget _reportItem(
+// // //     String title,
+// // //     String subtitle,
+// // //     String value,
+// // //     Color color,
+// // //   ) {
+// // //     return Column(
+// // //       children: [
+// // //         Padding(
+// // //           padding: const EdgeInsets.symmetric(vertical: 12),
+// // //           child: Row(
+// // //             children: [
+// // //               Expanded(
+// // //                 child: Column(
+// // //                   crossAxisAlignment: CrossAxisAlignment.start,
+// // //                   children: [
+// // //                     Text(title,
+// // //                         style: const TextStyle(
+// // //                             fontWeight: FontWeight.w600)),
+// // //                     const SizedBox(height: 4),
+// // //                     Text(
+// // //                       subtitle,
+// // //                       style: const TextStyle(
+// // //                           fontSize: 12, color: Colors.grey),
+// // //                     ),
+// // //                   ],
+// // //                 ),
+// // //               ),
+// // //               Text(
+// // //                 value,
+// // //                 style: TextStyle(
+// // //                   fontSize: 16,
+// // //                   fontWeight: FontWeight.bold,
+// // //                   color: color,
+// // //                 ),
+// // //               ),
+// // //             ],
+// // //           ),
+// // //         ),
+// // //         const Divider(height: 1),
+// // //       ],
+// // //     );
+// // //   }
+// // // }
+
+
+
+// // import 'package:flutter/material.dart';
+// // import '/widgets/department_card.dart';
+// // import '/widgets/info_card.dart';
+// // import '/widgets/custom_action_button.dart';
+
+// // class AdminDashboardScreen extends StatefulWidget {
+// //   const AdminDashboardScreen({super.key});
+
+// //   @override
+// //   State<AdminDashboardScreen> createState() => _AdminDashboardScreenState();
+// // }
+
+// // class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
+// //   final List<Map<String, dynamic>> queueData = [
+// //     {
+// //       'department': 'Emergency',
+// //       'count': 24,
+// //       'avgWait': 15,
+// //       'icon': Icons.local_hospital,
+// //       'color': Colors.blue,
+// //     },
+// //     {
+// //       'department': 'Cardiology',
+// //       'count': 18,
+// //       'avgWait': 28,
+// //       'icon': Icons.favorite,
+// //       'color': Colors.pink,
+// //     },
+// //     {
+// //       'department': 'Neurology',
+// //       'count': 12,
+// //       'avgWait': 35,
+// //       'icon': Icons.psychology,
+// //       'color': Colors.green,
+// //     },
+// //     {
+// //       'department': 'Pediatrics',
+// //       'count': 16,
+// //       'avgWait': 22,
+// //       'icon': Icons.child_care,
+// //       'color': Colors.red,
+// //     },
+// //     {
+// //       'department': 'Ophthalmology',
+// //       'count': 9,
+// //       'avgWait': 18,
+// //       'icon': Icons.remove_red_eye,
+// //       'color': Colors.lightGreen,
+// //     },
+// //   ];
+
+// //   @override
+// //   Widget build(BuildContext context) {
+// //     final totalPatients =
+// //         queueData.fold<int>(0, (sum, item) => sum + item['count'] as int);
+
+// //     final avgWaitTime =
+// //         queueData.fold<int>(0, (sum, item) => sum + item['avgWait'] as int) ~/
+// //             queueData.length;
+
+// //     return Scaffold(
+// //       backgroundColor: const Color(0xFFF5F6FA),
+
+// //       // ✅ DRAWER (LEFT MENU)
+// //       drawer: Drawer(
+// //         child: SafeArea(
+// //           child: Column(
+// //             crossAxisAlignment: CrossAxisAlignment.start,
+// //             children: [
+// //               const Padding(
+// //                 padding: EdgeInsets.all(20),
+// //                 child: Text(
+// //                   'MediQueue',
+// //                   style: TextStyle(
+// //                     fontSize: 20,
+// //                     fontWeight: FontWeight.bold,
+// //                   ),
+// //                 ),
+// //               ),
+// //               const Divider(),
+
+// //               _drawerItem(Icons.person_outline, 'My Account'),
+// //               _drawerItem(Icons.notifications_none, 'Notification'),
+// //               _drawerItem(Icons.history, 'History'),
+
+// //               const Spacer(),
+
+// //               Padding(
+// //                 padding: const EdgeInsets.all(20),
+// //                 child: SizedBox(
+// //                   width: double.infinity,
+// //                   height: 45,
+// //                   child: OutlinedButton(
+// //                     onPressed: () {},
+// //                     style: OutlinedButton.styleFrom(
+// //                       shape: RoundedRectangleBorder(
+// //                         borderRadius: BorderRadius.circular(30),
+// //                       ),
+// //                     ),
+// //                     child: const Text('Logout'),
+// //                   ),
+// //                 ),
+// //               ),
+// //             ],
+// //           ),
+// //         ),
+// //       ),
+
+// //       // 🔷 APP BAR (MENU ICON ADDED, ICONS REMOVED)
+// //       appBar: AppBar(
+// //         elevation: 0,
+// //         toolbarHeight: 90,
+// //         automaticallyImplyLeading: false,
+// //         flexibleSpace: Container(
+// //           decoration: const BoxDecoration(
+// //             gradient: LinearGradient(
+// //               colors: [
+// //                 Color.fromRGBO(13, 27, 140, 1),
+// //                 Color.fromRGBO(90, 140, 255, 1),
+// //               ],
+// //             ),
+// //           ),
+// //         ),
+// //         title: Row(
+// //           children: [
+// //             Builder(
+// //               builder: (context) => IconButton(
+// //                 icon: const Icon(Icons.menu, color: Colors.white),
+// //                 onPressed: () => Scaffold.of(context).openDrawer(),
+// //               ),
+// //             ),
+// //             const SizedBox(width: 8),
+// //             const CircleAvatar(
+// //               radius: 22,
+// //               backgroundColor: Colors.white,
+// //               child: Text(
+// //                 'A',
+// //                 style: TextStyle(
+// //                   color: Color.fromRGBO(13, 27, 140, 1),
+// //                   fontWeight: FontWeight.bold,
+// //                 ),
+// //               ),
+// //             ),
+// //             const SizedBox(width: 12),
+// //             const Column(
+// //               crossAxisAlignment: CrossAxisAlignment.start,
+// //               mainAxisSize: MainAxisSize.min,
+// //               children: [
+// //                 Text(
+// //                   'Dr. Sarah Johnson',
+// //                   style: TextStyle(
+// //                     fontSize: 16,
+// //                     fontWeight: FontWeight.w600,
+// //                     color: Colors.white,
+// //                   ),
+// //                 ),
+// //                 Text(
+// //                   'Hospital Administrator',
+// //                   style: TextStyle(
+// //                     fontSize: 13,
+// //                     color: Colors.white70,
+// //                   ),
+// //                 ),
+// //               ],
+// //             ),
+// //           ],
+// //         ),
+// //       ),
+
+// //       // 🔷 BODY (UNCHANGED)
+// //       body: SingleChildScrollView(
+// //         padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
+// //         child: Column(
+// //           crossAxisAlignment: CrossAxisAlignment.start,
+// //           children: [
+// //             const Text(
+// //               'Queue Overview',
+// //               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+// //             ),
+// //             const SizedBox(height: 16),
+
+// //             Row(
+// //               children: [
+// //                 Expanded(
+// //                   child: InfoCard(
+// //                     title: 'Total Patients',
+// //                     value: totalPatients.toString(),
+// //                     icon: Icons.people,
+// //                     color: Colors.blue,
+// //                   ),
+// //                 ),
+// //                 const SizedBox(width: 12),
+// //                 Expanded(
+// //                   child: InfoCard(
+// //                     title: 'Avg Wait Time',
+// //                     value: '${avgWaitTime}m',
+// //                     icon: Icons.schedule,
+// //                     color: Colors.purple,
+// //                   ),
+// //                 ),
+// //               ],
+// //             ),
+
+// //             const SizedBox(height: 12),
+
+// //             Row(
+// //               children: [
+// //                 Expanded(
+// //                   child: InfoCard(
+// //                     title: 'Departments',
+// //                     value: queueData.length.toString(),
+// //                     icon: Icons.domain,
+// //                     color: Colors.green,
+// //                   ),
+// //                 ),
+// //                 const SizedBox(width: 12),
+// //                 Expanded(
+// //                   child: InfoCard(
+// //                     title: 'Completed Today',
+// //                     value: '89',
+// //                     icon: Icons.check_circle,
+// //                     color: Colors.red,
+// //                   ),
+// //                 ),
+// //               ],
+// //             ),
+
+// //             const SizedBox(height: 32),
+
+// //             const Text(
+// //               'Quick Actions',
+// //               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+// //             ),
+// //             const SizedBox(height: 16),
+
+// //             Row(
+// //               children: [
+// //                 Expanded(
+// //                   child: CustomActionButton(
+// //                     label: 'Manage Queues',
+// //                     onPressed: () =>
+// //                         Navigator.pushNamed(context, '/manage-queue'),
+// //                     icon: Icons.edit,
+// //                     backgroundColor: Colors.blue,
+// //                     height: 52,
+// //                   ),
+// //                 ),
+// //                 const SizedBox(width: 10),
+// //                 Expanded(
+// //                   child: CustomActionButton(
+// //                     label: 'View Reports',
+// //                     onPressed: () => _showReportsDialog(context),
+// //                     icon: Icons.bar_chart,
+// //                     type: ButtonType.secondary,
+// //                     foregroundColor: Colors.black,
+// //                     height: 52,
+// //                   ),
+// //                 ),
+// //               ],
+// //             ),
+
+// //             const SizedBox(height: 32),
+
+// //             Row(
+// //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+// //               children: const [
+// //                 Text(
+// //                   'Department Queues',
+// //                   style: TextStyle(
+// //                       fontSize: 18, fontWeight: FontWeight.bold),
+// //                 ),
+// //                 Text(
+// //                   'View All',
+// //                   style: TextStyle(
+// //                     fontSize: 14,
+// //                     color: Colors.blue,
+// //                     fontWeight: FontWeight.w500,
+// //                   ),
+// //                 ),
+// //               ],
+// //             ),
+
+// //             const SizedBox(height: 16),
+
+// //             ListView.builder(
+// //               shrinkWrap: true,
+// //               physics: const NeverScrollableScrollPhysics(),
+// //               itemCount: queueData.length,
+// //               itemBuilder: (context, index) {
+// //                 final dept = queueData[index];
+// //                 return DepartmentCard(
+// //                   dept: dept,
+// //                   onTap: () {
+// //                     Navigator.pushNamed(
+// //                       context,
+// //                       '/manage-queue',
+// //                       arguments: dept['department'],
+// //                     );
+// //                   },
+// //                   title: '',
+// //                   subtitle: '',
+// //                   iconColor: dept['color'],
+// //                   icon: dept['icon'],
+// //                   color: dept['color'],
+// //                 );
+// //               },
+// //             ),
+// //           ],
+// //         ),
+// //       ),
+// //     );
+// //   }
+
+// //   Widget _drawerItem(IconData icon, String title) {
+// //     return ListTile(
+// //       leading: Icon(icon),
+// //       title: Text(title),
+// //       onTap: () {},
+// //     );
+// //   }
+
+// //   // REPORT DIALOG (UNCHANGED)
+// //   void _showReportsDialog(BuildContext context) {
+// //     showDialog(
+// //       context: context,
+// //       barrierColor: Colors.black54,
+// //       builder: (_) => Center(
+// //         child: Material(
+// //           color: Colors.transparent,
+// //           child: Container(
+// //             width: MediaQuery.of(context).size.width * 0.85,
+// //             padding: const EdgeInsets.all(20),
+// //             decoration: BoxDecoration(
+// //               color: Colors.white,
+// //               borderRadius: BorderRadius.circular(18),
+// //             ),
+// //             child: Column(
+// //               mainAxisSize: MainAxisSize.min,
+// //               crossAxisAlignment: CrossAxisAlignment.start,
+// //               children: const [
+// //                 Text(
+// //                   'Daily Report',
+// //                   style: TextStyle(
+// //                     fontSize: 20,
+// //                     fontWeight: FontWeight.bold,
+// //                   ),
+// //                 ),
+// //               ],
+// //             ),
+// //           ),
+// //         ),
+// //       ),
+// //     );
+// //   }
+// // }
+
+
+
+// // import 'package:flutter/material.dart';
+// // import '/widgets/department_card.dart';
+// // import '/widgets/info_card.dart';
+// // import '/widgets/custom_action_button.dart';
+
+// // class AdminDashboardScreen extends StatefulWidget {
+// //   const AdminDashboardScreen({super.key});
+
+// //   @override
+// //   State<AdminDashboardScreen> createState() => _AdminDashboardScreenState();
+// // }
+
+// // class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
+// //   final List<Map<String, dynamic>> queueData = [
+// //     {
+// //       'department': 'Emergency',
+// //       'count': 24,
+// //       'avgWait': 15,
+// //       'icon': Icons.local_hospital,
+// //       'color': Colors.blue,
+// //     },
+// //     {
+// //       'department': 'Cardiology',
+// //       'count': 18,
+// //       'avgWait': 28,
+// //       'icon': Icons.favorite,
+// //       'color': Colors.pink,
+// //     },
+// //     {
+// //       'department': 'Neurology',
+// //       'count': 12,
+// //       'avgWait': 35,
+// //       'icon': Icons.psychology,
+// //       'color': Colors.green,
+// //     },
+// //     {
+// //       'department': 'Pediatrics',
+// //       'count': 16,
+// //       'avgWait': 22,
+// //       'icon': Icons.child_care,
+// //       'color': Colors.red,
+// //     },
+// //     {
+// //       'department': 'Ophthalmology',
+// //       'count': 9,
+// //       'avgWait': 18,
+// //       'icon': Icons.remove_red_eye,
+// //       'color': Colors.lightGreen,
+// //     },
+// //   ];
+
+// //   @override
+// //   Widget build(BuildContext context) {
+// //     final totalPatients =
+// //         queueData.fold<int>(0, (sum, item) => sum + item['count'] as int);
+
+// //     final avgWaitTime =
+// //         queueData.fold<int>(0, (sum, item) => sum + item['avgWait'] as int) ~/
+// //             queueData.length;
+
+// //     return Scaffold(
+// //       backgroundColor: const Color(0xFFF5F6FA),
+
+// //       // ✅ DRAWER (LOGOUT BELOW HISTORY)
+// //       drawer: Drawer(
+// //         child: SafeArea(
+// //           child: Column(
+// //             crossAxisAlignment: CrossAxisAlignment.start,
+// //             children: [
+// //               const Padding(
+// //                 padding: EdgeInsets.all(20),
+// //                 child: Text(
+// //                   'MediQueue',
+// //                   style: TextStyle(
+// //                     fontSize: 20,
+// //                     fontWeight: FontWeight.bold,
+// //                   ),
+// //                 ),
+// //               ),
+
+// //               _drawerItem(Icons.person_outline, 'My Account'),
+// //               _drawerItem(Icons.notifications_none, 'Notification'),
+// //               _drawerItem(Icons.history, 'History'),
+
+// //               const SizedBox(height: 12),
+
+// //               // ✅ LOGOUT BELOW HISTORY
+// //               Padding(
+// //                 padding: const EdgeInsets.symmetric(horizontal: 20),
+// //                 child: SizedBox(
+// //                   width: double.infinity,
+// //                   height: 45,
+// //                   child: OutlinedButton(
+// //                     onPressed: () {},
+// //                     style: OutlinedButton.styleFrom(
+// //                       shape: RoundedRectangleBorder(
+// //                         borderRadius: BorderRadius.circular(30),
+// //                       ),
+// //                     ),
+// //                     child: const Text('Logout'),
+// //                   ),
+// //                 ),
+// //               ),
+// //             ],
+// //           ),
+// //         ),
+// //       ),
+
+// //       // 🔷 APP BAR
+// //       appBar: AppBar(
+// //         elevation: 0,
+// //         toolbarHeight: 90,
+// //         automaticallyImplyLeading: false,
+// //         flexibleSpace: Container(
+// //           decoration: const BoxDecoration(
+// //             gradient: LinearGradient(
+// //               colors: [
+// //                 Color.fromRGBO(13, 27, 140, 1),
+// //                 Color.fromRGBO(90, 140, 255, 1),
+// //               ],
+// //             ),
+// //           ),
+// //         ),
+// //         title: Row(
+// //           children: [
+// //             Builder(
+// //               builder: (context) => IconButton(
+// //                 icon: const Icon(Icons.menu, color: Colors.white),
+// //                 onPressed: () => Scaffold.of(context).openDrawer(),
+// //               ),
+// //             ),
+// //             const SizedBox(width: 8),
+// //             const CircleAvatar(
+// //               radius: 22,
+// //               backgroundColor: Colors.white,
+// //               child: Text(
+// //                 'A',
+// //                 style: TextStyle(
+// //                   color: Color.fromRGBO(13, 27, 140, 1),
+// //                   fontWeight: FontWeight.bold,
+// //                 ),
+// //               ),
+// //             ),
+// //             const SizedBox(width: 12),
+// //             const Column(
+// //               crossAxisAlignment: CrossAxisAlignment.start,
+// //               mainAxisSize: MainAxisSize.min,
+// //               children: [
+// //                 Text(
+// //                   'Dr. Sarah Johnson',
+// //                   style: TextStyle(
+// //                     fontSize: 16,
+// //                     fontWeight: FontWeight.w600,
+// //                     color: Colors.white,
+// //                   ),
+// //                 ),
+// //                 Text(
+// //                   'Hospital Administrator',
+// //                   style: TextStyle(
+// //                     fontSize: 13,
+// //                     color: Colors.white70,
+// //                   ),
+// //                 ),
+// //               ],
+// //             ),
+// //           ],
+// //         ),
+// //       ),
+
+// //       // 🔷 BODY
+// //       body: SingleChildScrollView(
+// //         padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
+// //         child: Column(
+// //           crossAxisAlignment: CrossAxisAlignment.start,
+// //           children: [
+// //             const Text(
+// //               'Queue Overview',
+// //               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+// //             ),
+// //             const SizedBox(height: 16),
+
+// //             Row(
+// //               children: [
+// //                 Expanded(
+// //                   child: InfoCard(
+// //                     title: 'Total Patients',
+// //                     value: totalPatients.toString(),
+// //                     icon: Icons.people,
+// //                     color: Colors.blue,
+// //                   ),
+// //                 ),
+// //                 const SizedBox(width: 12),
+// //                 Expanded(
+// //                   child: InfoCard(
+// //                     title: 'Avg Wait Time',
+// //                     value: '${avgWaitTime}m',
+// //                     icon: Icons.schedule,
+// //                     color: Colors.purple,
+// //                   ),
+// //                 ),
+// //               ],
+// //             ),
+
+// //             const SizedBox(height: 12),
+
+// //             Row(
+// //               children: [
+// //                 Expanded(
+// //                   child: InfoCard(
+// //                     title: 'Departments',
+// //                     value: queueData.length.toString(),
+// //                     icon: Icons.domain,
+// //                     color: Colors.green,
+// //                   ),
+// //                 ),
+// //                 const SizedBox(width: 12),
+// //                 Expanded(
+// //                   child: InfoCard(
+// //                     title: 'Completed Today',
+// //                     value: '89',
+// //                     icon: Icons.check_circle,
+// //                     color: Colors.red,
+// //                   ),
+// //                 ),
+// //               ],
+// //             ),
+
+// //             const SizedBox(height: 32),
+
+// //             const Text(
+// //               'Quick Actions',
+// //               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+// //             ),
+// //             const SizedBox(height: 16),
+
+// //             Row(
+// //               children: [
+// //                 Expanded(
+// //                   child: CustomActionButton(
+// //                     label: 'Manage Queues',
+// //                     onPressed: () =>
+// //                         Navigator.pushNamed(context, '/manage-queue'),
+// //                     icon: Icons.edit,
+// //                     backgroundColor: Colors.blue,
+// //                     height: 52,
+// //                   ),
+// //                 ),
+// //                 const SizedBox(width: 10),
+// //                 Expanded(
+// //                   child: CustomActionButton(
+// //                     label: 'View Reports',
+// //                     onPressed: () => _showReportsDialog(context),
+// //                     icon: Icons.bar_chart,
+// //                     type: ButtonType.secondary,
+// //                     foregroundColor: Colors.black,
+// //                     height: 52,
+// //                   ),
+// //                 ),
+// //               ],
+// //             ),
+
+// //             const SizedBox(height: 32),
+
+// //             // ✅ VIEW ALL REMOVED
+// //             const Text(
+// //               'Department Queues',
+// //               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+// //             ),
+
+// //             const SizedBox(height: 16),
+
+// //             ListView.builder(
+// //               shrinkWrap: true,
+// //               physics: const NeverScrollableScrollPhysics(),
+// //               itemCount: queueData.length,
+// //               itemBuilder: (context, index) {
+// //                 final dept = queueData[index];
+// //                 return DepartmentCard(
+// //                   dept: dept,
+// //                   onTap: () {
+// //                     Navigator.pushNamed(
+// //                       context,
+// //                       '/manage-queue',
+// //                       arguments: dept['department'],
+// //                     );
+// //                   },
+// //                   title: '',
+// //                   subtitle: '',
+// //                   iconColor: dept['color'],
+// //                   icon: dept['icon'],
+// //                   color: dept['color'],
+// //                 );
+// //               },
+// //             ),
+// //           ],
+// //         ),
+// //       ),
+// //     );
+// //   }
+
+// //   Widget _drawerItem(IconData icon, String title) {
+// //     return ListTile(
+// //       leading: Icon(icon),
+// //       title: Text(title),
+// //       onTap: () {},
+// //     );
+// //   }
+
+// //   void _showReportsDialog(BuildContext context) {
+// //     showDialog(
+// //       context: context,
+// //       barrierColor: Colors.black54,
+// //       builder: (_) => Center(
+// //         child: Material(
+// //           color: Colors.transparent,
+// //           child: Container(
+// //             width: MediaQuery.of(context).size.width * 0.85,
+// //             padding: const EdgeInsets.all(20),
+// //             decoration: BoxDecoration(
+// //               color: Colors.white,
+// //               borderRadius: BorderRadius.circular(18),
+// //             ),
+// //             child: const Text(
+// //               'Daily Report',
+// //               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+// //             ),
+// //           ),
+// //         ),
+// //       ),
+// //     );
+// //   }
+// // }
+
+
+
 // import 'package:flutter/material.dart';
-// import '../widgets/department_card.dart';
+// import '/widgets/department_card.dart';
+// import '/widgets/info_card.dart';
+// import '/widgets/custom_action_button.dart';
 
 // class AdminDashboardScreen extends StatefulWidget {
 //   const AdminDashboardScreen({super.key});
@@ -11,295 +1415,280 @@
 // class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
 //   final List<Map<String, dynamic>> queueData = [
 //     {
-//       'department': 'General Medicine',
-//       'count': 12,
-//       'avgWait': 25,
-//       'icon': Icons.medical_services,
-//       'color': Colors.blue
+//       'department': 'Emergency',
+//       'count': 24,
+//       'avgWait': 15,
+//       'icon': Icons.local_hospital,
+//       'color': Colors.blue,
 //     },
 //     {
 //       'department': 'Cardiology',
-//       'count': 8,
-//       'avgWait': 45,
+//       'count': 18,
+//       'avgWait': 28,
 //       'icon': Icons.favorite,
-//       'color': Colors.red
+//       'color': Colors.pink,
 //     },
 //     {
-//       'department': 'Orthopedics',
-//       'count': 5,
+//       'department': 'Neurology',
+//       'count': 12,
 //       'avgWait': 35,
-//       'icon': Icons.accessibility_new,
-//       'color': Colors.orange
+//       'icon': Icons.psychology,
+//       'color': Colors.green,
 //     },
 //     {
 //       'department': 'Pediatrics',
-//       'count': 15,
-//       'avgWait': 20,
+//       'count': 16,
+//       'avgWait': 22,
 //       'icon': Icons.child_care,
-//       'color': Colors.pink
+//       'color': Colors.red,
+//     },
+//     {
+//       'department': 'Ophthalmology',
+//       'count': 9,
+//       'avgWait': 18,
+//       'icon': Icons.remove_red_eye,
+//       'color': Colors.lightGreen,
 //     },
 //   ];
 
 //   @override
 //   Widget build(BuildContext context) {
 //     final totalPatients =
-//         queueData.fold<int>(0, (sum, item) => sum + (item['count'] as int));
+//     queueData.fold<int>(0, (sum, item) => sum + (item['count'] as int));
+
+
 //     final avgWaitTime =
-//         queueData.fold<int>(0, (sum, item) => sum + (item['avgWait'] as int)) ~/
-//             queueData.length;
+//     queueData.fold<int>(0, (sum, item) => sum + (item['avgWait'] as int)) ~/
+//         queueData.length;
+
 
 //     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Admin Dashboard'),
-//         actions: [
-//           IconButton(
-//             icon: const Icon(Icons.refresh),
-//             onPressed: () {
-//               setState(() {});
-//               ScaffoldMessenger.of(context).showSnackBar(
-//                 const SnackBar(content: Text('Dashboard refreshed')),
-//               );
-//             },
-//           ),
-//           IconButton(
-//             icon: const Icon(Icons.settings),
-//             onPressed: () {
-//               ScaffoldMessenger.of(context).showSnackBar(
-//                 const SnackBar(content: Text('Settings opening...')),
-//               );
-//             },
-//           ),
-//         ],
-//       ),
-//       body: Container(
-//         decoration: BoxDecoration(
-//           gradient: LinearGradient(
-//             begin: Alignment.topCenter,
-//             end: Alignment.bottomCenter,
-//             colors: [
-//               Colors.green.shade50,
-//               Colors.white,
-//             ],
-//           ),
-//         ),
-//         child: SingleChildScrollView(
-//           padding: const EdgeInsets.all(16.0),
+//       backgroundColor: const Color(0xFFF5F6FA),
+
+//       // ================= DRAWER =================
+//       drawer: Drawer(
+//         child: SafeArea(
 //           child: Column(
 //             crossAxisAlignment: CrossAxisAlignment.start,
 //             children: [
-//               // Welcome Card
-//               Card(
-//                 elevation: 4,
-//                 shape: RoundedRectangleBorder(
-//                   borderRadius: BorderRadius.circular(16),
+//               const Padding(
+//                 padding: EdgeInsets.all(20),
+//                 child: Text(
+//                   'MediQueue',
+//                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
 //                 ),
-//                 child: Container(
-//                   padding: const EdgeInsets.all(20),
-//                   decoration: BoxDecoration(
-//                     gradient: LinearGradient(
-//                       colors: [Colors.green.shade600, Colors.green.shade400],
-//                     ),
-//                     borderRadius: BorderRadius.circular(16),
-//                   ),
-//                   child: const Row(
-//                     children: [
-//                       Icon(
-//                         Icons.admin_panel_settings,
-//                         color: Colors.white,
-//                         size: 40,
+//               ),
+
+//               _drawerItem(Icons.person_outline, 'My Account'),
+//               _drawerItem(Icons.notifications_none, 'Notification'),
+//               _drawerItem(Icons.history, 'History'),
+
+//               const Spacer(),
+
+//               Padding(
+//                 padding: const EdgeInsets.all(20),
+//                 child: SizedBox(
+//                   width: double.infinity,
+//                   height: 45,
+//                   child: OutlinedButton(
+//                     onPressed: () {},
+//                     style: OutlinedButton.styleFrom(
+//                       shape: RoundedRectangleBorder(
+//                         borderRadius: BorderRadius.circular(30),
 //                       ),
-//                       SizedBox(width: 16),
-//                       Expanded(
-//                         child: Column(
-//                           crossAxisAlignment: CrossAxisAlignment.start,
-//                           children: [
-//                             Text(
-//                               'Hospital Admin',
-//                               style: TextStyle(
-//                                 color: Colors.white,
-//                                 fontSize: 24,
-//                                 fontWeight: FontWeight.bold,
-//                               ),
-//                             ),
-//                             SizedBox(height: 4),
-//                             Text(
-//                               'City General Hospital',
-//                               style: TextStyle(
-//                                 color: Colors.white70,
-//                                 fontSize: 14,
-//                               ),
-//                             ),
-//                           ],
-//                         ),
-//                       ),
-//                     ],
+//                     ),
+//                     child: const Text('Logout'),
 //                   ),
 //                 ),
 //               ),
-//               const SizedBox(height: 24),
-
-//               // Statistics Cards
-//               const Text(
-//                 'Overview',
-//                 style: TextStyle(
-//                   fontSize: 20,
-//                   fontWeight: FontWeight.bold,
-//                   color: Color(0xFF424242),
-//                 ),
-//               ),
-//               const SizedBox(height: 16),
-
-//               Row(
-//                 children: [
-//                   Expanded(
-//                     child: _buildStatCard(
-//                       'Total Patients',
-//                       totalPatients.toString(),
-//                       Icons.people,
-//                       Colors.blue,
-//                     ),
-//                   ),
-//                   const SizedBox(width: 12),
-//                   Expanded(
-//                     child: _buildStatCard(
-//                       'Avg. Wait',
-//                       '$avgWaitTime min',
-//                       Icons.schedule,
-//                       Colors.orange,
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//               const SizedBox(height: 12),
-
-//               Row(
-//                 children: [
-//                   Expanded(
-//                     child: _buildStatCard(
-//                       'Departments',
-//                       queueData.length.toString(),
-//                       Icons.domain,
-//                       Colors.purple,
-//                     ),
-//                   ),
-//                   const SizedBox(width: 12),
-//                   Expanded(
-//                     child: _buildStatCard(
-//                       'Completed',
-//                       '47',
-//                       Icons.check_circle,
-//                       Colors.green,
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//               const SizedBox(height: 24),
-
-//               // Quick Actions
-//               const Text(
-//                 'Quick Actions',
-//                 style: TextStyle(
-//                   fontSize: 20,
-//                   fontWeight: FontWeight.bold,
-//                   color: Color(0xFF424242),
-//                 ),
-//               ),
-//               const SizedBox(height: 16),
-
-//               Row(
-//                 children: [
-//                   Expanded(
-//                     child: _buildActionButton(
-//                       context,
-//                       'Manage Queue',
-//                       Icons.queue,
-//                       Colors.blue,
-//                       () {
-//                         Navigator.pushNamed(context, '/manage-queue');
-//                       },
-//                     ),
-//                   ),
-//                   const SizedBox(width: 12),
-//                   Expanded(
-//                     child: _buildActionButton(
-//                       context,
-//                       'Reports',
-//                       Icons.assessment,
-//                       Colors.green,
-//                       () {
-//                         _showReportsDialog(context);
-//                       },
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//               const SizedBox(height: 24),
-
-//               // Department Queue Status
-//               const Text(
-//                 'Department Queues',
-//                 style: TextStyle(
-//                   fontSize: 20,
-//                   fontWeight: FontWeight.bold,
-//                   color: Color(0xFF424242),
-//                 ),
-//               ),
-//               const SizedBox(height: 16),
-
-//               ListView.builder(
-//                 shrinkWrap: true,
-//                 physics: const NeverScrollableScrollPhysics(),
-//                 itemCount: queueData.length,
-//                 itemBuilder: (context, index) {
-//                   final dept = queueData[index];
-//                   return DepartmentCard(
-//                     dept: dept,
-//                     onTap: () {
-//                       Navigator.pushNamed(
-//                         context,
-//                         '/manage-queue',
-//                         arguments: dept['department'],
-//                       );
-//                     },
-//                   );
-//                 },
-//               ),
-
 //             ],
 //           ),
 //         ),
 //       ),
-//     );
-//   }
 
-//   Widget _buildStatCard(
-//       String label, String value, IconData icon, Color color) {
-//     return Card(
-//       elevation: 3,
-//       shape: RoundedRectangleBorder(
-//         borderRadius: BorderRadius.circular(12),
-//       ),
-//       child: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
+//       // ================= APP BAR =================
+//       appBar: AppBar(
+//         elevation: 0,
+//         toolbarHeight: 90,
+//         automaticallyImplyLeading: false,
+//         flexibleSpace: Container(
+//           decoration: const BoxDecoration(
+//             gradient: LinearGradient(
+//               colors: [
+//                 Color.fromRGBO(13, 27, 140, 1),
+//                 Color.fromRGBO(90, 140, 255, 1),
+//               ],
+//             ),
+//           ),
+//         ),
+//         title: Row(
 //           children: [
-//             Icon(icon, color: color, size: 32),
-//             const SizedBox(height: 8),
-//             Text(
-//               value,
-//               style: const TextStyle(
-//                 fontSize: 24,
-//                 fontWeight: FontWeight.bold,
+//             Builder(
+//               builder: (context) => IconButton(
+//                 icon: const Icon(Icons.menu, color: Colors.white),
+//                 onPressed: () => Scaffold.of(context).openDrawer(),
 //               ),
 //             ),
-//             const SizedBox(height: 4),
-//             Text(
-//               label,
-//               style: TextStyle(
-//                 fontSize: 12,
-//                 color: Colors.grey.shade600,
+//             const SizedBox(width: 8),
+//             const CircleAvatar(
+//               radius: 22,
+//               backgroundColor: Colors.white,
+//               child: Text(
+//                 'A',
+//                 style: TextStyle(
+//                   color: Color.fromRGBO(13, 27, 140, 1),
+//                   fontWeight: FontWeight.bold,
+//                 ),
 //               ),
-//               textAlign: TextAlign.center,
+//             ),
+//             const SizedBox(width: 12),
+//             const Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               mainAxisSize: MainAxisSize.min,
+//               children: [
+//                 Text(
+//                   'Dr. Sarah Johnson',
+//                   style: TextStyle(
+//                     fontSize: 16,
+//                     fontWeight: FontWeight.w600,
+//                     color: Colors.white,
+//                   ),
+//                 ),
+//                 Text(
+//                   'Hospital Administrator',
+//                   style: TextStyle(
+//                     fontSize: 13,
+//                     color: Colors.white70,
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ],
+//         ),
+//       ),
+
+//       // ================= BODY =================
+//       body: SingleChildScrollView(
+//         padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             const Text(
+//               'Queue Overview',
+//               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+//             ),
+//             const SizedBox(height: 16),
+
+//             Row(
+//               children: [
+//                 Expanded(
+//                   child: InfoCard(
+//                     title: 'Total Patients',
+//                     value: totalPatients.toString(),
+//                     icon: Icons.people,
+//                     color: Colors.blue,
+//                   ),
+//                 ),
+//                 const SizedBox(width: 12),
+//                 Expanded(
+//                   child: InfoCard(
+//                     title: 'Avg Wait Time',
+//                     value: '${avgWaitTime}m',
+//                     icon: Icons.schedule,
+//                     color: Colors.purple,
+//                   ),
+//                 ),
+//               ],
+//             ),
+
+//             const SizedBox(height: 12),
+
+//             Row(
+//               children: [
+//                 Expanded(
+//                   child: InfoCard(
+//                     title: 'Departments',
+//                     value: queueData.length.toString(),
+//                     icon: Icons.domain,
+//                     color: Colors.green,
+//                   ),
+//                 ),
+//                 const SizedBox(width: 12),
+//                 Expanded(
+//                   child: InfoCard(
+//                     title: 'Completed Today',
+//                     value: '89',
+//                     icon: Icons.check_circle,
+//                     color: Colors.red,
+//                   ),
+//                 ),
+//               ],
+//             ),
+
+//             const SizedBox(height: 32),
+
+//             const Text(
+//               'Quick Actions',
+//               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+//             ),
+//             const SizedBox(height: 16),
+
+//             Row(
+//               children: [
+//                 Expanded(
+//                   child: CustomActionButton(
+//                     label: 'Manage Queues',
+//                     onPressed: () =>
+//                         Navigator.pushNamed(context, '/manage-queue'),
+//                     icon: Icons.edit,
+//                     backgroundColor: Colors.blue,
+//                     height: 52,
+//                   ),
+//                 ),
+//                 const SizedBox(width: 10),
+//                 Expanded(
+//                   child: CustomActionButton(
+//                     label: 'View Reports',
+//                     onPressed: () => _showReportsDialog(context),
+//                     icon: Icons.bar_chart,
+//                     type: ButtonType.secondary,
+//                     foregroundColor: Colors.black,
+//                     height: 52,
+//                   ),
+//                 ),
+//               ],
+//             ),
+
+//             const SizedBox(height: 32),
+
+//             const Text(
+//               'Department Queues',
+//               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+//             ),
+//             const SizedBox(height: 16),
+
+//             ListView.builder(
+//               shrinkWrap: true,
+//               physics: const NeverScrollableScrollPhysics(),
+//               itemCount: queueData.length,
+//               itemBuilder: (context, index) {
+//                 final dept = queueData[index];
+//                 return DepartmentCard(
+//                   dept: dept,
+//                   icon: dept['icon'],
+//                   iconColor: dept['color'],
+//                   color: dept['color'],
+//                   title: '',
+//                   subtitle: '',
+//                   onTap: () {
+//                     Navigator.pushNamed(
+//                       context,
+//                       '/manage-queue',
+//                       arguments: dept['department'],
+//                     );
+//                   },
+//                 );
+//               },
 //             ),
 //           ],
 //         ),
@@ -307,124 +1696,46 @@
 //     );
 //   }
 
-//   Widget _buildActionButton(
-//     BuildContext context,
-//     String label,
-//     IconData icon,
-//     Color color,
-//     VoidCallback onPressed,
-//   ) {
-//     return ElevatedButton.icon(
-//       onPressed: onPressed,
-//       icon: Icon(icon),
-//       label: Text(label),
-//       style: ElevatedButton.styleFrom(
-//         backgroundColor: color,
-//         foregroundColor: Colors.white,
-//         padding: const EdgeInsets.symmetric(vertical: 16),
-//         shape: RoundedRectangleBorder(
-//           borderRadius: BorderRadius.circular(12),
-//         ),
-//       ),
+//   Widget _drawerItem(IconData icon, String title) {
+//     return ListTile(
+//       leading: Icon(icon),
+//       title: Text(title),
+//       onTap: () {},
 //     );
 //   }
-
-//   // Widget _buildDepartmentCard(BuildContext context, Map<String, dynamic> dept) {
-//   //   return Card(
-//   //     elevation: 2,
-//   //     margin: const EdgeInsets.only(bottom: 12),
-//   //     shape: RoundedRectangleBorder(
-//   //       borderRadius: BorderRadius.circular(12),
-//   //     ),
-//   //     child: ListTile(
-//   //       contentPadding: const EdgeInsets.all(16),
-//   //       leading: Container(
-//   //         padding: const EdgeInsets.all(12),
-//   //         decoration: BoxDecoration(
-//   //           color: (dept['color'] as Color).withOpacity(0.1),
-//   //           borderRadius: BorderRadius.circular(12),
-//   //         ),
-//   //         child: Icon(
-//   //           dept['icon'],
-//   //           color: dept['color'],
-//   //           size: 28,
-//   //         ),
-//   //       ),
-//   //       title: Text(
-//   //         dept['department'],
-//   //         style: const TextStyle(
-//   //           fontWeight: FontWeight.bold,
-//   //           fontSize: 16,
-//   //         ),
-//   //       ),
-//   //       subtitle: Text(
-//   //         '${dept['count']} patients • Avg ${dept['avgWait']} min wait',
-//   //         style: TextStyle(
-//   //           color: Colors.grey.shade600,
-//   //           fontSize: 13,
-//   //         ),
-//   //       ),
-//   //       trailing: IconButton(
-//   //         icon: const Icon(Icons.arrow_forward_ios, size: 18),
-//   //         onPressed: () {
-//   //           Navigator.pushNamed(
-//   //             context,
-//   //             '/manage-queue',
-//   //             arguments: dept['department'],
-//   //           );
-//   //         },
-//   //       ),
-//   //     ),
-//   //   );
-//   // }
 
 //   void _showReportsDialog(BuildContext context) {
 //     showDialog(
 //       context: context,
-//       builder: (context) => AlertDialog(
-//         title: const Text('Daily Report'),
-//         content: Column(
-//           mainAxisSize: MainAxisSize.min,
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             _buildReportRow('Total Patients Today', '127'),
-//             _buildReportRow('Average Wait Time', '28 minutes'),
-//             _buildReportRow('Completed Appointments', '98'),
-//             _buildReportRow('No Shows', '5'),
-//             _buildReportRow('Cancelled', '12'),
-//           ],
-//         ),
-//         actions: [
-//           TextButton(
-//             onPressed: () => Navigator.pop(context),
-//             child: const Text('Close'),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
-//   Widget _buildReportRow(String label, String value) {
-//     return Padding(
-//       padding: const EdgeInsets.symmetric(vertical: 8.0),
-//       child: Row(
-//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//         children: [
-//           Text(label, style: const TextStyle(fontSize: 14)),
-//           Text(
-//             value,
-//             style: const TextStyle(
-//               fontSize: 14,
-//               fontWeight: FontWeight.bold,
+//       barrierColor: Colors.black54,
+//       builder: (_) => Center(
+//         child: Material(
+//           color: Colors.transparent,
+//           child: Container(
+//             width: MediaQuery.of(context).size.width * 0.85,
+//             padding: const EdgeInsets.all(20),
+//             decoration: BoxDecoration(
+//               color: Colors.white,
+//               borderRadius: BorderRadius.circular(18),
+//             ),
+//             child: Column(
+//               mainAxisSize: MainAxisSize.min,
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: const [
+//                 Text(
+//                   'Daily Report',
+//                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+//                 ),
+//               ],
 //             ),
 //           ),
-//         ],
+//         ),
 //       ),
 //     );
 //   }
 // }
 
-// ignore_for_file: prefer_const_literals_to_create_immutables
+
 
 import 'package:flutter/material.dart';
 import '/widgets/department_card.dart';
@@ -441,227 +1752,283 @@ class AdminDashboardScreen extends StatefulWidget {
 class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   final List<Map<String, dynamic>> queueData = [
     {
-      'department': 'General Medicine',
-      'count': 12,
-      'avgWait': 25,
-      'icon': Icons.medical_services,
-      'color': Colors.blue
+      'department': 'Emergency',
+      'count': 24,
+      'avgWait': 15,
+      'icon': Icons.local_hospital,
+      'color': Colors.blue,
     },
     {
       'department': 'Cardiology',
-      'count': 8,
-      'avgWait': 45,
+      'count': 18,
+      'avgWait': 28,
       'icon': Icons.favorite,
-      'color': Colors.red
+      'color': Colors.pink,
     },
     {
-      'department': 'Orthopedics',
-      'count': 5,
+      'department': 'Neurology',
+      'count': 12,
       'avgWait': 35,
-      'icon': Icons.accessibility_new,
-      'color': Colors.orange
+      'icon': Icons.psychology,
+      'color': Colors.green,
     },
     {
       'department': 'Pediatrics',
-      'count': 15,
-      'avgWait': 20,
+      'count': 16,
+      'avgWait': 22,
       'icon': Icons.child_care,
-      'color': Colors.pink
+      'color': Colors.red,
+    },
+    {
+      'department': 'Ophthalmology',
+      'count': 9,
+      'avgWait': 18,
+      'icon': Icons.remove_red_eye,
+      'color': Colors.lightGreen,
     },
   ];
 
   @override
   Widget build(BuildContext context) {
+    // ✅ Fix: cast to int
     final totalPatients =
-        queueData.fold<int>(0, (sum, item) => sum + item['count'] as int);
+        queueData.fold<int>(0, (sum, item) => sum + (item['count'] as int));
 
     final avgWaitTime =
-        queueData.fold<int>(0, (sum, item) => sum + item['avgWait'] as int) ~/
+        queueData.fold<int>(0, (sum, item) => sum + (item['avgWait'] as int)) ~/
             queueData.length;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Admin Dashboard'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              setState(() {});
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Dashboard refreshed')),
-              );
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Settings opening...')),
-              );
-            },
-          ),
-        ],
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.green.shade50, Colors.white],
-          ),
-        ),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+      backgroundColor: const Color(0xFFF5F6FA),
+
+      // ✅ DRAWER with Logout below History
+      drawer: Drawer(
+        child: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildWelcomeCard(),
-              const SizedBox(height: 24),
-              const Text(
-                'Overview',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: InfoCard(
-                      title: 'Total Patients',
-                      value: totalPatients.toString(),
-                      icon: Icons.people,
-                      color: Colors.blue,
-                    ),
+              const Padding(
+                padding: EdgeInsets.all(20),
+                child: Text(
+                  'MediQueue',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: InfoCard(
-                      title: 'Avg. Wait',
-                      value: '$avgWaitTime min',
-                      icon: Icons.schedule,
-                      color: Colors.orange,
-                    ),
-                  ),
-                ],
+                ),
               ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: InfoCard(
-                      title: 'Departments',
-                      value: queueData.length.toString(),
-                      icon: Icons.domain,
-                      color: Colors.purple,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: InfoCard(
-                      title: 'Completed',
-                      value: '47',
-                      icon: Icons.check_circle,
-                      color: Colors.green,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              const Text(
-                'Quick Actions',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: CustomActionButton(
-                      label: 'Manage Queue',
-                      onPressed: () =>
-                          Navigator.pushNamed(context, '/manage-queue'),
-                      icon: Icons.queue,
-                      type: ButtonType.primary,
-                      backgroundColor: Colors.blue,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: CustomActionButton(
-                      label: 'Reports',
-                      onPressed: () => _showReportsDialog(context),
-                      icon: Icons.assessment,
-                      type: ButtonType.primary,
-                      backgroundColor: Colors.green,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              const Text(
-                'Department Queues',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: queueData.length,
-                itemBuilder: (context, index) {
-                  final dept = queueData[index];
-                  return DepartmentCard(
-                      title: dept['department'],
-                      subtitle:
-                          '${dept['count']} patients • Avg ${dept['avgWait']} min wait',
-                      icon: dept['icon'],
-                      color: dept['color'],
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/manage-queue',
-                          arguments: dept['department'],
-                        );
-                      }, dept: dept, iconColor: dept['color'],
-                    );
 
-                },
+              _drawerItem(Icons.person_outline, 'My Account'),
+              _drawerItem(Icons.notifications_none, 'Notification'),
+              _drawerItem(Icons.history, 'History'),
+
+              const SizedBox(height: 12),
+
+              // ✅ Logout below History
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 45,
+                  child: OutlinedButton(
+                    onPressed: () {},
+                    style: OutlinedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                    child: const Text('Logout'),
+                  ),
+                ),
               ),
             ],
           ),
         ),
       ),
-    );
-  }
 
-  Widget _buildWelcomeCard() {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.green.shade600, Colors.green.shade400],
+      // 🔷 APP BAR
+      appBar: AppBar(
+        elevation: 0,
+        toolbarHeight: 90,
+        automaticallyImplyLeading: false,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromRGBO(13, 27, 140, 1),
+                Color.fromRGBO(90, 140, 255, 1),
+              ],
+            ),
           ),
-          borderRadius: BorderRadius.circular(16),
         ),
-        child: const Row(
+        title: Row(
           children: [
-            Icon(Icons.admin_panel_settings, color: Colors.white, size: 40),
-            SizedBox(width: 16),
-            Column(
+            Builder(
+              builder: (context) => IconButton(
+                icon: const Icon(Icons.menu, color: Colors.white),
+                onPressed: () => Scaffold.of(context).openDrawer(),
+              ),
+            ),
+            const SizedBox(width: 8),
+            const CircleAvatar(
+              radius: 22,
+              backgroundColor: Colors.white,
+              child: Text(
+                'A',
+                style: TextStyle(
+                  color: Color.fromRGBO(13, 27, 140, 1),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Hospital Admin',
+                  'Dr. Sarah Johnson',
                   style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
                 ),
                 Text(
-                  'City General Hospital',
-                  style: TextStyle(color: Colors.white70),
+                  'Hospital Administrator',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.white70,
+                  ),
                 ),
               ],
+            ),
+          ],
+        ),
+      ),
+
+      // 🔷 BODY
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Queue Overview',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+
+            Row(
+              children: [
+                Expanded(
+                  child: InfoCard(
+                    title: 'Total Patients',
+                    value: totalPatients.toString(),
+                    icon: Icons.people,
+                    color: Colors.blue,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: InfoCard(
+                    title: 'Avg Wait Time',
+                    value: '${avgWaitTime}m',
+                    icon: Icons.schedule,
+                    color: Colors.purple,
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 12),
+
+            Row(
+              children: [
+                Expanded(
+                  child: InfoCard(
+                    title: 'Departments',
+                    value: queueData.length.toString(),
+                    icon: Icons.domain,
+                    color: Colors.green,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: InfoCard(
+                    title: 'Completed Today',
+                    value: '89',
+                    icon: Icons.check_circle,
+                    color: Colors.red,
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 32),
+
+            const Text(
+              'Quick Actions',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+
+            Row(
+              children: [
+                Expanded(
+                  child: CustomActionButton(
+                    label: 'Manage Queues',
+                    onPressed: () =>
+                        Navigator.pushNamed(context, '/manage-queue'),
+                    icon: Icons.edit,
+                    backgroundColor: Colors.blue,
+                    height: 52,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: CustomActionButton(
+                    label: 'View Reports',
+                    onPressed: () => _showReportsDialog(context),
+                    icon: Icons.bar_chart,
+                    type: ButtonType.secondary,
+                    foregroundColor: Colors.black,
+                    height: 52,
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 32),
+
+            const Text(
+              'Department Queues',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: queueData.length,
+              itemBuilder: (context, index) {
+                final dept = queueData[index];
+                return DepartmentCard(
+                  dept: dept,
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/manage-queue',
+                      arguments: dept['department'],
+                    );
+                  },
+                  title: '',
+                  subtitle: '',
+                  iconColor: dept['color'],
+                  icon: dept['icon'],
+                  color: dept['color'],
+                );
+              },
             ),
           ],
         ),
@@ -669,49 +2036,122 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     );
   }
 
+  Widget _drawerItem(IconData icon, String title) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(title),
+      onTap: () {},
+    );
+  }
+
+  // ✅ Daily Report Dialog with details
   void _showReportsDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Daily Report'),
-        content: const Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _ReportRow('Total Patients Today', '127'),
-            _ReportRow('Average Wait Time', '28 minutes'),
-            _ReportRow('Completed Appointments', '98'),
-            _ReportRow('No Shows', '5'),
-            _ReportRow('Cancelled', '12'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+      barrierColor: Colors.black54,
+      builder: (_) => Center(
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.85,
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Daily Report',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 6),
+                const Text(
+                  "Today's Overview - March 15, 2024",
+                  style: TextStyle(color: Colors.grey),
+                ),
+                const SizedBox(height: 16),
+                const Divider(),
+
+                _reportItem(
+                  'Total Patients Today',
+                  'Active and completed visits',
+                  '127',
+                  Colors.blue,
+                ),
+                _reportItem(
+                  'Average Wait Time',
+                  'From check-in to appointment',
+                  '18 min',
+                  Colors.blueAccent,
+                ),
+                _reportItem(
+                  'Completed Appointments',
+                  'Successfully finished today',
+                  '94',
+                  Colors.green,
+                ),
+                _reportItem(
+                  'No-Shows',
+                  "Patients who didn't arrive",
+                  '8',
+                  Colors.orange,
+                ),
+                _reportItem(
+                  'Cancelled Appointments',
+                  'Cancelled by patients or staff',
+                  '12',
+                  Colors.red,
+                ),
+              ],
+            ),
           ),
-        ],
+        ),
       ),
     );
   }
-}
 
-class _ReportRow extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _ReportRow(this.label, this.value);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
-        ],
-      ),
+  Widget _reportItem(
+    String title,
+    String subtitle,
+    String value,
+    Color color,
+  ) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title,
+                        style: const TextStyle(fontWeight: FontWeight.w600)),
+                    const SizedBox(height: 4),
+                    Text(
+                      subtitle,
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ),
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: color,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const Divider(height: 1),
+      ],
     );
   }
 }

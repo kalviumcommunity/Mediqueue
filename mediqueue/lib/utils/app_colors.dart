@@ -12,4 +12,6 @@ class AppColors {
   static Color? get grey => null;
 
   static get secondaryBlue => null;
+
+  static Color? get primary => null;
 }

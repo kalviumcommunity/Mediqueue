@@ -1225,21 +1225,27 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
       drawer: _buildDrawer(context),
       body: Stack(
         children: [
-          Column(
-            children: [
-              ProfileHeader(
-                name: 'Sarah Johnson',
-                role: 'Patient',
-                icon: Icons.person,
-                backgroundColor: AppColors.primaryBlue,
-                onMenuTap: () {
-                  _scaffoldKey.currentState?.openDrawer();
-                },
-                onPowerTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Power clicked')),
-                  );
-                },
+          // ✅ ProfileHeader with menu button using GlobalKey
+          ProfileHeader(
+            name: 'Sarah Johnson',
+            role: 'Patient',
+            icon: Icons.person,
+            backgroundColor: AppColors.primaryBlue,
+            onMenuTap: () {
+              _scaffoldKey.currentState?.openDrawer(); // opens drawer safely
+            },
+            // Removed onPowerTap
+          ),
+
+          // Search bar
+          Container(
+            color: AppColors.primaryBlue,
+            padding: const EdgeInsets.all(16),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(14),
               ),
               Container(
                 color: AppColors.primaryBlue,

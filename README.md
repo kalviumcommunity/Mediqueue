@@ -811,3 +811,43 @@ Icon(Icons.child_care, color: Colors.pink),           // Pediatrics
 - Well-structured folders support team collaboration and maintenance
 
 ---
+
+User Input Form with Validation in Flutter
+
+This Flutter project demonstrates handling user input effectively using TextFields, TextFormFields, Buttons, and Form Widgets. It provides a simple, interactive form to collect and validate user details like name and email, giving instant feedback with validation errors and success messages.
+
+✅ Features Implemented
+1. Input Fields
+
+TextFormField for Name and Email
+
+Real-time validation for:
+
+Empty fields
+
+Proper email format
+
+2. Form Management
+
+Form Widget with GlobalKey<FormState> for easy state management
+
+Validation handled inside validator property of TextFormField
+
+Input controllers (TextEditingController) used to access text values
+
+3. Submit Button
+
+ElevatedButton triggers form validation
+
+Shows SnackBar feedback:
+
+Success message when form is valid
+
+Inline error messages for invalid fields
+
+4. User Feedback
+
+Instant validation feedback below each input
+
+Success confirmation using SnackBar for clear UX
+---
