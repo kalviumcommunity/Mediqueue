@@ -1,6 +1,3 @@
-
-
-
 // // // // // import 'package:flutter/material.dart';
 // // // // // import '../../models/hospital_model.dart';
 
@@ -174,7 +171,6 @@
 // // // // //     );
 // // // // //   }
 // // // // // }
-
 
 // // // // import 'package:flutter/material.dart';
 // // // // import '../../models/hospital_model.dart';
@@ -545,7 +541,6 @@
 // //               decoration: const BoxDecoration(), // or any decoration you want
 // //             ),
 
-
 // //           // Search bar
 // //           Container(
 // //             color: AppColors.primaryBlue,
@@ -853,10 +848,6 @@
 // //     );
 // //   }
 // // }
-
-
-
-
 
 // import 'package:flutter/material.dart';
 // import '../../utils/app_colors.dart';
@@ -1210,6 +1201,8 @@ import '../../widgets/profile_header.dart';
 import '../../widgets/hospital_card.dart';
 import 'patient_profile_screen.dart';
 import 'join_queue_screen.dart';
+import '../hospital_map_screen.dart';
+import '../add_sample_data_screen.dart';
 
 class PatientHomeScreen extends StatelessWidget {
   PatientHomeScreen({super.key});
@@ -1269,8 +1262,8 @@ class PatientHomeScreen extends StatelessWidget {
                 // Header
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    Text(
+                  children: [
+                    const Text(
                       'Nearby Hospitals',
                       style: TextStyle(
                         fontSize: 18,
@@ -1279,11 +1272,51 @@ class PatientHomeScreen extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        Icon(Icons.location_on, size: 16, color: Colors.blue),
-                        SizedBox(width: 4),
-                        Text(
+                        const Icon(Icons.location_on,
+                            size: 16, color: Colors.blue),
+                        const SizedBox(width: 4),
+                        const Text(
                           '2.5 km radius',
                           style: TextStyle(color: Colors.blue),
+                        ),
+                        const SizedBox(width: 8),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const HospitalMapScreen(),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Row(
+                              children: [
+                                Icon(
+                                  Icons.map,
+                                  size: 14,
+                                  color: Colors.white,
+                                ),
+                                SizedBox(width: 4),
+                                Text(
+                                  'Map',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -1305,7 +1338,9 @@ class PatientHomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const JoinQueueScreen(departmentName: '',),
+                        builder: (_) => const JoinQueueScreen(
+                          departmentName: '',
+                        ),
                       ),
                     );
                   },
@@ -1324,7 +1359,9 @@ class PatientHomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const JoinQueueScreen(departmentName: '',),
+                        builder: (_) => const JoinQueueScreen(
+                          departmentName: '',
+                        ),
                       ),
                     );
                   },
@@ -1343,7 +1380,9 @@ class PatientHomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const JoinQueueScreen(departmentName: '',),
+                        builder: (_) => const JoinQueueScreen(
+                          departmentName: '',
+                        ),
                       ),
                     );
                   },
@@ -1362,7 +1401,9 @@ class PatientHomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const JoinQueueScreen(departmentName: '',),
+                        builder: (_) => const JoinQueueScreen(
+                          departmentName: '',
+                        ),
                       ),
                     );
                   },
@@ -1381,7 +1422,9 @@ class PatientHomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const JoinQueueScreen(departmentName: '',),
+                        builder: (_) => const JoinQueueScreen(
+                          departmentName: '',
+                        ),
                       ),
                     );
                   },
@@ -1400,7 +1443,9 @@ class PatientHomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const JoinQueueScreen(departmentName: '',),
+                        builder: (_) => const JoinQueueScreen(
+                          departmentName: '',
+                        ),
                       ),
                     );
                   },
@@ -1419,7 +1464,9 @@ class PatientHomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const JoinQueueScreen(departmentName: '',),
+                        builder: (_) => const JoinQueueScreen(
+                          departmentName: '',
+                        ),
                       ),
                     );
                   },
@@ -1488,6 +1535,34 @@ class PatientHomeScreen extends StatelessWidget {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('History page coming soon'),
+                    ),
+                  );
+                },
+              ),
+
+              _drawerItem(
+                context,
+                Icons.map_outlined,
+                'Hospital Map',
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const HospitalMapScreen(),
+                    ),
+                  );
+                },
+              ),
+
+              _drawerItem(
+                context,
+                Icons.add_location_alt,
+                'Add Sample Data 🧪',
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const AddSampleDataScreen(),
                     ),
                   );
                 },
