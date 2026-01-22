@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mediqueue/utils/app_colors.dart';
+import 'package:mediqueue/utils/logout_notifier.dart'; 
 import 'package:mediqueue/widgets/custom_text_field.dart';
 import 'package:mediqueue/widgets/social_auth_button.dart';
+
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -15,6 +18,7 @@ class _AuthScreenState extends State<AuthScreen>
   late TabController _tabController;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _isLoading = false;
   bool _obscurePassword = true;
   String _userType = 'patient'; // 'patient' or 'admin'
@@ -23,6 +27,11 @@ class _AuthScreenState extends State<AuthScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+
+    // ✅ Check for logout message when screen loads
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkForLogoutMessage();
+    });
   }
 
   @override
@@ -31,6 +40,48 @@ class _AuthScreenState extends State<AuthScreen>
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  // ✅ New method to check for logout message
+  void _checkForLogoutMessage() {
+    if (LogoutNotifier.getAndClearShouldShowMessage() && mounted) {
+      _showLogoutSuccessMessage();
+    }
+  }
+
+  // ✅ New method to show logout success message
+  void _showLogoutSuccessMessage() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.check_circle, color: Colors.white, size: 20),
+            const SizedBox(width: 8),
+            const Expanded(
+              child: Text(
+                'Logged out successfully!',
+                style: TextStyle(fontSize: 14),
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.close, size: 18, color: Colors.white),
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              },
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+            ),
+          ],
+        ),
+        backgroundColor: Colors.green,
+        duration: const Duration(seconds: 4),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        margin: const EdgeInsets.all(20),
+      ),
+    );
   }
 
   @override
@@ -43,12 +94,8 @@ class _AuthScreenState extends State<AuthScreen>
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             child: Column(
               children: [
-                // Logo and Title
                 _buildLogoSection(),
-
                 const SizedBox(height: 32),
-
-                // Main Card with curved edges
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -70,21 +117,14 @@ class _AuthScreenState extends State<AuthScreen>
                     padding: const EdgeInsets.all(24),
                     child: Column(
                       children: [
-                        // Tab Bar with straight line indicator
                         _buildTabBar(),
-
                         const SizedBox(height: 28),
-
-                        // Tab Content
                         _buildTabContent(),
                       ],
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 24),
-
-                // Footer text
                 Text(
                   "© 2024 MediQueue. All rights reserved.",
                   style: TextStyle(
@@ -100,42 +140,14 @@ class _AuthScreenState extends State<AuthScreen>
     );
   }
 
-  // Logo Section
   Widget _buildLogoSection() {
     return Column(
       children: [
-        // Logo Image
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.primaryBlue.withOpacity(0.15),
-                blurRadius: 15,
-                spreadRadius: 3,
-              ),
-            ],
-          ),
-          child: ClipOval(
-            child: Image.asset(
-              'assets/images/logo.png',
-              width: 80,
-              height: 80,
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
-
-        // MediQueue text
         Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Medi with gradient
                 ShaderMask(
                   shaderCallback: (bounds) {
                     return LinearGradient(
@@ -157,7 +169,6 @@ class _AuthScreenState extends State<AuthScreen>
                     ),
                   ),
                 ),
-                // Queue with different style
                 Text(
                   "Queue",
                   style: TextStyle(
@@ -169,8 +180,6 @@ class _AuthScreenState extends State<AuthScreen>
                 ),
               ],
             ),
-
-            // Subtle divider line
             Container(
               width: 100,
               height: 3,
@@ -185,8 +194,6 @@ class _AuthScreenState extends State<AuthScreen>
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-
-            // Subtitle
             Text(
               "Smart Hospital Queue Management",
               style: TextStyle(
@@ -202,7 +209,6 @@ class _AuthScreenState extends State<AuthScreen>
     );
   }
 
-  // Tab Bar with straight line indicator
   Widget _buildTabBar() {
     return Container(
       height: 44,
@@ -245,24 +251,19 @@ class _AuthScreenState extends State<AuthScreen>
     );
   }
 
-  // Tab Content
   Widget _buildTabContent() {
     return SizedBox(
-      height: 480, // Increased height for user type selection
+      height: 480,
       child: TabBarView(
         controller: _tabController,
         children: [
-          // Create Account Tab
           _buildCreateAccountForm(),
-
-          // Login Tab
           _buildLoginForm(),
         ],
       ),
     );
   }
 
-  // User Type Selection Widget
   Widget _buildUserTypeSelection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -279,7 +280,6 @@ class _AuthScreenState extends State<AuthScreen>
         const SizedBox(height: 8),
         Row(
           children: [
-            // Patient Option
             Expanded(
               child: GestureDetector(
                 onTap: () {
@@ -328,7 +328,6 @@ class _AuthScreenState extends State<AuthScreen>
               ),
             ),
             const SizedBox(width: 12),
-            // Admin Option
             Expanded(
               child: GestureDetector(
                 onTap: () {
@@ -393,7 +392,6 @@ class _AuthScreenState extends State<AuthScreen>
     );
   }
 
-  // Create Account Form
   Widget _buildCreateAccountForm() {
     return SingleChildScrollView(
       child: Column(
@@ -407,9 +405,7 @@ class _AuthScreenState extends State<AuthScreen>
               color: Colors.black87,
             ),
           ),
-
           const SizedBox(height: 6),
-
           Text(
             "Let's get started by filling out the form below.",
             style: TextStyle(
@@ -418,27 +414,22 @@ class _AuthScreenState extends State<AuthScreen>
               height: 1.4,
             ),
           ),
-
           const SizedBox(height: 24),
-
-          // Email Field
           CustomTextField(
             label: "Email",
             hintText: "Enter your email",
             controller: _emailController,
             prefixIcon: Icons.email_outlined,
-            helperText: '', enabled: true,
+            enabled: !_isLoading,
           ),
-
           const SizedBox(height: 16),
-
-          // Password Field
           CustomTextField(
             label: "Password",
             hintText: "Enter your password",
             obscureText: _obscurePassword,
             controller: _passwordController,
             prefixIcon: Icons.lock_outline,
+            enabled: !_isLoading,
             suffixIcon: IconButton(
               icon: Icon(
                 _obscurePassword ? Icons.visibility_off : Icons.visibility,
@@ -451,15 +442,9 @@ class _AuthScreenState extends State<AuthScreen>
                 });
               },
             ),
-            helperText: '', enabled: true,
           ),
-
-          // User Type Selection
           _buildUserTypeSelection(),
-
           const SizedBox(height: 24),
-
-          // Get Started Button
           SizedBox(
             width: double.infinity,
             height: 46,
@@ -484,22 +469,15 @@ class _AuthScreenState extends State<AuthScreen>
                     ),
                   ),
           ),
-
           const SizedBox(height: 24),
-
-          // Divider
           _buildDivider("Or sign up with"),
-
           const SizedBox(height: 20),
-
-          // Social Auth Buttons
           _buildSocialAuthButtons(),
         ],
       ),
     );
   }
 
-  // Login Form
   Widget _buildLoginForm() {
     return SingleChildScrollView(
       child: Column(
@@ -513,9 +491,7 @@ class _AuthScreenState extends State<AuthScreen>
               color: Colors.black87,
             ),
           ),
-
           const SizedBox(height: 6),
-
           Text(
             "Fill out the information below in order to access your account.",
             style: TextStyle(
@@ -524,21 +500,14 @@ class _AuthScreenState extends State<AuthScreen>
               height: 1.4,
             ),
           ),
-
           const SizedBox(height: 24),
-
-          // Email Field
           CustomTextField(
             label: "Email",
             hintText: "Enter your email",
             controller: _emailController,
             prefixIcon: Icons.email_outlined,
-            helperText: '', enabled: true,
           ),
-
           const SizedBox(height: 16),
-
-          // Password Field
           CustomTextField(
             label: "Password",
             hintText: "Enter your password",
@@ -556,15 +525,10 @@ class _AuthScreenState extends State<AuthScreen>
                   _obscurePassword = !_obscurePassword;
                 });
               },
-            ), enabled: true, helperText: '',
+            ),
           ),
-
-          // User Type Selection for Login
           _buildUserTypeSelection(),
-
           const SizedBox(height: 12),
-
-          // Forgot Password
           Align(
             alignment: Alignment.centerRight,
             child: TextButton(
@@ -584,10 +548,7 @@ class _AuthScreenState extends State<AuthScreen>
               ),
             ),
           ),
-
           const SizedBox(height: 16),
-
-          // Sign In Button
           SizedBox(
             width: double.infinity,
             height: 46,
@@ -612,22 +573,15 @@ class _AuthScreenState extends State<AuthScreen>
                     ),
                   ),
           ),
-
           const SizedBox(height: 24),
-
-          // Divider
           _buildDivider("Or sign in with"),
-
           const SizedBox(height: 20),
-
-          // Social Auth Buttons
           _buildSocialAuthButtons(),
         ],
       ),
     );
   }
 
-  // Divider
   Widget _buildDivider(String text) {
     return Row(
       children: [
@@ -658,11 +612,9 @@ class _AuthScreenState extends State<AuthScreen>
     );
   }
 
-  // Social Auth Buttons
   Widget _buildSocialAuthButtons() {
     return Column(
       children: [
-        // Google Button
         SocialAuthButton(
           text: "Continue with Google",
           icon: Container(
@@ -693,10 +645,7 @@ class _AuthScreenState extends State<AuthScreen>
             _handleSocialAuth('google');
           },
         ),
-
         const SizedBox(height: 10),
-
-        // Apple Button
         SocialAuthButton(
           text: "Continue with Apple",
           icon: Container(
@@ -727,8 +676,7 @@ class _AuthScreenState extends State<AuthScreen>
     );
   }
 
-  // Handle Create Account
-  void _handleCreateAccount() {
+  void _handleCreateAccount() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
@@ -751,25 +699,57 @@ class _AuthScreenState extends State<AuthScreen>
       _isLoading = true;
     });
 
-    // TODO: Implement Firebase Auth
-    print("Creating $userType account with: $email");
+    try {
+      final UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-    Future.delayed(const Duration(seconds: 1), () {
+      final user = userCredential.user;
+
+      if (user != null) {
+        await user.sendEmailVerification();
+
+        print("✅ Account created successfully!");
+        print("User ID: ${user.uid}");
+        print("Email: ${user.email}");
+        print("User Type: $_userType");
+
+        _showSuccessDialog("Account created successfully! "
+            "Please check your email to verify your account. "
+            "You can now log in.");
+
+        _emailController.clear();
+        _passwordController.clear();
+
+        _tabController.animateTo(1);
+      }
+    } on FirebaseAuthException catch (e) {
+      String errorMessage = "An error occurred";
+
+      if (e.code == 'email-already-in-use') {
+        errorMessage =
+            "This email is already registered. Please log in instead.";
+      } else if (e.code == 'invalid-email') {
+        errorMessage = "Invalid email address format.";
+      } else if (e.code == 'weak-password') {
+        errorMessage = "Password is too weak. Use at least 6 characters.";
+      } else if (e.code == 'operation-not-allowed') {
+        errorMessage = "Email/password accounts are not enabled.";
+      }
+
+      _showErrorDialog(errorMessage);
+    } catch (e) {
+      _showErrorDialog("Failed to create account: $e");
+    } finally {
       setState(() {
         _isLoading = false;
       });
-
-      // Navigate based on user type
-      if (_userType == 'patient') {
-        Navigator.pushReplacementNamed(context, "/patient-home");
-      } else {
-        Navigator.pushReplacementNamed(context, "/admin-dashboard");
-      }
-    });
+    }
   }
 
-  // Handle Login
-  void _handleLogin() {
+  void _handleLogin() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
@@ -782,103 +762,149 @@ class _AuthScreenState extends State<AuthScreen>
       _isLoading = true;
     });
 
-    // TODO: Implement Firebase Auth
-    print("Logging in as $userType with: $email");
+    try {
+      final UserCredential userCredential =
+          await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-    Future.delayed(const Duration(seconds: 1), () {
+      final user = userCredential.user;
+
+      if (user != null) {
+        print("✅ Login successful!");
+        print("User ID: ${user.uid}");
+        print("Email: ${user.email}");
+        print("User Type: $_userType");
+
+        _emailController.clear();
+        _passwordController.clear();
+      }
+    } on FirebaseAuthException catch (e) {
+      String errorMessage = "Login failed";
+
+      if (e.code == 'user-not-found') {
+        errorMessage = "No account found with this email.";
+      } else if (e.code == 'wrong-password') {
+        errorMessage = "Incorrect password. Please try again.";
+      } else if (e.code == 'invalid-email') {
+        errorMessage = "Invalid email address format.";
+      } else if (e.code == 'user-disabled') {
+        errorMessage = "This account has been disabled.";
+      } else if (e.code == 'too-many-requests') {
+        errorMessage = "Too many attempts. Try again later.";
+      }
+
+      _showErrorDialog(errorMessage);
+    } catch (e) {
+      _showErrorDialog("Login failed: $e");
+    } finally {
       setState(() {
         _isLoading = false;
       });
-
-      // Navigate based on user type
-      if (_userType == 'patient') {
-        Navigator.pushReplacementNamed(context, "/patient-home");
-      } else {
-        Navigator.pushReplacementNamed(context, "/admin-dashboard");
-      }
-    });
+    }
   }
 
-  // Handle Social Auth
   void _handleSocialAuth(String provider) {
-    setState(() {
-      _isLoading = true;
-    });
-
-    print("Signing in with $provider as $_userType");
-
-    Future.delayed(const Duration(seconds: 1), () {
-      setState(() {
-        _isLoading = false;
-      });
-
-      // Navigate based on user type
-      if (_userType == 'patient') {
-        Navigator.pushReplacementNamed(context, "/patient-home");
-      } else {
-        Navigator.pushReplacementNamed(context, "/admin-dashboard");
-      }
-    });
+    _showErrorDialog("$provider authentication is not yet implemented. "
+        "Please use email and password for now.");
   }
 
-  // Get user type string for display
-  String get userType => _userType == 'patient' ? 'Patient' : 'Hospital Admin';
-
-  // Show Forgot Password Dialog
   void _showForgotPasswordDialog() {
+    final emailController = TextEditingController();
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text(
-          "Forgot Password",
-          style: TextStyle(fontWeight: FontWeight.w600),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Enter your email address and we'll send you a link to reset your password.",
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 14,
-              ),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+          bool isLoading = false;
+
+          return AlertDialog(
+            title: const Text(
+              "Reset Password",
+              style: TextStyle(fontWeight: FontWeight.w600),
             ),
-            const SizedBox(height: 16),
-            TextField(
-              decoration: InputDecoration(
-                hintText: "Enter your email",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.grey[300]!),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Enter your email address and we'll send you a password reset link.",
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 14,
+                  ),
                 ),
-                filled: true,
-                fillColor: Colors.grey[50],
-              ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    hintText: "Enter your email",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.grey[300]!),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[50],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _showSuccessDialog("Reset link sent to your email!");
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primaryBlue,
-            ),
-            child: const Text("Send Link"),
-          ),
-        ],
+            actions: [
+              if (isLoading)
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: CircularProgressIndicator(),
+                )
+              else
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Cancel"),
+                ),
+              if (!isLoading)
+                ElevatedButton(
+                  onPressed: () async {
+                    final email = emailController.text.trim();
+
+                    if (email.isEmpty) {
+                      _showErrorDialog("Please enter your email address");
+                      return;
+                    }
+
+                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                        .hasMatch(email)) {
+                      _showErrorDialog("Please enter a valid email address");
+                      return;
+                    }
+
+                    setState(() => isLoading = true);
+
+                    try {
+                      await _auth.sendPasswordResetEmail(email: email);
+                      Navigator.pop(context);
+                      _showSuccessDialog("Password reset link sent to $email. "
+                          "Please check your inbox.");
+                    } on FirebaseAuthException catch (e) {
+                      Navigator.pop(context);
+                      _showErrorDialog(
+                          "Failed to send reset email: ${e.message}");
+                    } catch (e) {
+                      Navigator.pop(context);
+                      _showErrorDialog("Failed to send reset email: $e");
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryBlue,
+                  ),
+                  child: const Text("Send Link"),
+                ),
+            ],
+          );
+        },
       ),
     );
   }
 
-  // Show Error Dialog
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
@@ -898,7 +924,6 @@ class _AuthScreenState extends State<AuthScreen>
     );
   }
 
-  // Show Success Dialog
   void _showSuccessDialog(String message) {
     showDialog(
       context: context,
@@ -917,4 +942,6 @@ class _AuthScreenState extends State<AuthScreen>
       ),
     );
   }
+
+  String get userType => _userType == 'patient' ? 'Patient' : 'Hospital Admin';
 }
