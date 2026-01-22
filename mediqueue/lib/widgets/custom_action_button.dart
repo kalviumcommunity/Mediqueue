@@ -1,29 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// A reusable custom button widget that provides consistent styling
-/// and behavior across the MediQueue app.
-///
-/// Supports three button types:
-/// - Primary: Filled button with solid background color
-/// - Secondary: Outlined button with border
-/// - Text: Simple text button
-///
-/// Features:
-/// - Consistent visual design and spacing
-/// - Support for icons
-/// - Loading state
-/// - Customizable colors
-/// - Responsive sizing
-///
-/// Example usage:
-/// ```dart
-/// CustomActionButton(
-///   label: 'Login',
-///   onPressed: () => handleLogin(),
-///   icon: Icons.login,
-///   type: ButtonType.primary,
-/// )
-/// ```
 enum ButtonType { primary, secondary, text }
 
 class CustomActionButton extends StatelessWidget {
@@ -56,10 +32,11 @@ class CustomActionButton extends StatelessWidget {
     final defaultFgColor = foregroundColor ??
         (type == ButtonType.primary ? Colors.white : Colors.blue);
 
+    /// 🔹 BUTTON CONTENT (FIXED)
     Widget buttonChild = isLoading
         ? SizedBox(
-            height: 24,
-            width: 24,
+            height: 22,
+            width: 22,
             child: CircularProgressIndicator(
               strokeWidth: 2.5,
               valueColor: AlwaysStoppedAnimation<Color>(
@@ -72,14 +49,21 @@ class CustomActionButton extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (icon != null) ...[
-                Icon(icon, size: 24),
-                const SizedBox(width: 8),
+                Icon(icon, size: 18), // ✅ smaller icon
+                const SizedBox(width: 6),
               ],
-              Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
+
+              /// 🔥 MAIN FIX — FLEXIBLE TEXT
+              Flexible(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 15, // ✅ slightly reduced
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],
@@ -94,11 +78,14 @@ class CustomActionButton extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: defaultBgColor,
             foregroundColor: defaultFgColor,
+            elevation: 2,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
-            elevation: 2,
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 14, // ✅ reduced
+              vertical: 12,
+            ),
           ),
           child: buttonChild,
         );
@@ -109,14 +96,14 @@ class CustomActionButton extends StatelessWidget {
           onPressed: isLoading ? null : onPressed,
           style: OutlinedButton.styleFrom(
             foregroundColor: defaultFgColor,
-            side: BorderSide(
-              color: defaultFgColor,
-              width: 2,
-            ),
+            side: BorderSide(color: defaultFgColor, width: 1.5),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 14, // ✅ reduced
+              vertical: 12,
+            ),
           ),
           child: buttonChild,
         );
@@ -127,7 +114,10 @@ class CustomActionButton extends StatelessWidget {
           onPressed: isLoading ? null : onPressed,
           style: TextButton.styleFrom(
             foregroundColor: defaultFgColor,
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 12,
+            ),
           ),
           child: buttonChild,
         );
