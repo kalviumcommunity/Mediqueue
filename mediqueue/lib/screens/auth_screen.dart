@@ -1,3 +1,5 @@
+// ignore_for_file: dead_code
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mediqueue/utils/app_colors.dart';
@@ -102,6 +104,7 @@ class _AuthScreenState extends State<AuthScreen>
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
+                        // ignore: deprecated_member_use
                         color: Colors.grey.withOpacity(0.08),
                         blurRadius: 25,
                         spreadRadius: 1,
@@ -109,6 +112,7 @@ class _AuthScreenState extends State<AuthScreen>
                       ),
                     ],
                     border: Border.all(
+                      // ignore: deprecated_member_use
                       color: Colors.grey.withOpacity(0.08),
                       width: 1,
                     ),
@@ -155,6 +159,7 @@ class _AuthScreenState extends State<AuthScreen>
                       end: Alignment.bottomRight,
                       colors: [
                         AppColors.primaryBlue,
+                        // ignore: deprecated_member_use
                         AppColors.primaryBlue.withOpacity(0.8),
                       ],
                     ).createShader(bounds);
@@ -187,7 +192,9 @@ class _AuthScreenState extends State<AuthScreen>
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
+                    // ignore: deprecated_member_use
                     AppColors.primaryBlue.withOpacity(0.8),
+                    // ignore: deprecated_member_use
                     Colors.grey[300]!.withOpacity(0.8),
                   ],
                 ),
@@ -291,6 +298,7 @@ class _AuthScreenState extends State<AuthScreen>
                   height: 48,
                   decoration: BoxDecoration(
                     color: _userType == 'patient'
+                        // ignore: deprecated_member_use
                         ? AppColors.primaryBlue.withOpacity(0.1)
                         : Colors.grey[50],
                     borderRadius: BorderRadius.circular(10),
@@ -339,6 +347,7 @@ class _AuthScreenState extends State<AuthScreen>
                   height: 48,
                   decoration: BoxDecoration(
                     color: _userType == 'admin'
+                        // ignore: deprecated_member_use
                         ? AppColors.primaryBlue.withOpacity(0.1)
                         : Colors.grey[50],
                     borderRadius: BorderRadius.circular(10),
