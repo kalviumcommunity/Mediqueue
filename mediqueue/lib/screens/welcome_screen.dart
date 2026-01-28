@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'auth_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -126,7 +127,11 @@ class WelcomeScreen extends StatelessWidget {
                             height: 56,
                             child: ElevatedButton.icon(
                               onPressed: () {
-                                Navigator.pushNamed(context, '/auth');
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const AuthScreen()),
+                                );
                               },
                               icon: const Icon(Icons.login, size: 24),
                               label: const Text(
@@ -154,7 +159,11 @@ class WelcomeScreen extends StatelessWidget {
                             height: 56,
                             child: OutlinedButton.icon(
                               onPressed: () {
-                                Navigator.pushNamed(context, '/auth');
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const AuthScreen()),
+                                );
                               },
                               icon: const Icon(Icons.person_add, size: 24),
                               label: const Text(
