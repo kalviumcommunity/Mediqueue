@@ -3,6 +3,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  Future<void> resetPassword(String email) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      print('✅ Password reset email sent to: $email');
+    } catch (e) {
+      print('❌ Error sending password reset email: $e');
+      rethrow;
+    }
+  }
+
   Future<Map<String, dynamic>> signUp(String email, String password) async {
     try {
       final credential = await _auth.createUserWithEmailAndPassword(
@@ -12,6 +22,7 @@ class AuthService {
       return {
         'success': true,
         'user': credential.user,
+        'uid': credential.user?.uid,
       };
     } on FirebaseAuthException catch (e) {
       String errorMessage;
