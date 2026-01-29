@@ -3,10 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mediqueue/utils/app_colors.dart';
-import 'package:mediqueue/utils/logout_notifier.dart'; 
+import 'package:mediqueue/utils/logout_notifier.dart';
 import 'package:mediqueue/widgets/custom_text_field.dart';
 import 'package:mediqueue/widgets/social_auth_button.dart';
-
+import 'package:mediqueue/services/firestore_service.dart';
+import 'package:mediqueue/models/patient_model.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -718,6 +719,30 @@ class _AuthScreenState extends State<AuthScreen>
       final user = userCredential.user;
 
       if (user != null) {
+        // Create patient profile in Firestore
+        try {
+          final firestoreService = FirestoreService();
+          final patient = PatientModel(
+            id: '',
+            userId: user.uid,
+            name: email.split('@')[0], // Use email prefix as default name
+            email: email,
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+          );
+
+          final patientId = await firestoreService.createPatient(patient);
+
+          if (patientId != null) {
+            print("✅ Patient profile created: $patientId");
+          } else {
+            print("⚠️ Failed to create patient profile");
+          }
+        } catch (e) {
+          print("❌ Error creating patient profile: $e");
+          // Continue with signup even if profile creation fails
+        }
+
         await user.sendEmailVerification();
 
         print("✅ Account created successfully!");
@@ -752,9 +777,11 @@ class _AuthScreenState extends State<AuthScreen>
     } catch (e) {
       _showErrorDialog("Failed to create account: $e");
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
