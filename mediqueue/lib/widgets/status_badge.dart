@@ -42,7 +42,7 @@ class StatusBadge extends StatelessWidget {
     required this.status,
     this.label,
     this.showIcon = true,
-    this.compact = false,
+    this.compact = false, required MaterialColor color,
   }) : super(key: key);
 
   // Get color based on status
