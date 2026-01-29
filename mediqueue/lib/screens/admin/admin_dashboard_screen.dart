@@ -1738,9 +1738,11 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // ADD THIS IMPORT
 import '/widgets/department_card.dart';
 import '/widgets/info_card.dart';
 import '/widgets/custom_action_button.dart';
+import '../auth_screen.dart'; // IMPORT AUTH SCREEN
 
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
@@ -1788,6 +1790,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     },
   ];
 
+  bool _isLoggingOut = false; // ADD THIS
+
   @override
   Widget build(BuildContext context) {
     // ✅ Fix: cast to int
@@ -1824,14 +1828,81 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
 
               const SizedBox(height: 12),
 
-              // ✅ Logout below History
+              // ✅ Logout below History - UPDATED
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: SizedBox(
                   width: double.infinity,
                   height: 45,
                   child: OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      // Close drawer
+                      Navigator.pop(context);
+
+                      // Show confirmation dialog
+                      final shouldLogout = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Logout'),
+                          content:
+                              const Text('Are you sure you want to logout?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, false),
+                              child: const Text('Cancel'),
+                            ),
+                            ElevatedButton(
+                              onPressed: () => Navigator.pop(context, true),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                              ),
+                              child: const Text('Logout'),
+                            ),
+                          ],
+                        ),
+                      );
+
+                      if (shouldLogout != true) {
+                        return; // User cancelled
+                      }
+
+                      // Show loading
+                      setState(() {
+                        _isLoggingOut = true;
+                      });
+
+                      try {
+                        // Add a small delay for smooth UI
+                        await Future.delayed(const Duration(milliseconds: 300));
+
+                        // Perform Firebase logout
+                        await FirebaseAuth.instance.signOut();
+
+                        // Navigate to auth screen
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const AuthScreen(), // You need to import AuthScreen
+                          ),
+                          (route) => false,
+                        );
+                      } catch (e) {
+                        // Hide loading on error
+                        if (mounted) {
+                          setState(() {
+                            _isLoggingOut = false;
+                          });
+                        }
+
+                        // Show error message
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Logout failed: ${e.toString()}'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                    },
                     style: OutlinedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
@@ -1908,130 +1979,169 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       ),
 
       // 🔷 BODY
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Queue Overview',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-
-            Row(
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: InfoCard(
-                    title: 'Total Patients',
-                    value: totalPatients.toString(),
-                    icon: Icons.people,
-                    color: Colors.blue,
-                  ),
+                const Text(
+                  'Queue Overview',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: InfoCard(
-                    title: 'Avg Wait Time',
-                    value: '${avgWaitTime}m',
-                    icon: Icons.schedule,
-                    color: Colors.purple,
-                  ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: InfoCard(
+                        title: 'Total Patients',
+                        value: totalPatients.toString(),
+                        icon: Icons.people,
+                        color: Colors.blue,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: InfoCard(
+                        title: 'Avg Wait Time',
+                        value: '${avgWaitTime}m',
+                        icon: Icons.schedule,
+                        color: Colors.purple,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-
-            const SizedBox(height: 12),
-
-            Row(
-              children: [
-                Expanded(
-                  child: InfoCard(
-                    title: 'Departments',
-                    value: queueData.length.toString(),
-                    icon: Icons.domain,
-                    color: Colors.green,
-                  ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: InfoCard(
+                        title: 'Departments',
+                        value: queueData.length.toString(),
+                        icon: Icons.domain,
+                        color: Colors.green,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: InfoCard(
+                        title: 'Completed Today',
+                        value: '89',
+                        icon: Icons.check_circle,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: InfoCard(
-                    title: 'Completed Today',
-                    value: '89',
-                    icon: Icons.check_circle,
-                    color: Colors.red,
-                  ),
+                const SizedBox(height: 32),
+                const Text(
+                  'Quick Actions',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-              ],
-            ),
-
-            const SizedBox(height: 32),
-
-            const Text(
-              'Quick Actions',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-
-            Row(
-              children: [
-                Expanded(
-                  child: CustomActionButton(
-                    label: 'Manage Queues',
-                    onPressed: () =>
-                        Navigator.pushNamed(context, '/manage-queue'),
-                    icon: Icons.edit,
-                    backgroundColor: Colors.blue,
-                    height: 52,
-                  ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: CustomActionButton(
+                        label: 'Manage Queues',
+                        onPressed: () =>
+                            Navigator.pushNamed(context, '/manage-queue'),
+                        icon: Icons.edit,
+                        backgroundColor: Colors.blue,
+                        height: 52,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: CustomActionButton(
+                        label: 'View Reports',
+                        onPressed: () => _showReportsDialog(context),
+                        icon: Icons.bar_chart,
+                        type: ButtonType.secondary,
+                        foregroundColor: Colors.black,
+                        height: 52,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: CustomActionButton(
-                    label: 'View Reports',
-                    onPressed: () => _showReportsDialog(context),
-                    icon: Icons.bar_chart,
-                    type: ButtonType.secondary,
-                    foregroundColor: Colors.black,
-                    height: 52,
-                  ),
+                const SizedBox(height: 32),
+                const Text(
+                  'Department Queues',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-              ],
-            ),
-
-            const SizedBox(height: 32),
-
-            const Text(
-              'Department Queues',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: queueData.length,
-              itemBuilder: (context, index) {
-                final dept = queueData[index];
-                return DepartmentCard(
-                  dept: dept,
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      '/manage-queue',
-                      arguments: dept['department'],
+                const SizedBox(height: 16),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: queueData.length,
+                  itemBuilder: (context, index) {
+                    final dept = queueData[index];
+                    return DepartmentCard(
+                      dept: dept,
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/manage-queue',
+                          arguments: dept['department'],
+                        );
+                      },
+                      title: '',
+                      subtitle: '',
+                      iconColor: dept['color'],
+                      icon: dept['icon'],
+                      color: dept['color'],
                     );
                   },
-                  title: '',
-                  subtitle: '',
-                  iconColor: dept['color'],
-                  icon: dept['icon'],
-                  color: dept['color'],
-                );
-              },
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+
+          // Logout Overlay
+          if (_isLoggingOut)
+            Container(
+              color: Colors.black.withOpacity(0.5),
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 20,
+                        spreadRadius: 2,
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.blue), // Use your primary color
+                          strokeWidth: 3,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'Signing out...',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -2074,7 +2184,6 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                 ),
                 const SizedBox(height: 16),
                 const Divider(),
-
                 _reportItem(
                   'Total Patients Today',
                   'Active and completed visits',

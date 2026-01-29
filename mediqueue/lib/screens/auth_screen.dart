@@ -1,10 +1,9 @@
 // import 'package:flutter/material.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:mediqueue/utils/app_colors.dart';
-// import 'package:mediqueue/utils/logout_notifier.dart'; 
+// import 'package:mediqueue/utils/logout_notifier.dart';
 // import 'package:mediqueue/widgets/custom_text_field.dart';
 // import 'package:mediqueue/widgets/social_auth_button.dart';
-
 
 // class AuthScreen extends StatefulWidget {
 //   const AuthScreen({super.key});
@@ -946,6 +945,7 @@
 //   String get userType => _userType == 'patient' ? 'Patient' : 'Hospital Admin';
 // }
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mediqueue/utils/app_colors.dart';
 import 'package:mediqueue/utils/logout_notifier.dart';
@@ -954,6 +954,8 @@ import 'package:mediqueue/widgets/social_auth_button.dart';
 import '../services/auth_service.dart';
 import '../services/user_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../screens/patient/patient_home_screen.dart';
+import '../screens/admin/admin_dashboard_screen.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -992,12 +994,19 @@ class _AuthScreenState extends State<AuthScreen>
 
   @override
   void dispose() {
+    print("🗑️ AuthScreen DISPOSED");
     _tabController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _phoneController.dispose();
     _nameController.dispose(); // ADDED: Dispose name controller
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print("🔄 AuthScreen didChangeDependencies");
   }
 
   // ✅ New method to check for logout message
@@ -1669,13 +1678,16 @@ class _AuthScreenState extends State<AuthScreen>
   }
 
   void _handleCreateAccount() async {
-    final name = _nameController.text.trim(); // ADDED: Get name
+    final name = _nameController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
     final phone = _phoneController.text.trim();
 
+    print("🔄 Starting signup process...");
+    print(
+        "📝 Form data - Name: $name, Email: $email, UserType: $_userType, Phone: $phone");
+
     if (name.isEmpty || email.isEmpty || password.isEmpty || phone.isEmpty) {
-      // UPDATED: Check name
       _showErrorDialog("Please fill in all fields");
       return;
     }
@@ -1691,13 +1703,11 @@ class _AuthScreenState extends State<AuthScreen>
       return;
     }
 
-    // ADDED: Name validation
     if (name.length < 2) {
       _showErrorDialog("Please enter a valid name (at least 2 characters)");
       return;
     }
 
-    // Phone validation
     if (!RegExp(r'^[0-9+\-\s]{10,15}$').hasMatch(phone.replaceAll(' ', ''))) {
       _showErrorDialog("Please enter a valid phone number (10-15 digits)");
       return;
@@ -1715,39 +1725,86 @@ class _AuthScreenState extends State<AuthScreen>
         final user = result['user'] as User?;
 
         if (user != null) {
-          // 1. ✅ REMOVED: Don't send email verification if disabled
-          // await user.sendEmailVerification();
-
-          // 2. ✅ Use UserService to save user profile to Firestore WITH NAME AND PHONE
+          print("🎯 Creating user profile with EXACT userType: $_userType");
+          // ✅ Use UserService to save user profile to Firestore WITH NAME AND PHONE
           await _userService.createUserProfile(
             email: email,
             userType: _userType,
             phoneNumber: phone,
-            name: name, // UPDATED: Pass name
+            name: name,
           );
+
+          // Add verification print
+          print("✅ Profile creation completed");
+          print("📋 Double-checking user type in Firestore...");
+
+          // Wait a moment and check Firestore
+          await Future.delayed(const Duration(seconds: 1));
+
+          // Check what was actually saved
+          final userDoc = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .get();
+
+          if (userDoc.exists) {
+            print(
+                "📊 ACTUAL saved userType in 'users': ${userDoc.data()?['userType']}");
+            print(
+                "📊 ACTUAL saved collection: ${userDoc.data()?['collection']}");
+          }
+
+          // Also check staff collection if admin
+          if (_userType == 'admin') {
+            final staffDoc = await FirebaseFirestore.instance
+                .collection('staff')
+                .doc(user.uid)
+                .get();
+
+            if (staffDoc.exists) {
+              print(
+                  "📊 ACTUAL saved userType in 'staff': ${staffDoc.data()?['userType']}");
+              print(
+                  "📊 ACTUAL saved role in 'staff': ${staffDoc.data()?['role']}");
+            }
+          }
 
           print("✅ Account created successfully!");
           print("User ID: ${user.uid}");
-          print("Name: $name"); // ADDED: Print name
+          print("Name: $name");
           print("Email: ${user.email}");
           print("Phone: $phone");
           print("User Type: $_userType");
 
-          // 3. ✅ REMOVED: Don't logout after signup
-          // await _authService.logout();
+          // ✅ IMPORTANT: Don't show success dialog - just let the app flow handle navigation
+          // The auth state listener in main.dart will automatically redirect
 
-          // 4. Show success message
-          _showSuccessDialog(
-            "Account created successfully! You are now logged in.",
-            // autoNavigate: false,
-          );
-
-          // 5. Clear form and switch to login tab
-          _nameController.clear(); // ADDED: Clear name
+          // Clear form fields
+          _nameController.clear();
           _emailController.clear();
           _passwordController.clear();
           _phoneController.clear();
-          _tabController.animateTo(1);
+
+          print("⏳ Waiting for Firestore to save data...");
+          await Future.delayed(const Duration(seconds: 1));
+
+          if (mounted) {
+            setState(() {
+              // Switch to login tab (index 1)
+              _tabController.animateTo(1);
+
+              // Pre-fill the email field with the newly created email
+              _emailController.text = email;
+
+              // Keep the password in memory (don't show it for security)
+              // User will need to re-enter password
+            });
+
+            _showSuccessDialog(
+              "Account created successfully! Please log in with your credentials.",
+              // autoSwitchToLogin: false, // We're already switching manually
+            );
+          }
         }
       } else {
         _showErrorDialog(result['error'] ?? "Signup failed");
@@ -1755,11 +1812,14 @@ class _AuthScreenState extends State<AuthScreen>
     } catch (e) {
       _showErrorDialog("Failed to create account: $e");
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
+
   void _handleLogin() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
@@ -1774,7 +1834,6 @@ class _AuthScreenState extends State<AuthScreen>
     });
 
     try {
-      // ✅ Use AuthService for login
       final result = await _authService.login(email, password);
 
       if (result['success'] == true) {
@@ -1784,16 +1843,17 @@ class _AuthScreenState extends State<AuthScreen>
           print("✅ Login successful!");
           print("User ID: ${user.uid}");
           print("Email: ${user.email}");
-          print("Email verified: ${user.emailVerified}");
 
           // Check if user profile exists in Firestore
           final profileExists = await _userService.userProfileExists();
           print("Profile exists in database: $profileExists");
 
-          _nameController.clear(); // ADDED: Clear name on login
+          // Clear form fields
           _emailController.clear();
           _passwordController.clear();
-          _phoneController.clear();
+
+          // ✅✅✅ Navigate to appropriate screen based on user type
+          _navigateBasedOnUserType();
         }
       } else {
         _showErrorDialog(result['error'] ?? "Login failed");
@@ -1801,9 +1861,51 @@ class _AuthScreenState extends State<AuthScreen>
     } catch (e) {
       _showErrorDialog("Login failed: $e");
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  void _navigateBasedOnUserType() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) return;
+
+      // Get user type from Firestore
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      final userType = userDoc.data()?['userType'] ?? 'patient';
+
+      print("🎯 Navigating based on user type: $userType");
+
+      if (mounted) {
+        // Clear entire navigation stack and push new screen
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => userType == 'admin'
+                ? const AdminDashboardScreen()
+                : const PatientHomeScreen(),
+          ),
+          (route) => false, // Remove all previous routes
+        );
+      }
+    } catch (e) {
+      print("❌ Error navigating: $e");
+      // Fallback to patient home if error occurs
+      if (mounted) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const PatientHomeScreen()),
+          (route) => false,
+        );
+      }
     }
   }
 
@@ -1928,19 +2030,34 @@ class _AuthScreenState extends State<AuthScreen>
     );
   }
 
-  void _showSuccessDialog(String message) {
+  void _showSuccessDialog(String message, {bool autoSwitchToLogin = true}) {
     showDialog(
       context: context,
+      barrierDismissible: false, // Prevent dismissing by tapping outside
       builder: (context) => AlertDialog(
-        title: const Text(
-          "Success",
-          style: TextStyle(color: Colors.green, fontWeight: FontWeight.w600),
+        title: const Row(
+          children: [
+            Icon(Icons.check_circle, color: Colors.green, size: 24),
+            SizedBox(width: 8),
+            Text(
+              "Success",
+              style:
+                  TextStyle(color: Colors.green, fontWeight: FontWeight.w600),
+            ),
+          ],
         ),
         content: Text(message),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("OK"),
+            onPressed: () {
+              Navigator.pop(context); // Close dialog
+
+              if (autoSwitchToLogin && mounted) {
+                // Switch to login tab
+                _tabController.animateTo(1);
+              }
+            },
+            child: const Text("Continue to Login"),
           ),
         ],
       ),
