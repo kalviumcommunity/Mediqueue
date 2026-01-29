@@ -1,10 +1,70 @@
 import 'package:flutter/material.dart';
+import '../../services/user_service.dart';
 
-class AdminProfileScreen extends StatelessWidget {
+class AdminProfileScreen extends StatefulWidget {
   const AdminProfileScreen({super.key});
 
   @override
+  State<AdminProfileScreen> createState() => _AdminProfileScreenState();
+}
+
+class _AdminProfileScreenState extends State<AdminProfileScreen> {
+  late UserService _userService;
+  Map<String, dynamic>? _userData;
+  Map<String, dynamic>? _staffData;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _userService = UserService();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    try {
+      // Get user data
+      final userData = await _userService.getCompleteUserProfile();
+      final staffData = await _userService.getStaffData();
+
+      setState(() {
+        _userData = userData;
+        _staffData = staffData;
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('Error loading admin data: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load profile data: $e')),
+      );
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  String _getInitials(String name) {
+    if (name.isEmpty) return 'A';
+    final parts = name.split(' ');
+    if (parts.length > 1) {
+      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    }
+    return name[0].toUpperCase();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Scaffold(
+        backgroundColor: const Color(0xFFF6FAFF),
+        body: Center(
+          child: CircularProgressIndicator(
+            color: const Color(0xFF2F63F6),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xFFF6FAFF),
       body: Stack(
@@ -76,7 +136,10 @@ class AdminProfileScreen extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          const SizedBox(width: 40),
+          IconButton(
+            icon: const Icon(Icons.refresh, color: Colors.white),
+            onPressed: _loadUserData,
+          ),
         ],
       ),
     );
@@ -84,6 +147,13 @@ class AdminProfileScreen extends StatelessWidget {
 
   // ──────────────────────────────────────────
   Widget _buildProfileCard() {
+    final name = _userData?['name'] ?? 'Administrator';
+    final role = _staffData?['role'] ?? 'Admin';
+    final hospital = _staffData?['hospitalId']?.toString().isNotEmpty == true
+        ? _staffData!['hospitalId']
+        : 'Medical Center';
+    final initials = _getInitials(name);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Container(
@@ -103,28 +173,37 @@ class AdminProfileScreen extends StatelessWidget {
           children: [
             Row(
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 32,
-                  backgroundImage:
-                      AssetImage('assets/images/admin_avatar.png'),
+                  backgroundColor: Colors.white,
+                  child: Text(
+                    initials,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF2F63F6),
+                    ),
+                  ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Dr. Sarah Mitchel",
-                        style: TextStyle(
+                      Text(
+                        name,
+                        style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
                         ),
                       ),
                       const SizedBox(height: 4),
-                      const Text(
-                        "Senior Queue Administrator",
-                        style: TextStyle(
+                      Text(
+                        role == 'admin'
+                            ? 'Senior Administrator'
+                            : 'Staff Member',
+                        style: const TextStyle(
                           color: Colors.white70,
                           fontSize: 13,
                         ),
@@ -137,15 +216,15 @@ class AdminProfileScreen extends StatelessWidget {
                           color: Colors.white24,
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.local_hospital,
+                            const Icon(Icons.local_hospital,
                                 size: 14, color: Colors.white),
-                            SizedBox(width: 6),
+                            const SizedBox(width: 6),
                             Text(
-                              "St. Mary's Medical Center",
-                              style: TextStyle(
+                              hospital,
+                              style: const TextStyle(
                                   color: Colors.white, fontSize: 12),
                             ),
                           ],
@@ -175,6 +254,13 @@ class AdminProfileScreen extends StatelessWidget {
 
   // ──────────────────────────────────────────
   Widget _buildContactInfo() {
+    final email = _userData?['email'] ?? '';
+    final phone = _userData?['phone'] ?? '';
+    final department =
+        _staffData?['departmentId']?.toString().isNotEmpty == true
+            ? _staffData!['departmentId']
+            : 'Administration';
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Container(
@@ -192,17 +278,17 @@ class AdminProfileScreen extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
             Row(
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   backgroundColor: Color(0xFFEAF3FF),
                   child: Icon(Icons.person, color: Color(0xFF2F63F6)),
                 ),
-                SizedBox(width: 12),
+                const SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                  children: const [
                     Text(
                       "Contact Information",
                       style:
@@ -216,10 +302,12 @@ class AdminProfileScreen extends StatelessWidget {
                 )
               ],
             ),
-            SizedBox(height: 20),
-            _InfoRow(title: "Email Address", value: "s.mitchell@stmarys.health"),
-            _InfoRow(title: "Phone Number", value: "+1 (555) 123-4567"),
-            _InfoRow(title: "Department", value: "Administration"),
+            const SizedBox(height: 20),
+            _InfoRow(title: "Email Address", value: email),
+            _InfoRow(
+                title: "Phone Number",
+                value: phone.isNotEmpty ? phone : 'Not provided'),
+            _InfoRow(title: "Department", value: department),
           ],
         ),
       ),
@@ -228,6 +316,7 @@ class AdminProfileScreen extends StatelessWidget {
 
   // ──────────────────────────────────────────
   Widget _buildPermissionsCard() {
+    // STATIC PERMISSIONS - exactly as in original UI
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Container(
@@ -284,7 +373,7 @@ class AdminProfileScreen extends StatelessWidget {
 }
 
 // ──────────────────────────────────────────
-// Components
+// Components (unchanged - keep as is)
 
 class _StatItem extends StatelessWidget {
   final String value;
@@ -329,8 +418,7 @@ class _InfoRow extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(title, style: const TextStyle(color: Colors.grey)),
-          Text(value,
-              style: const TextStyle(fontWeight: FontWeight.w500)),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.w500)),
         ],
       ),
     );
@@ -364,12 +452,10 @@ class _PermissionRow extends StatelessWidget {
             ],
           ),
           Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: isLimited
-                  ? const Color(0xFFFFF4E5)
-                  : const Color(0xFFE9F9EF),
+              color:
+                  isLimited ? const Color(0xFFFFF4E5) : const Color(0xFFE9F9EF),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
