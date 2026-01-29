@@ -1205,6 +1205,7 @@ import 'patient_profile_screen.dart';
 import 'join_queue_screen.dart';
 import '../hospital_map_screen.dart';
 import '../add_sample_data_screen.dart';
+import '../auth_screen.dart';
 import '../backend_test_screen.dart';
 
 class PatientHomeScreen extends StatefulWidget {
@@ -1636,7 +1637,7 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
 
               const SizedBox(height: 10),
 
-              // Logout Button - UPDATED
+              // Logout Button - FIXED VERSION
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
@@ -1653,16 +1654,26 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                       // ✅ Set logout flag BEFORE signing out
                       LogoutNotifier.setShouldShowMessage();
 
+                      // Add a small delay for smooth UI
+                      await Future.delayed(const Duration(milliseconds: 300));
+
                       // Perform Firebase logout
                       await FirebaseAuth.instance.signOut();
 
-                      // Overlay will disappear when screen changes to AuthScreen
-                      // Success message will be shown in AuthScreen
+                      // ✅ IMPORTANT: Navigate back to AuthScreen
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                          builder: (context) => const AuthScreen(),
+                        ),
+                        (route) => false,
+                      );
                     } catch (e) {
                       // Hide overlay on error
-                      setState(() {
-                        _isLoggingOut = false;
-                      });
+                      if (mounted) {
+                        setState(() {
+                          _isLoggingOut = false;
+                        });
+                      }
 
                       // Show error message
                       ScaffoldMessenger.of(context).showSnackBar(

@@ -6,6 +6,82 @@ class UserService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // Save new user when they sign up WITH ALL DETAILS
+  // Future<void> createUserProfile({
+  //   required String email,
+  //   required String userType,
+  //   required String phoneNumber,
+  //   required String name,
+  // }) async {
+  //   try {
+  //     final user = _auth.currentUser;
+  //     if (user == null) {
+  //       throw Exception("User not authenticated");
+  //     }
+
+  //     final userData = {
+  //       'userId': user.uid,
+  //       'email': email,
+  //       'userType': userType, // 'patient' or 'staff'
+  //       'phone': phoneNumber,
+  //       'name': name,
+  //       'createdAt': FieldValue.serverTimestamp(),
+  //       'updatedAt': FieldValue.serverTimestamp(),
+  //     };
+
+  //     // Save to appropriate collection based on user type
+  //     if (userType == 'patient') {
+  //       // Save to patients collection
+  //       await _firestore.collection('patients').doc(user.uid).set({
+  //         ...userData,
+  //         'medicalHistory': [],
+  //         'currentQueue': null,
+  //         'notifications': [],
+  //         'preferences': {
+  //           'notificationEnabled': true,
+  //           'smsEnabled': true,
+  //         },
+  //       });
+
+  //       // Also save to users collection for quick lookup
+  //       await _firestore.collection('users').doc(user.uid).set({
+  //         ...userData,
+  //         'collection': 'patients', // Reference to main collection
+  //       });
+
+  //       print('✅ Patient profile created for: $email');
+  //     } else if (userType == 'staff') {
+  //       // Save to staff collection
+  //       await _firestore.collection('staff').doc(user.uid).set({
+  //         ...userData,
+  //         'role': 'staff', // Can be 'doctor', 'nurse', 'admin', 'receptionist'
+  //         'hospitalId': '', // To be assigned by admin
+  //         'departmentId': '', // To be assigned by admin
+  //         'status': 'active',
+  //         'permissions': {
+  //           'canManageQueue': false,
+  //           'canViewPatients': true,
+  //           'canUpdateStatus': false,
+  //         },
+  //       });
+
+  //       // Also save to users collection for quick lookup
+  //       await _firestore.collection('users').doc(user.uid).set({
+  //         ...userData,
+  //         'collection': 'staff', // Reference to main collection
+  //       });
+
+  //       print('✅ Staff profile created for: $email');
+  //     }
+
+  //     print('📱 Phone saved: $phoneNumber');
+  //     print('👤 Name saved: $name');
+  //     print('🎯 User type: $userType');
+  //   } catch (e) {
+  //     print('❌ Error creating user profile: $e');
+  //     rethrow;
+  //   }
+  // }
+
   Future<void> createUserProfile({
     required String email,
     required String userType,
@@ -21,14 +97,13 @@ class UserService {
       final userData = {
         'userId': user.uid,
         'email': email,
-        'userType': userType, // 'patient' or 'staff'
+        'userType': userType, // 'patient' or 'staff' or 'admin'
         'phone': phoneNumber,
         'name': name,
         'createdAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp(),
       };
 
-      // Save to appropriate collection based on user type
       if (userType == 'patient') {
         // Save to patients collection
         await _firestore.collection('patients').doc(user.uid).set({
@@ -42,35 +117,35 @@ class UserService {
           },
         });
 
-        // Also save to users collection for quick lookup
         await _firestore.collection('users').doc(user.uid).set({
           ...userData,
-          'collection': 'patients', // Reference to main collection
+          'collection': 'patients',
         });
 
         print('✅ Patient profile created for: $email');
-      } else if (userType == 'staff') {
-        // Save to staff collection
+      } else if (userType == 'admin' || userType == 'staff') {
+        // For admin users, save to staff collection
         await _firestore.collection('staff').doc(user.uid).set({
           ...userData,
-          'role': 'staff', // Can be 'doctor', 'nurse', 'admin', 'receptionist'
-          'hospitalId': '', // To be assigned by admin
-          'departmentId': '', // To be assigned by admin
+          'role': userType == 'admin' ? 'admin' : 'staff',
+          'hospitalId': '',
+          'departmentId': '',
           'status': 'active',
           'permissions': {
-            'canManageQueue': false,
+            'canManageQueue': userType == 'admin',
             'canViewPatients': true,
-            'canUpdateStatus': false,
+            'canUpdateStatus': userType == 'admin',
+            'canManageStaff': userType == 'admin',
           },
         });
 
-        // Also save to users collection for quick lookup
         await _firestore.collection('users').doc(user.uid).set({
           ...userData,
-          'collection': 'staff', // Reference to main collection
+          'collection': 'staff',
         });
 
-        print('✅ Staff profile created for: $email');
+        print(
+            '✅ ${userType == 'admin' ? 'Admin' : 'Staff'} profile created for: $email');
       }
 
       print('📱 Phone saved: $phoneNumber');
@@ -81,7 +156,6 @@ class UserService {
       rethrow;
     }
   }
-
   // Get current user's data from appropriate collection
   Future<Map<String, dynamic>?> getCurrentUserData() async {
     try {
