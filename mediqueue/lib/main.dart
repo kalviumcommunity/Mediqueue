@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart'; 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mediqueue/screens/patient/hospital_details_screen.dart';
 import 'firebase_options.dart';
 import 'screens/welcome_screen.dart';
@@ -12,204 +12,7 @@ import 'screens/admin/admin_dashboard_screen.dart';
 import 'screens/admin/manage_queue_screen.dart';
 import 'screens/patient/patient_profile_screen.dart';
 import 'screens/auth_screen.dart';
-
-
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-
-//   await Firebase.initializeApp(
-//     options: DefaultFirebaseOptions.currentPlatform,
-//   );
-
-//   runApp(MediQueueApp());
-// }
-
-// class MediQueueApp extends StatelessWidget {
-//   const MediQueueApp({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'MediQueue - Smart Hospital Queue Management',
-//       debugShowCheckedModeBanner: false,
-//       theme: ThemeData(
-//         primarySwatch: Colors.blue,
-//         useMaterial3: true,
-//         colorScheme: ColorScheme.fromSeed(
-//           seedColor: Colors.blue,
-//           brightness: Brightness.light,
-//         ),
-//         appBarTheme: const AppBarTheme(
-//           centerTitle: true,
-//           elevation: 0,
-//         ),
-//         fontFamily: 'Inter',
-//       ),
-//       home: StreamBuilder<User?>(
-//         stream: FirebaseAuth.instance.authStateChanges(),
-//         builder: (context, snapshot) {
-//           // Show loading while checking auth state
-//           if (snapshot.connectionState == ConnectionState.waiting) {
-//             return const Scaffold(
-//               backgroundColor: Colors.white,
-//               body: Center(
-//                 child: CircularProgressIndicator(),
-//               ),
-//             );
-//           }
-
-//           // If user is logged in, show appropriate home screen
-//           if (snapshot.hasData && snapshot.data != null) {
-//             final User user = snapshot.data!;
-
-//             // For now, we'll navigate based on the last selected user type
-//             // In a real app, you'd check user type from Firestore
-
-//             // You can add logic here to check user type from local storage
-//             // or navigate to a role selection screen
-
-//             // Default to patient home for now
-//             return const PatientHomeScreen();
-
-//             // Or show a role selection screen:
-//             // return const RoleSelectionScreen();
-//           }
-
-//           // If user is not logged in, show auth screen
-//           return const AuthScreen();
-//         },
-//       ),  
-//       initialRoute: "/",
-//       routes: {
-//         "/": (context) => const WelcomeScreen(),
-//         "/auth": (context) => const AuthScreen(),
-//         "/home": (context) => HomeScreen(),
-//         "/patient-home": (context) => PatientHomeScreen(), // ❌ no const
-//         "/join-queue": (context) => const JoinQueueScreen(departmentName: '',),
-//         "/admin-dashboard": (context) => const AdminDashboardScreen(),
-//         "/manage-queue": (context) => const ManageQueueScreen(),
-//         "/patient-profile": (context) => const PatientProfileScreen(),
-//         "/hospital-details": (context) => const HospitalDetailsScreen(),
-//       },
-//       onUnknownRoute: (settings) => MaterialPageRoute(
-//         builder: (context) => const WelcomeScreen(),
-//       ),
-//     );
-//   }
-// }
-
-
-
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-
-//   await Firebase.initializeApp(
-//     options: DefaultFirebaseOptions.currentPlatform,
-//   );
-
-//   runApp(const MediQueueApp());
-// }
-
-// class MediQueueApp extends StatelessWidget {
-//   const MediQueueApp({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'MediQueue - Smart Hospital Queue Management',
-//       debugShowCheckedModeBanner: false,
-//       theme: ThemeData(
-//         primarySwatch: Colors.blue,
-//         useMaterial3: true,
-//         colorScheme: ColorScheme.fromSeed(
-//           seedColor: Colors.blue,
-//           brightness: Brightness.light,
-//         ),
-//         appBarTheme: const AppBarTheme(
-//           centerTitle: true,
-//           elevation: 0,
-//         ),
-//         fontFamily: 'Inter',
-//       ),
-//       // REMOVE initialRoute and routes - Use only StreamBuilder with home
-//       home: AuthWrapper(),
-//     );
-//   }
-// }
-
-// class AuthWrapper extends StatefulWidget {
-//   const AuthWrapper({super.key});
-
-//   @override
-//   State<AuthWrapper> createState() => _AuthWrapperState();
-// }
-
-// class _AuthWrapperState extends State<AuthWrapper> {
-//   // Use a StreamSubscription to listen to auth changes
-//   StreamSubscription<User?>? _authSubscription;
-//   User? _currentUser;
-//   bool _isLoading = true;
-
-//   @override
-//   void initState() {
-//     super.initState();
-
-//     // Listen to auth state changes
-//     _authSubscription = FirebaseAuth.instance.authStateChanges().listen(
-//       (User? user) {
-//         print('AuthWrapper - Auth state changed');
-//         print('New user: ${user?.email}');
-
-//         if (mounted) {
-//           setState(() {
-//             _currentUser = user;
-//             _isLoading = false;
-//           });
-//         }
-//       },
-//       onError: (error) {
-//         print('AuthWrapper - Error: $error');
-//         if (mounted) {
-//           setState(() {
-//             _isLoading = false;
-//           });
-//         }
-//       },
-//     );
-
-//     // Also get initial user immediately
-//     _currentUser = FirebaseAuth.instance.currentUser;
-//     if (_currentUser != null) {
-//       _isLoading = false;
-//     }
-//   }
-
-//   @override
-//   void dispose() {
-//     _authSubscription?.cancel();
-//     super.dispose();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     print('AuthWrapper - Building with user: ${_currentUser?.email}');
-//     print('AuthWrapper - isLoading: $_isLoading');
-
-//     if (_isLoading) {
-//       return const Scaffold(
-//         backgroundColor: Colors.white,
-//         body: Center(
-//           child: CircularProgressIndicator(),
-//         ),
-//       );
-//     }
-
-//     return _currentUser != null
-//         ?  PatientHomeScreen()
-//         : const AuthScreen();
-//   }
-// }
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -242,79 +45,147 @@ class MediQueueApp extends StatelessWidget {
         ),
         fontFamily: 'Inter',
       ),
-      home: const AuthWrapper(),
+      home: const AppFlowManager(),
     );
   }
 }
 
-class AuthWrapper extends StatefulWidget {
-  const AuthWrapper({super.key});
+class AppFlowManager extends StatefulWidget {
+  const AppFlowManager({super.key});
 
   @override
-  State<AuthWrapper> createState() => _AuthWrapperState();
+  State<AppFlowManager> createState() => _AppFlowManagerState();
 }
 
-class _AuthWrapperState extends State<AuthWrapper> {
-  StreamSubscription<User?>? _authSubscription;
-  User? _currentUser;
-  bool _isLoading = true;
+class _AppFlowManagerState extends State<AppFlowManager> {
+  Future<String> _getUserType(String userId) async {
+    try {
+      print("🔍 Checking user type for: $userId");
 
-  @override
-  void initState() {
-    super.initState();
+      // ⚠️ TEMPORARY FIX: Bypass Firestore check for now
+      // Uncomment this to always treat users as patients until Firestore is fixed
+      // print("⚠️ Firestore unavailable, defaulting to patient");
+      // return 'patient';
 
-    // Listen to auth state changes
-    _authSubscription = FirebaseAuth.instance.authStateChanges().listen(
-      (User? user) {
-        print('AuthWrapper - Auth state changed');
-        print('New user: ${user?.email}');
+      // Try to get user type from Firestore
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get()
+          .timeout(const Duration(seconds: 5)); // Add timeout
 
-        if (mounted) {
-          setState(() {
-            _currentUser = user;
-            _isLoading = false;
-          });
+      if (userDoc.exists) {
+        final userType = userDoc.data()?['userType'] ?? 'patient';
+        print("✅ Found user type in Firestore: $userType");
+        return userType;
+      }
+
+      print("ℹ️ User not found in 'users' collection, checking others...");
+
+      // Fallback: check patients collection
+      final patientDoc = await FirebaseFirestore.instance
+          .collection('patients')
+          .doc(userId)
+          .get();
+
+      if (patientDoc.exists) {
+        print("✅ User found in patients collection");
+        return 'patient';
+      }
+
+      // Fallback: check staff collection
+      final staffDoc = await FirebaseFirestore.instance
+          .collection('staff')
+          .doc(userId)
+          .get();
+
+      if (staffDoc.exists) {
+        print("✅ User found in staff collection");
+        return 'staff';
+      }
+
+      print("⚠️ User not found in any collection, defaulting to patient");
+      return 'patient'; // Default
+    } on TimeoutException {
+      print("⏰ Firestore timeout, defaulting to patient");
+      return 'patient';
+    } catch (e) {
+      print('⚠️ Error getting user type: $e');
+
+      // ⚠️ TEMPORARY: Check if it's a Firestore unavailable error
+      if (e.toString().contains('unavailable') ||
+          e.toString().contains('PERMISSION_DENIED')) {
+        print("🔧 Firestore service unavailable, using temporary logic");
+
+        // Temporary logic: Check if email contains "admin" to guess user type
+        final user = FirebaseAuth.instance.currentUser;
+        if (user?.email?.toLowerCase().contains('admin') == true ||
+            user?.email?.toLowerCase().contains('hospital') == true) {
+          print("🎯 Guessing admin based on email");
+          return 'admin';
         }
-      },
-      onError: (error) {
-        print('AuthWrapper - Error: $error');
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-          });
-        }
-      },
-    );
+      }
 
-    // Also get initial user immediately
-    _currentUser = FirebaseAuth.instance.currentUser;
-    if (_currentUser != null) {
-      _isLoading = false;
+      return 'patient'; // Default to patient on error
     }
   }
 
-  @override
-  void dispose() {
-    _authSubscription?.cancel();
-    super.dispose();
+  Widget _buildLoadingScreen() {
+    return const Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text(
+              'Loading MediQueue...',
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    print('AuthWrapper - Building with user: ${_currentUser?.email}');
-    print('AuthWrapper - isLoading: $_isLoading');
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        // Show loading while checking auth state
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return _buildLoadingScreen();
+        }
 
-    if (_isLoading) {
-      return const Scaffold(
-        backgroundColor: Colors.white,
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
+        final user = snapshot.data;
 
-    return _currentUser != null
-        ? const PatientHomeScreen()
-        : const AuthScreen();
+        if (user != null) {
+          // User is logged in → Check user type and navigate accordingly
+          return FutureBuilder<String>(
+            future: _getUserType(user.uid),
+            builder: (context, typeSnapshot) {
+              if (typeSnapshot.connectionState == ConnectionState.waiting) {
+                return _buildLoadingScreen();
+              }
+
+              final userType = typeSnapshot.data ?? 'patient';
+
+              if (userType == 'admin' || userType == 'staff') {
+                print("👨‍⚕️ Admin user detected, going to AdminHomeScreen");
+                return const AdminDashboardScreen();
+              } else {
+                print("👤 Patient user detected, going to PatientHomeScreen");
+                return const PatientHomeScreen();
+              }
+            },
+          );
+        }
+
+        // No user logged in → Show WelcomeScreen first
+        return const WelcomeScreen();
+      },
+    );
   }
 }
