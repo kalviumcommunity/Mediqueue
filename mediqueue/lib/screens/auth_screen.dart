@@ -951,6 +951,8 @@ import 'package:mediqueue/utils/app_colors.dart';
 import 'package:mediqueue/utils/logout_notifier.dart';
 import 'package:mediqueue/widgets/custom_text_field.dart';
 import 'package:mediqueue/widgets/social_auth_button.dart';
+import 'package:mediqueue/services/firestore_service.dart';
+import 'package:mediqueue/models/patient_model.dart';
 import '../services/auth_service.dart';
 import '../services/user_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -1755,9 +1757,11 @@ class _AuthScreenState extends State<AuthScreen>
     } catch (e) {
       _showErrorDialog("Failed to create account: $e");
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
   void _handleLogin() async {

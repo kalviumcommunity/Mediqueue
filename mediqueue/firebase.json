@@ -1,1 +1,6 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"mediqueue-ab22e","appId":"1:203675335638:android:05910e2e1cb119d7388277","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"mediqueue-ab22e","configurations":{"android":"1:203675335638:android:05910e2e1cb119d7388277","ios":"1:203675335638:ios:3795d250d86a31af388277","macos":"1:203675335638:ios:3795d250d86a31af388277","web":"1:203675335638:web:d51502272288d3bf388277","windows":"1:203675335638:web:627c6ead19bb4cda388277"}}}}}}
+{
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  }
+}

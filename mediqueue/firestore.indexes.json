@@ -1,0 +1,123 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "queues",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "hospitalId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "departmentName",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "queueNumber",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "queues",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "patientId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "joinedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "queues",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "hospitalId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "departmentName",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "queueNumber",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "queues",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "patientId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "joinedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "hospitals",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "isActive",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "latitude",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "notifications",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "userId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "notifications",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "userId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "isRead",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
