@@ -1206,6 +1206,7 @@ import 'join_queue_screen.dart';
 import '../hospital_map_screen.dart';
 import '../add_sample_data_screen.dart';
 import '../auth_screen.dart';
+import '../backend_test_screen.dart';
 
 class PatientHomeScreen extends StatefulWidget {
   const PatientHomeScreen({super.key});
@@ -1615,6 +1616,20 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (_) => const AddSampleDataScreen(),
+                    ),
+                  );
+                },
+              ),
+
+              _drawerItem(
+                context,
+                Icons.science,
+                'Backend Test 🔧',
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const BackendTestScreen(),
                     ),
                   );
                 },

@@ -1,0 +1,103 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+             exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    
+    // Hospitals Collection
+    match /hospitals/{hospitalId} {
+      // Anyone can read hospital data
+      allow read: if true;
+      
+      // Only admins can create, update, or delete hospitals
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Patients Collection
+    match /patients/{patientId} {
+      // Users can read their own patient profile
+      allow read: if isAuthenticated() && 
+                    (resource.data.userId == request.auth.uid || isAdmin());
+      
+      // Users can create their own patient profile
+      allow create: if isAuthenticated() && 
+                      request.resource.data.userId == request.auth.uid;
+      
+      // Users can update their own patient profile
+      allow update: if isAuthenticated() && 
+                      (resource.data.userId == request.auth.uid || isAdmin()) &&
+                      request.resource.data.userId == resource.data.userId; // Can't change userId
+      
+      // Only admins can delete patient profiles
+      allow delete: if isAdmin();
+    }
+    
+    // Queues Collection
+    match /queues/{queueId} {
+      // Users can read their own queue entries or admins can read all
+      allow read: if isAuthenticated() && 
+                    (resource.data.patientId == request.auth.uid || isAdmin());
+      
+      // Users can create queue entries for themselves
+      allow create: if isAuthenticated() && 
+                      request.resource.data.patientId == request.auth.uid &&
+                      request.resource.data.status == 'waiting';
+      
+      // Users can update their own queue entries (to cancel)
+      // Admins can update any queue entry
+      allow update: if isAuthenticated() && 
+                      (resource.data.patientId == request.auth.uid || isAdmin());
+      
+      // Only admins can delete queue entries
+      allow delete: if isAdmin();
+    }
+    
+    // Admins Collection (stores admin user IDs)
+    match /admins/{adminId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    // Notifications Collection
+    match /notifications/{notificationId} {
+      // Users can read their own notifications
+      allow read: if isAuthenticated() && 
+                    resource.data.userId == request.auth.uid;
+      
+      // Users can update their own notifications (mark as read)
+      allow update: if isAuthenticated() && 
+                      resource.data.userId == request.auth.uid;
+      
+      // System/Admins can create notifications
+      allow create: if isAdmin();
+      
+      // Users can delete their own notifications
+      allow delete: if isAuthenticated() && 
+                      resource.data.userId == request.auth.uid;
+    }
+    
+    // User Roles Collection
+    match /user_roles/{userId} {
+      allow read: if isAuthenticated() && 
+                    (userId == request.auth.uid || isAdmin());
+      allow write: if isAdmin();
+    }
+    
+    // Default deny all other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
