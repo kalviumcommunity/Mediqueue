@@ -13,7 +13,7 @@ class ProfileHeader extends StatelessWidget {
     required this.name,
     required this.role,
     required this.onMenuTap,
-    this.onPowerTap, required Color backgroundColor, required IconData icon,
+    this.onPowerTap, required Color backgroundColor, required IconData icon, Future<void> Function()? onRefresh, required bool isLoading,
   });
 
   @override

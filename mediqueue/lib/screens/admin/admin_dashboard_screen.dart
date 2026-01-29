@@ -2554,12 +2554,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../../services/user_service.dart';
 import '/widgets/department_card.dart';
 import '/widgets/info_card.dart';
 import '/widgets/custom_action_button.dart';
 import '../auth_screen.dart';
 import 'manage_queue_screen.dart';
-import 'admin_profile_screen.dart'; // ✅ ADDED
+import 'admin_profile_screen.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
@@ -2570,92 +2571,108 @@ class AdminDashboardScreen extends StatefulWidget {
 
 class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   final List<Map<String, dynamic>> queueData = [
-    {'department': 'Emergency', 'count': 24, 'avgWait': 15, 'icon': Icons.local_hospital, 'color': Colors.blue},
-    {'department': 'Cardiology', 'count': 18, 'avgWait': 28, 'icon': Icons.favorite, 'color': Colors.pink},
-    {'department': 'Neurology', 'count': 12, 'avgWait': 35, 'icon': Icons.psychology, 'color': Colors.green},
-    {'department': 'Pediatrics', 'count': 16, 'avgWait': 22, 'icon': Icons.child_care, 'color': Colors.red},
-    {'department': 'Ophthalmology', 'count': 9, 'avgWait': 18, 'icon': Icons.remove_red_eye, 'color': Colors.lightGreen},
+    {
+      'department': 'Emergency',
+      'count': 24,
+      'avgWait': 15,
+      'icon': Icons.local_hospital,
+      'color': Colors.blue
+    },
+    {
+      'department': 'Cardiology',
+      'count': 18,
+      'avgWait': 28,
+      'icon': Icons.favorite,
+      'color': Colors.pink
+    },
+    {
+      'department': 'Neurology',
+      'count': 12,
+      'avgWait': 35,
+      'icon': Icons.psychology,
+      'color': Colors.green
+    },
+    {
+      'department': 'Pediatrics',
+      'count': 16,
+      'avgWait': 22,
+      'icon': Icons.child_care,
+      'color': Colors.red
+    },
+    {
+      'department': 'Ophthalmology',
+      'count': 9,
+      'avgWait': 18,
+      'icon': Icons.remove_red_eye,
+      'color': Colors.lightGreen
+    },
   ];
 
   bool _isLoggingOut = false;
+  late UserService _userService;
+  String _userName = 'Administrator';
+  String _userRole = 'Hospital Administrator';
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _userService = UserService();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    try {
+      // Get user's display name from UserService
+      final userName = await _userService.getDisplayName();
+      final userData = await _userService.getCurrentUserData();
+      final staffData = await _userService.getStaffData();
+
+      setState(() {
+        _userName = userName;
+        _userRole = staffData?['role'] == 'admin'
+            ? 'Hospital Administrator'
+            : 'Staff Member';
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('Error loading admin data in dashboard: $e');
+      // Fallback to Firebase Auth display name
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        setState(() {
+          _userName = currentUser.displayName ?? 'Administrator';
+          _isLoading = false;
+        });
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final totalPatients = queueData.fold<int>(0, (sum, item) => sum + (item['count'] as int));
-    final avgWaitTime = queueData.fold<int>(0, (sum, item) => sum + (item['avgWait'] as int)) ~/ queueData.length;
+    final totalPatients =
+        queueData.fold<int>(0, (sum, item) => sum + (item['count'] as int));
+    final avgWaitTime =
+        queueData.fold<int>(0, (sum, item) => sum + (item['avgWait'] as int)) ~/
+            queueData.length;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6FA),
-      drawer: Drawer(
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Padding(
-                padding: EdgeInsets.all(20),
-                child: Text('MediQueue', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              ),
-              _drawerItem(Icons.person_outline, 'My Account'),
-              _drawerItem(Icons.notifications_none, 'Notification'),
-              _drawerItem(Icons.history, 'History'),
-              const SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 45,
-                  child: OutlinedButton(
-                    onPressed: () async {
-                      Navigator.pop(context);
-                      final shouldLogout = await showDialog<bool>(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text('Logout'),
-                          content: const Text('Are you sure you want to logout?'),
-                          actions: [
-                            TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
-                            ElevatedButton(
-                              onPressed: () => Navigator.pop(context, true),
-                              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                              child: const Text('Logout'),
-                            ),
-                          ],
-                        ),
-                      );
-
-                      if (shouldLogout != true) return;
-
-                      setState(() => _isLoggingOut = true);
-                      try {
-                        await Future.delayed(const Duration(milliseconds: 300));
-                        await FirebaseAuth.instance.signOut();
-                        Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(builder: (_) => const AuthScreen()),
-                          (route) => false,
-                        );
-                      } catch (e) {
-                        if (mounted) setState(() => _isLoggingOut = false);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Logout failed: ${e.toString()}'), backgroundColor: Colors.red),
-                        );
-                      }
-                    },
-                    style: OutlinedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
-                    child: const Text('Logout'),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+      drawer: _buildDrawer(context),
       appBar: AppBar(
         elevation: 0,
         toolbarHeight: 90,
         automaticallyImplyLeading: false,
         flexibleSpace: Container(
           decoration: const BoxDecoration(
-            gradient: LinearGradient(colors: [Color.fromRGBO(13, 27, 140, 1), Color.fromRGBO(90, 140, 255, 1)]),
+            gradient: LinearGradient(colors: [
+              Color.fromRGBO(13, 27, 140, 1),
+              Color.fromRGBO(90, 140, 255, 1)
+            ]),
           ),
         ),
         title: Row(
@@ -2667,18 +2684,32 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               ),
             ),
             const SizedBox(width: 8),
-            const CircleAvatar(
+            CircleAvatar(
               radius: 22,
               backgroundColor: Colors.white,
-              child: Text('A', style: TextStyle(color: Color.fromRGBO(13, 27, 140, 1), fontWeight: FontWeight.bold)),
+              child: Text(
+                _getInitials(_userName),
+                style: const TextStyle(
+                    color: Color.fromRGBO(13, 27, 140, 1),
+                    fontWeight: FontWeight.bold),
+              ),
             ),
             const SizedBox(width: 12),
-            const Column(
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Dr. Sarah Johnson', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white)),
-                Text('Hospital Administrator', style: TextStyle(fontSize: 13, color: Colors.white70)),
+                Text(
+                  _isLoading ? 'Loading...' : _userName,
+                  style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white),
+                ),
+                Text(
+                  _userRole,
+                  style: const TextStyle(fontSize: 13, color: Colors.white70),
+                ),
               ],
             ),
           ],
@@ -2691,25 +2722,49 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Queue Overview', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                const Text('Queue Overview',
+                    style:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    Expanded(child: InfoCard(title: 'Total Patients', value: totalPatients.toString(), icon: Icons.people, color: Colors.blue)),
+                    Expanded(
+                        child: InfoCard(
+                            title: 'Total Patients',
+                            value: totalPatients.toString(),
+                            icon: Icons.people,
+                            color: Colors.blue)),
                     const SizedBox(width: 12),
-                    Expanded(child: InfoCard(title: 'Avg Wait Time', value: '${avgWaitTime}m', icon: Icons.schedule, color: Colors.purple)),
+                    Expanded(
+                        child: InfoCard(
+                            title: 'Avg Wait Time',
+                            value: '${avgWaitTime}m',
+                            icon: Icons.schedule,
+                            color: Colors.purple)),
                   ],
                 ),
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Expanded(child: InfoCard(title: 'Departments', value: queueData.length.toString(), icon: Icons.domain, color: Colors.green)),
+                    Expanded(
+                        child: InfoCard(
+                            title: 'Departments',
+                            value: queueData.length.toString(),
+                            icon: Icons.domain,
+                            color: Colors.green)),
                     const SizedBox(width: 12),
-                    Expanded(child: InfoCard(title: 'Completed Today', value: '89', icon: Icons.check_circle, color: Colors.red)),
+                    Expanded(
+                        child: InfoCard(
+                            title: 'Completed Today',
+                            value: '89',
+                            icon: Icons.check_circle,
+                            color: Colors.red)),
                   ],
                 ),
                 const SizedBox(height: 32),
-                const Text('Quick Actions', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Text('Quick Actions',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 16),
                 Row(
                   children: [
@@ -2717,7 +2772,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                       child: CustomActionButton(
                         label: 'Manage Queues',
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (_) => const ManageQueueScreen(department: null)));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const ManageQueueScreen(
+                                      department: null)));
                         },
                         icon: Icons.edit,
                         backgroundColor: Colors.blue,
@@ -2738,7 +2797,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                   ],
                 ),
                 const SizedBox(height: 32),
-                const Text('Department Queues', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Text('Department Queues',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 16),
                 ListView.builder(
                   shrinkWrap: true,
@@ -2751,7 +2812,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => ManageQueueScreen(department: dept['department'])),
+                          MaterialPageRoute(
+                              builder: (_) => ManageQueueScreen(
+                                  department: dept['department'])),
                         );
                       },
                       title: '',
@@ -2774,14 +2837,25 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 20, spreadRadius: 2)],
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 20,
+                          spreadRadius: 2)
+                    ],
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: const [
-                      SizedBox(width: 40, height: 40, child: CircularProgressIndicator(strokeWidth: 3, color: Colors.blue)),
+                      SizedBox(
+                          width: 40,
+                          height: 40,
+                          child: CircularProgressIndicator(
+                              strokeWidth: 3, color: Colors.blue)),
                       SizedBox(height: 16),
-                      Text('Signing out...', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                      Text('Signing out...',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w500)),
                     ],
                   ),
                 ),
@@ -2792,7 +2866,91 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     );
   }
 
-  // ✅ UPDATED FUNCTION
+  // Drawer
+  Drawer _buildDrawer(BuildContext context) {
+    return Drawer(
+      child: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(20),
+              child: Text('MediQueue',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            ),
+            _drawerItem(Icons.person_outline, 'My Account'),
+            _drawerItem(Icons.notifications_none, 'Notification'),
+            _drawerItem(Icons.history, 'History'),
+            const SizedBox(height: 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: SizedBox(
+                width: double.infinity,
+                height: 45,
+                child: OutlinedButton(
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    final shouldLogout = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Logout'),
+                        content: const Text('Are you sure you want to logout?'),
+                        actions: [
+                          TextButton(
+                              onPressed: () => Navigator.pop(context, false),
+                              child: const Text('Cancel')),
+                          ElevatedButton(
+                            onPressed: () => Navigator.pop(context, true),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red),
+                            child: const Text('Logout'),
+                          ),
+                        ],
+                      ),
+                    );
+
+                    if (shouldLogout != true) return;
+
+                    setState(() => _isLoggingOut = true);
+                    try {
+                      await Future.delayed(const Duration(milliseconds: 300));
+                      await FirebaseAuth.instance.signOut();
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (_) => const AuthScreen()),
+                        (route) => false,
+                      );
+                    } catch (e) {
+                      if (mounted) setState(() => _isLoggingOut = false);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text('Logout failed: ${e.toString()}'),
+                            backgroundColor: Colors.red),
+                      );
+                    }
+                  },
+                  style: OutlinedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30))),
+                  child: const Text('Logout'),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _getInitials(String name) {
+    if (name.isEmpty) return 'A';
+    final parts = name.split(' ');
+    if (parts.length > 1) {
+      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    }
+    return name[0].toUpperCase();
+  }
+
+  // Drawer item
   Widget _drawerItem(IconData icon, String title) {
     return ListTile(
       leading: Icon(icon),
@@ -2819,21 +2977,32 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           child: Container(
             width: MediaQuery.of(context).size.width * 0.85,
             padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18)),
+            decoration: BoxDecoration(
+                color: Colors.white, borderRadius: BorderRadius.circular(18)),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Daily Report', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                const Text('Daily Report',
+                    style:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 6),
-                const Text("Today's Overview - March 15, 2024", style: TextStyle(color: Colors.grey)),
+                Text(
+                  "Today's Overview - ${DateTime.now().toLocal()}",
+                  style: const TextStyle(color: Colors.grey),
+                ),
                 const SizedBox(height: 16),
                 const Divider(),
-                _reportItem('Total Patients Today', 'Active and completed visits', '127', Colors.blue),
-                _reportItem('Average Wait Time', 'From check-in to appointment', '18 min', Colors.blueAccent),
-                _reportItem('Completed Appointments', 'Successfully finished today', '94', Colors.green),
-                _reportItem('No-Shows', "Patients who didn't arrive", '8', Colors.orange),
-                _reportItem('Cancelled Appointments', 'Cancelled by patients or staff', '12', Colors.red),
+                _reportItem('Total Patients Today',
+                    'Active and completed visits', '127', Colors.blue),
+                _reportItem('Average Wait Time', 'From check-in to appointment',
+                    '18 min', Colors.blueAccent),
+                _reportItem('Completed Appointments',
+                    'Successfully finished today', '94', Colors.green),
+                _reportItem('No-Shows', "Patients who didn't arrive", '8',
+                    Colors.orange),
+                _reportItem('Cancelled Appointments',
+                    'Cancelled by patients or staff', '12', Colors.red),
               ],
             ),
           ),
@@ -2850,13 +3019,20 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           child: Row(
             children: [
               Expanded(
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-                  const SizedBox(height: 4),
-                  Text(subtitle, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-                ]),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title,
+                          style: const TextStyle(fontWeight: FontWeight.w600)),
+                      const SizedBox(height: 4),
+                      Text(subtitle,
+                          style: const TextStyle(
+                              fontSize: 12, color: Colors.grey)),
+                    ]),
               ),
-              Text(value, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: color)),
+              Text(value,
+                  style: TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold, color: color)),
             ],
           ),
         ),

@@ -1207,6 +1207,7 @@ import '../hospital_map_screen.dart';
 import '../add_sample_data_screen.dart';
 import '../auth_screen.dart';
 import '../backend_test_screen.dart';
+import '../../services/user_service.dart'; // Import UserService
 
 class PatientHomeScreen extends StatefulWidget {
   const PatientHomeScreen({super.key});
@@ -1218,6 +1219,49 @@ class PatientHomeScreen extends StatefulWidget {
 class _PatientHomeScreenState extends State<PatientHomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isLoggingOut = false;
+  late UserService _userService;
+  String _userName = 'Patient';
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _userService = UserService();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    try {
+      // Get user's display name from UserService
+      final userName = await _userService.getDisplayName();
+
+      setState(() {
+        _userName = userName;
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('Error loading user data in home screen: $e');
+      // Fallback to Firebase Auth display name
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        setState(() {
+          _userName = currentUser.displayName ?? 'Patient';
+          _isLoading = false;
+        });
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _refreshUserData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    await _loadUserData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1232,13 +1276,15 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
             children: [
               // ✅ ProfileHeader with menu button using GlobalKey
               ProfileHeader(
-                name: 'Sarah Johnson',
+                name: _userName,
                 role: 'Patient',
                 icon: Icons.person,
                 backgroundColor: AppColors.primaryBlue,
                 onMenuTap: () {
                   _scaffoldKey.currentState?.openDrawer();
                 },
+                onRefresh: _isLoading ? null : _refreshUserData,
+                isLoading: _isLoading,
               ),
 
               // Search bar
@@ -1532,7 +1578,7 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
     );
   }
 
-  // ✅ Drawer
+  // ✅ Drawer - WITH "MediQueue" title restored and logout button in original position
   Drawer _buildDrawer(BuildContext context) {
     return Drawer(
       shape: const RoundedRectangleBorder(
@@ -1544,6 +1590,7 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // ✅ MediQueue title RESTORED
               const Text(
                 'MediQueue',
                 style: TextStyle(
@@ -1556,7 +1603,7 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
               _drawerItem(
                 context,
                 Icons.person,
-                'My Account',
+                'My Profile',
                 () {
                   Navigator.push(
                     context,
@@ -1637,7 +1684,7 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
 
               const SizedBox(height: 10),
 
-              // Logout Button - FIXED VERSION
+              // ✅ Logout Button - MOVED BACK to original position (NOT at bottom)
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
