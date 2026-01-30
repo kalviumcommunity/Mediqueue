@@ -23,7 +23,6 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
 
   Future<void> _loadUserData() async {
     try {
-      // Get user data
       final userData = await _userService.getCompleteUserProfile();
       final staffData = await _userService.getStaffData();
 
@@ -33,13 +32,10 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
         _isLoading = false;
       });
     } catch (e) {
-      print('Error loading admin data: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to load profile data: $e')),
       );
-      setState(() {
-        _isLoading = false;
-      });
+      setState(() => _isLoading = false);
     }
   }
 
@@ -136,9 +132,15 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
             ),
           ),
           const Spacer(),
+
+          // ✅ UPDATED: EDIT ICON (REFRESH REMOVED)
           IconButton(
-            icon: const Icon(Icons.refresh, color: Colors.white),
-            onPressed: _loadUserData,
+            icon: const Icon(Icons.edit, color: Colors.white),
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Edit profile clicked')),
+              );
+            },
           ),
         ],
       ),
@@ -314,9 +316,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
     );
   }
 
-  // ──────────────────────────────────────────
   Widget _buildPermissionsCard() {
-    // STATIC PERMISSIONS - exactly as in original UI
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Container(
@@ -359,7 +359,6 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
     );
   }
 
-  // ──────────────────────────────────────────
   Widget _buildSectionTitle(String text) {
     return Text(
       text,
@@ -373,8 +372,6 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
 }
 
 // ──────────────────────────────────────────
-// Components (unchanged - keep as is)
-
 class _StatItem extends StatelessWidget {
   final String value;
   final String label;
