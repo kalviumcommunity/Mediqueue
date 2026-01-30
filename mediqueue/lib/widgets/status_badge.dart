@@ -2,33 +2,12 @@ import 'package:flutter/material.dart';
 
 /// A reusable status badge widget for displaying queue and appointment statuses
 /// across the MediQueue app.
-///
-/// Supports different status types with appropriate colors and icons:
-/// - Active/In Progress
-/// - Waiting
-/// - Completed
-/// - Cancelled
-/// - No Show
-///
-/// Features:
-/// - Consistent visual design
-/// - Color-coded status indicators
-/// - Optional icons
-/// - Compact or expanded display modes
-///
-/// Example usage:
-/// ```dart
-/// StatusBadge(
-///   status: QueueStatus.active,
-///   label: 'In Queue',
-/// )
-/// ```
 enum QueueStatus {
   active,
   waiting,
   completed,
   cancelled,
-  noShow,
+  noShow, inProgress, called,
 }
 
 class StatusBadge extends StatelessWidget {
@@ -58,6 +37,12 @@ class StatusBadge extends StatelessWidget {
         return Colors.red;
       case QueueStatus.noShow:
         return Colors.grey;
+      case QueueStatus.inProgress:
+        // TODO: Handle this case.
+        throw UnimplementedError();
+      case QueueStatus.called:
+        // TODO: Handle this case.
+        throw UnimplementedError();
     }
   }
 
@@ -65,7 +50,7 @@ class StatusBadge extends StatelessWidget {
   IconData get _statusIcon {
     switch (status) {
       case QueueStatus.active:
-        return Icons.play_circle;
+        return Icons.play_circle_fill;
       case QueueStatus.waiting:
         return Icons.schedule;
       case QueueStatus.completed:
@@ -74,6 +59,12 @@ class StatusBadge extends StatelessWidget {
         return Icons.cancel;
       case QueueStatus.noShow:
         return Icons.person_off;
+      case QueueStatus.inProgress:
+        // TODO: Handle this case.
+        throw UnimplementedError();
+      case QueueStatus.called:
+        // TODO: Handle this case.
+        throw UnimplementedError();
     }
   }
 
@@ -90,6 +81,12 @@ class StatusBadge extends StatelessWidget {
         return 'Cancelled';
       case QueueStatus.noShow:
         return 'No Show';
+      case QueueStatus.inProgress:
+        // TODO: Handle this case.
+        throw UnimplementedError();
+      case QueueStatus.called:
+        // TODO: Handle this case.
+        throw UnimplementedError();
     }
   }
 
@@ -103,11 +100,11 @@ class StatusBadge extends StatelessWidget {
         vertical: compact ? 4 : 6,
       ),
       decoration: BoxDecoration(
-        color: _statusColor.withOpacity(0.1),
+        color: _statusColor.withOpacity(0.12),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: _statusColor.withOpacity(0.5),
-          width: 1.5,
+          color: _statusColor.withOpacity(0.6),
+          width: 1.3,
         ),
       ),
       child: Row(
