@@ -39,6 +39,37 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
     }
   }
 
+  Future<void> _updateProfile() async {
+    final result = await showDialog(
+      context: context,
+      builder: (context) => _UpdateProfileDialog(
+        currentName: _userData?['name'] ?? '',
+        currentPhone: _userData?['phone'] ?? '',
+      ),
+    );
+
+    if (result != null && result is Map<String, String>) {
+      try {
+        await _userService.updateUserProfile(
+          fullName: result['name'],
+          phoneNumber: result['phone'],
+        );
+
+        // Reload data
+        await _loadUserData();
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Profile updated successfully!')),
+        );
+      } catch (e) {
+        print('Error updating profile: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to update profile: $e')),
+        );
+      }
+    }
+  }
+
   String _getInitials(String name) {
     if (name.isEmpty) return 'A';
     final parts = name.split(' ');
@@ -132,15 +163,10 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
             ),
           ),
           const Spacer(),
-
-          // ✅ UPDATED: EDIT ICON (REFRESH REMOVED)
+          // ✅ EDIT BUTTON - NOW WORKING
           IconButton(
             icon: const Icon(Icons.edit, color: Colors.white),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Edit profile clicked')),
-              );
-            },
+            onPressed: _updateProfile,
           ),
         ],
       ),
@@ -367,6 +393,97 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
         color: Colors.grey,
         fontWeight: FontWeight.w500,
       ),
+    );
+  }
+}
+
+// ──────────────────────────────────────────
+// Update Profile Dialog (similar to patient profile)
+class _UpdateProfileDialog extends StatefulWidget {
+  final String currentName;
+  final String currentPhone;
+
+  const _UpdateProfileDialog({
+    required this.currentName,
+    required this.currentPhone,
+  });
+
+  @override
+  State<_UpdateProfileDialog> createState() => _UpdateProfileDialogState();
+}
+
+class _UpdateProfileDialogState extends State<_UpdateProfileDialog> {
+  late TextEditingController _nameController;
+  late TextEditingController _phoneController;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.currentName);
+    _phoneController = TextEditingController(text: widget.currentPhone);
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _phoneController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text("Update Profile"),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _nameController,
+            decoration: const InputDecoration(
+              labelText: "Full Name",
+              border: OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 16),
+          TextField(
+            controller: _phoneController,
+            decoration: const InputDecoration(
+              labelText: "Phone Number",
+              border: OutlineInputBorder(),
+            ),
+            keyboardType: TextInputType.phone,
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text("Cancel"),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            if (_nameController.text.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Please enter your name')),
+              );
+              return;
+            }
+
+            if (_phoneController.text.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Please enter your phone number')),
+              );
+              return;
+            }
+
+            Navigator.pop(context, {
+              'name': _nameController.text,
+              'phone': _phoneController.text,
+            });
+          },
+          child: const Text("Update"),
+        ),
+      ],
     );
   }
 }
