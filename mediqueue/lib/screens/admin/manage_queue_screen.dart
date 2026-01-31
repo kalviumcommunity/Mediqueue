@@ -748,8 +748,12 @@
 
 
 
+import 'dart:async';
 import 'package:flutter/material.dart';
-import '../../widgets/status_badge.dart';
+import '../../widgets/status_badge.dart'
+    hide QueueStatus; // Hide QueueStatus from this import
+import '../../services/queue_service.dart';
+import '../../models/queue_model.dart';
 
 class ManageQueueScreen extends StatefulWidget {
   final String? department;
@@ -760,45 +764,158 @@ class ManageQueueScreen extends StatefulWidget {
 }
 
 class _ManageQueueScreenState extends State<ManageQueueScreen> {
-  List<Map<String, String>> queue = [
-    {'token': 'A-15', 'name': 'Sarah Johnson', 'id': 'MRN-2024-001', 'time': '09:15 AM', 'wait': '8 min'},
-    {'token': 'A-16', 'name': 'Michael Chen', 'id': 'MRN-2024-002', 'time': '09:22 AM', 'wait': '6 min'},
-    {'token': 'A-17', 'name': 'Emily Rodriguez', 'id': 'MRN-2024-003', 'time': '09:28 AM', 'wait': '5 min'},
-    {'token': 'A-18', 'name': 'David Thompson', 'id': 'MRN-2024-004', 'time': '09:32 AM', 'wait': '7 min'},
-  ];
+  List<QueueModel> _realQueue = [];
+  bool _isLoading = true;
+  String? _nextPatientToken;
+  int _queueLength = 0;
+  int _averageWaitTime = 0;
 
-  void _callNextPatient() {
-    if (queue.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No patients in queue')));
+  late QueueService _queueService;
+  StreamSubscription? _queueSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _queueService = QueueService();
+    _loadQueueData();
+  }
+
+  @override
+  void dispose() {
+    _queueSubscription?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _loadQueueData() async {
+    try {
+      // TODO: Replace with actual hospital ID from admin context
+      const hospitalId = 'default_hospital_id';
+      final departmentName = widget.department ?? 'General';
+
+      final stream = _queueService.watchDepartmentQueue(
+        hospitalId,
+        departmentName,
+      );
+
+      _queueSubscription = stream.listen((queues) {
+        final waitingQueues = queues
+            .where((q) => q.status == QueueStatus.waiting)
+            .toList()
+          ..sort((a, b) => a.queueNumber.compareTo(b.queueNumber));
+
+        // Calculate average wait time
+        final avgWait = waitingQueues.isNotEmpty
+            ? waitingQueues
+                    .map((q) => q.estimatedWaitTime)
+                    .reduce((a, b) => a + b) ~/
+                waitingQueues.length
+            : 0;
+
+        setState(() {
+          _realQueue = waitingQueues;
+          _queueLength = waitingQueues.length;
+          _nextPatientToken = waitingQueues.isNotEmpty
+              ? '${waitingQueues.first.queueNumber}'
+              : '-';
+          _averageWaitTime = avgWait;
+          _isLoading = false;
+        });
+      }, onError: (e) {
+        print('Error loading queue data: $e');
+        setState(() => _isLoading = false);
+      });
+    } catch (e) {
+      print('Error setting up queue stream: $e');
+      setState(() => _isLoading = false);
+    }
+  }
+
+  void _callNextPatient() async {
+    if (_realQueue.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No patients in queue')),
+      );
       return;
     }
 
-    final nextPatient = queue.first;
-
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Call Next Patient'),
-        content: Text('Calling ${nextPatient['name']} (${nextPatient['token']})'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
-          ElevatedButton(
-            onPressed: () {
-              setState(() => queue.removeAt(0));
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('${nextPatient['name']} has been called')),
-              );
-            },
-            child: const Text('Confirm'),
-          ),
-        ],
+      barrierDismissible: false,
+      builder: (_) => const AlertDialog(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text('Notifying patient...'),
+          ],
+        ),
       ),
     );
+
+    try {
+      const hospitalId = 'default_hospital_id';
+
+      final result = await _queueService.callNextPatientWithNotification(
+        hospitalId: hospitalId,
+        departmentName: widget.department ?? 'General',
+      );
+
+      Navigator.pop(context);
+
+      if (result['success'] == true) {
+        final notificationResult =
+            result['notificationResult'] as Map<String, dynamic>? ?? {};
+        final smsSent = notificationResult['smsSent'] ?? false;
+        final smsEnabled = notificationResult['smsEnabled'] ?? false;
+
+        String message = 'Patient has been notified';
+        if (smsEnabled && smsSent) {
+          message += ' (SMS sent successfully)';
+        } else if (smsEnabled) {
+          message += ' (SMS not sent - check phone number)';
+        } else {
+          message += ' (In-app notification only - SMS disabled)';
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result['message'] ?? 'Failed to notify patient'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Scaffold(
+        backgroundColor: const Color(0xFFF6FAFD),
+        body: Center(
+          child: CircularProgressIndicator(
+            color: Colors.blue,
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xFFF6FAFD),
       appBar: AppBar(
@@ -810,7 +927,10 @@ class _ManageQueueScreenState extends State<ManageQueueScreen> {
             width: double.infinity,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color.fromRGBO(13, 27, 140, 1), Color.fromRGBO(90, 140, 255, 1)],
+                colors: [
+                  Color.fromRGBO(13, 27, 140, 1),
+                  Color.fromRGBO(90, 140, 255, 1)
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -821,7 +941,8 @@ class _ManageQueueScreenState extends State<ManageQueueScreen> {
               children: [
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
-                  child: const Icon(Icons.arrow_back, color: Colors.white, size: 30),
+                  child: const Icon(Icons.arrow_back,
+                      color: Colors.white, size: 30),
                 ),
                 const SizedBox(width: 12),
                 Text(
@@ -841,17 +962,14 @@ class _ManageQueueScreenState extends State<ManageQueueScreen> {
       ),
       body: Column(
         children: [
-          // SUMMARY CARD – reduced margin
           _summaryCard(),
-
-          // NOTIFY BUTTON – reduced margin
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
             child: SizedBox(
               width: double.infinity,
               height: 50,
               child: ElevatedButton.icon(
-                onPressed: queue.isEmpty ? null : _callNextPatient,
+                onPressed: _realQueue.isEmpty ? null : _callNextPatient,
                 icon: const Icon(Icons.volume_up),
                 label: const Text(
                   'Notify Next Patient',
@@ -866,8 +984,6 @@ class _ManageQueueScreenState extends State<ManageQueueScreen> {
               ),
             ),
           ),
-
-          // CURRENT QUEUE TITLE – reduced vertical padding
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: Align(
@@ -881,16 +997,27 @@ class _ManageQueueScreenState extends State<ManageQueueScreen> {
               ),
             ),
           ),
-
-          // QUEUE LIST – no extra padding
           Expanded(
-            child: queue.isEmpty
-                ? const Center(child: Text('Queue is empty'))
+            child: _realQueue.isEmpty
+                ? const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.group_off, size: 60, color: Colors.grey),
+                        SizedBox(height: 16),
+                        Text(
+                          'No patients in queue',
+                          style: TextStyle(fontSize: 16, color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  )
                 : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-                    itemCount: queue.length,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                    itemCount: _realQueue.length,
                     itemBuilder: (context, index) {
-                      return _queueTile(index, queue[index]);
+                      return _queueTile(index, _realQueue[index]);
                     },
                   ),
           ),
@@ -901,7 +1028,7 @@ class _ManageQueueScreenState extends State<ManageQueueScreen> {
 
   Widget _summaryCard() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6), // compact
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       padding: const EdgeInsets.symmetric(vertical: 16),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -910,9 +1037,9 @@ class _ManageQueueScreenState extends State<ManageQueueScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _summaryItem(queue.length.toString(), 'In Queue', Colors.blue),
-          _summaryItem(queue.isNotEmpty ? queue.first['token']! : '-', 'Next Token', Colors.green),
-          _summaryItem('12m', 'Avg Wait', Colors.red),
+          _summaryItem(_queueLength.toString(), 'In Queue', Colors.blue),
+          _summaryItem(_nextPatientToken ?? '-', 'Next Token', Colors.green),
+          _summaryItem('${_averageWaitTime}m', 'Avg Wait', Colors.red),
         ],
       ),
     );
@@ -921,18 +1048,26 @@ class _ManageQueueScreenState extends State<ManageQueueScreen> {
   Widget _summaryItem(String value, String label, Color color) {
     return Column(
       children: [
-        Text(value, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: color)),
+        Text(value,
+            style: TextStyle(
+                fontSize: 20, fontWeight: FontWeight.bold, color: color)),
         const SizedBox(height: 2),
         Text(label, style: const TextStyle(color: Colors.grey)),
       ],
     );
   }
 
-  Widget _queueTile(int index, Map<String, String> p) {
+  Widget _queueTile(int index, QueueModel patient) {
     final bool isNext = index == 0;
+    final timeJoined = patient.joinedAt;
+    final formattedTime =
+        '${timeJoined.hour.toString().padLeft(2, '0')}:${timeJoined.minute.toString().padLeft(2, '0')}';
+    final patientIdShort = patient.patientId.length > 8
+        ? '${patient.patientId.substring(0, 8)}...'
+        : patient.patientId;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12), // compact spacing
+      margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -949,7 +1084,7 @@ class _ManageQueueScreenState extends State<ManageQueueScreen> {
               borderRadius: BorderRadius.circular(14),
             ),
             child: Text(
-              p['token']!,
+              '${patient.queueNumber}',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -962,18 +1097,59 @@ class _ManageQueueScreenState extends State<ManageQueueScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(p['name']!, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                Text(
+                  patient.patientName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w600),
+                ),
                 const SizedBox(height: 4),
-                Text('ID: ${p['id']}', maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                Text(
+                  'ID: $patientIdShort',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                ),
                 Row(
                   children: [
                     const Icon(Icons.access_time, size: 12, color: Colors.grey),
                     const SizedBox(width: 2),
                     Expanded(
-                      child: Text('Joined: ${p['time']}', maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                      child: Text(
+                        'Joined: $formattedTime',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style:
+                            const TextStyle(fontSize: 11, color: Colors.grey),
+                      ),
                     ),
                   ],
                 ),
+                if (patient.priority != 'normal' && patient.priority != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: patient.priority == 'urgent'
+                            ? Colors.orange[100]
+                            : Colors.red[100],
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        patient.priority!.toUpperCase(),
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: patient.priority == 'urgent'
+                              ? Colors.orange[800]
+                              : Colors.red[800],
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
@@ -982,13 +1158,30 @@ class _ManageQueueScreenState extends State<ManageQueueScreen> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               StatusBadge(
-                status: isNext ? QueueStatus.active : QueueStatus.waiting,
+                // Pass status as string
+                status: isNext ? 'called' : 'waiting',
                 label: isNext ? 'NEXT' : 'WAIT',
                 compact: true,
-                color: Colors.cyan,
               ),
               const SizedBox(height: 4),
-              Text('Wait: ${p['wait']}', style: TextStyle(fontSize: 11, color: isNext ? Colors.red : Colors.green)),
+              Text(
+                'Wait: ${patient.estimatedWaitTime}m',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: isNext ? Colors.red : Colors.green,
+                ),
+              ),
+              if (patient.notes != null && patient.notes!.isNotEmpty)
+                Container(
+                  margin: const EdgeInsets.only(top: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: const Icon(Icons.note, size: 12, color: Colors.grey),
+                ),
             ],
           ),
         ],

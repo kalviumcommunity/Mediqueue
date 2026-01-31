@@ -368,6 +368,7 @@ class FirestoreService {
         return 'cancelled';
       case QueueStatus.noShow:
         return 'noShow';
+      
     }
   }
 
