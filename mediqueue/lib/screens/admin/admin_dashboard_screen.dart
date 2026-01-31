@@ -2551,7 +2551,6 @@
 // }
 
 
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../services/user_service.dart';
@@ -2561,6 +2560,7 @@ import '/widgets/custom_action_button.dart';
 import '../auth_screen.dart';
 import 'manage_queue_screen.dart';
 import 'admin_profile_screen.dart';
+import '../common/history_screen.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
@@ -2878,9 +2878,19 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               child: Text('MediQueue',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             ),
-            _drawerItem(Icons.person_outline, 'My Account'),
-            _drawerItem(Icons.notifications_none, 'Notification'),
-            _drawerItem(Icons.history, 'History'),
+            _drawerItem(Icons.person_outline, 'My Account', () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const AdminProfileScreen()),
+              );
+            }),
+            _drawerItem(Icons.notifications_none, 'Notification', () {}),
+            _drawerItem(Icons.history, 'History', () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const HistoryScreen(visit: {}, visits: [],)),
+              );
+            }),
             const SizedBox(height: 12),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -2951,18 +2961,13 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   }
 
   // Drawer item
-  Widget _drawerItem(IconData icon, String title) {
+  Widget _drawerItem(IconData icon, String title, VoidCallback onTap) {
     return ListTile(
       leading: Icon(icon),
       title: Text(title),
       onTap: () {
         Navigator.pop(context);
-        if (title == 'My Account') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const AdminProfileScreen()),
-          );
-        }
+        onTap();
       },
     );
   }

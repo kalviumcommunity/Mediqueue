@@ -55,6 +55,12 @@ class StatusBadge extends StatelessWidget {
         return Colors.grey;
       default:
         return Colors.grey;
+      case QueueStatus.inProgress:
+        // TODO: Handle this case.
+        throw UnimplementedError();
+      case QueueStatus.called:
+        // TODO: Handle this case.
+        throw UnimplementedError();
     }
   }
 
@@ -111,11 +117,11 @@ class StatusBadge extends StatelessWidget {
         vertical: compact ? 4 : 6,
       ),
       decoration: BoxDecoration(
-        color: _statusColor.withOpacity(0.1),
+        color: _statusColor.withOpacity(0.12),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: _statusColor.withOpacity(0.5),
-          width: 1.5,
+          color: _statusColor.withOpacity(0.6),
+          width: 1.3,
         ),
       ),
       child: Row(
