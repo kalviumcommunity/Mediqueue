@@ -839,6 +839,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
         return Colors.red;
       case QueueStatus.noShow:
         return Colors.grey;
+      
     }
   }
 

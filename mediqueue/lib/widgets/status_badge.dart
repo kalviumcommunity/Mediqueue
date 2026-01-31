@@ -23,16 +23,9 @@ import 'package:flutter/material.dart';
 ///   label: 'In Queue',
 /// )
 /// ```
-enum QueueStatus {
-  active,
-  waiting,
-  completed,
-  cancelled,
-  noShow,
-}
 
 class StatusBadge extends StatelessWidget {
-  final QueueStatus status;
+  final String status;
   final String? label;
   final bool showIcon;
   final bool compact;
@@ -42,54 +35,69 @@ class StatusBadge extends StatelessWidget {
     required this.status,
     this.label,
     this.showIcon = true,
-    this.compact = false, required MaterialColor color,
+    this.compact = false, 
   }) : super(key: key);
 
   // Get color based on status
   Color get _statusColor {
-    switch (status) {
-      case QueueStatus.active:
+    switch (status.toLowerCase()) {
+      case 'called':
+      case 'active':
         return Colors.green;
-      case QueueStatus.waiting:
+      case 'waiting':
         return Colors.orange;
-      case QueueStatus.completed:
+      case 'inprogress':
+      case 'completed':
         return Colors.blue;
-      case QueueStatus.cancelled:
+      case 'cancelled':
         return Colors.red;
-      case QueueStatus.noShow:
+      case 'noshow':
+        return Colors.grey;
+      default:
         return Colors.grey;
     }
   }
 
-  // Get icon based on status
+  // Get icon based on status string
   IconData get _statusIcon {
-    switch (status) {
-      case QueueStatus.active:
-        return Icons.play_circle;
-      case QueueStatus.waiting:
+    switch (status.toLowerCase()) {
+      case 'called':
+      case 'active':
+        return Icons.volume_up;
+      case 'waiting':
         return Icons.schedule;
-      case QueueStatus.completed:
+      case 'inprogress':
+        return Icons.play_circle;
+      case 'completed':
         return Icons.check_circle;
-      case QueueStatus.cancelled:
+      case 'cancelled':
         return Icons.cancel;
-      case QueueStatus.noShow:
+      case 'noshow':
         return Icons.person_off;
+      default:
+        return Icons.help_outline;
     }
   }
 
-  // Get default label based on status
+  // Get default label based on status string
   String get _defaultLabel {
-    switch (status) {
-      case QueueStatus.active:
+    switch (status.toLowerCase()) {
+      case 'called':
+        return 'Called';
+      case 'active':
         return 'Active';
-      case QueueStatus.waiting:
+      case 'waiting':
         return 'Waiting';
-      case QueueStatus.completed:
+      case 'inprogress':
+        return 'In Progress';
+      case 'completed':
         return 'Completed';
-      case QueueStatus.cancelled:
+      case 'cancelled':
         return 'Cancelled';
-      case QueueStatus.noShow:
+      case 'noshow':
         return 'No Show';
+      default:
+        return status;
     }
   }
 
