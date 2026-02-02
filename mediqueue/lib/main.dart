@@ -304,12 +304,16 @@
 //   }
 // }
 
+
+
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
+import 'screens/patient/hospitals_list_screen.dart';
 import 'screens/welcome_screen.dart';
-import 'screens/patient/patient_home_screen.dart';
+import 'screens/patient/patient_home_screen.dart' hide HospitalsListScreen;
 import 'screens/admin/admin_dashboard_screen.dart';
 import 'screens/admin/select_hospital_screen.dart';
 import 'screens/admin/manage_hospital_screen.dart';
@@ -419,7 +423,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
 
               if (typeSnapshot.hasError) {
                 print("❌ Error getting user type: ${typeSnapshot.error}");
-                return const PatientHomeScreen();
+                return const HospitalsListScreen();
               }
 
               final userType = typeSnapshot.data ?? 'patient';
@@ -430,7 +434,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
                 return const AdminDashboardScreen();
               } else {
                 print("👤 RETURNING PatientHomeScreen");
-                return const PatientHomeScreen();
+                return const HospitalsListScreen();
               }
             },
           );
