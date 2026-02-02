@@ -418,7 +418,7 @@ class _HistoryCard extends StatelessWidget {
                 ),
               ),
               StatusBadge(
-                status: status,
+                status: status.toString().split('.').last,
                 compact: true,
               ),
             ],

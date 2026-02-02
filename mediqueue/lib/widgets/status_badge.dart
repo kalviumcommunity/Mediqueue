@@ -53,6 +53,8 @@ class StatusBadge extends StatelessWidget {
         return Icons.cancel;
       case 'noshow':
         return Icons.person_off;
+      default:
+        return Icons.help;
     }
   }
 
@@ -71,6 +73,8 @@ class StatusBadge extends StatelessWidget {
         return 'Cancelled';
       case 'noshow':
         return 'No Show';
+      default:
+        return 'Unknown';
     }
   }
 
