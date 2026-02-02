@@ -167,9 +167,9 @@
 //   }
 // }
 
-
 import 'package:flutter/material.dart';
 import '../../widgets/status_badge.dart';
+import '../../models/queue_model.dart';
 import '../../models/queue_model.dart' hide QueueStatus;
 
 class HistoryScreen extends StatelessWidget {
@@ -177,7 +177,8 @@ class HistoryScreen extends StatelessWidget {
 
   const HistoryScreen({
     super.key,
-    required this.visits, required Map<dynamic, dynamic> visit, // Removed duplicate parameter
+    required this.visits,
+    required Map<dynamic, dynamic> visit, // Removed duplicate parameter
   });
 
   @override
@@ -227,23 +228,31 @@ class HistoryScreen extends StatelessWidget {
     }
 
     final List<Map<String, dynamic>> processed = [];
-    
+
     for (var visit in visits) {
       try {
         if (visit is Map<String, dynamic>) {
           processed.add({
             'hospital': visit['hospital'] ?? visit['title'] ?? 'Hospital',
-            'department': visit['department'] ?? visit['doctor'] ?? 'Department',
+            'department':
+                visit['department'] ?? visit['doctor'] ?? 'Department',
             'date': visit['date'] ?? visit['createdAt']?.toString() ?? 'Recent',
             'status': _determineStatus(visit['status']),
           });
         } else if (visit is Map) {
           // Handle generic Map type
-          final Map<String, dynamic> convertedVisit = Map<String, dynamic>.from(visit);
+          final Map<String, dynamic> convertedVisit =
+              Map<String, dynamic>.from(visit);
           processed.add({
-            'hospital': convertedVisit['hospital'] ?? convertedVisit['title'] ?? 'Hospital',
-            'department': convertedVisit['department'] ?? convertedVisit['doctor'] ?? 'Department',
-            'date': convertedVisit['date'] ?? convertedVisit['createdAt']?.toString() ?? 'Recent',
+            'hospital': convertedVisit['hospital'] ??
+                convertedVisit['title'] ??
+                'Hospital',
+            'department': convertedVisit['department'] ??
+                convertedVisit['doctor'] ??
+                'Department',
+            'date': convertedVisit['date'] ??
+                convertedVisit['createdAt']?.toString() ??
+                'Recent',
             'status': _determineStatus(convertedVisit['status']),
           });
         }
@@ -411,13 +420,6 @@ class _HistoryCard extends StatelessWidget {
               StatusBadge(
                 status: status,
                 compact: true,
-                color: status == QueueStatus.completed
-                    ? Colors.blue
-                    : status == QueueStatus.cancelled
-                        ? Colors.red
-                        : status == QueueStatus.inProgress
-                            ? Colors.green
-                            : Colors.orange,
               ),
             ],
           ),

@@ -19,6 +19,8 @@ class QueueService {
     required String hospitalName,
     required String departmentName,
     required PatientModel patient,
+    String? doctorId,
+    String? doctorName,
     String? notes,
     String priority = 'normal',
   }) async {
@@ -63,6 +65,8 @@ class QueueService {
         patientName: patient.name,
         patientEmail: patient.email,
         patientPhone: patient.phoneNumber,
+        doctorId: doctorId,
+        doctorName: doctorName,
         queueNumber: queueNumber,
         estimatedWaitTime: estimatedWaitTime,
         status: QueueStatus.waiting,
@@ -364,9 +368,14 @@ class QueueService {
         final department = hospital.departments.firstWhere(
           (d) => d.name == departmentName,
           orElse: () => DepartmentModel(
+            id: DateTime.now().millisecondsSinceEpoch.toString(),
             name: departmentName,
+            description: '',
+            openingTime: '',
+            closingTime: '',
+            isOpen: true,
             queueCount: 0,
-            averageWaitTime: 15,
+            doctors: [],
           ),
         );
 
@@ -392,8 +401,14 @@ class QueueService {
         final department = hospital.departments.firstWhere(
           (d) => d.name == departmentName,
           orElse: () => DepartmentModel(
+            id: DateTime.now().millisecondsSinceEpoch.toString(),
             name: departmentName,
+            description: '',
+            openingTime: '',
+            closingTime: '',
+            isOpen: true,
             queueCount: 0,
+            doctors: [],
           ),
         );
 

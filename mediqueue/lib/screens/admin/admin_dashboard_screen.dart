@@ -1,8 +1,3 @@
-
-
-
-
-
 // // // // // import 'package:flutter/material.dart';
 // // // // // import '/widgets/department_card.dart';
 // // // // // import '/widgets/info_card.dart';
@@ -325,9 +320,6 @@
 // // // // //     );
 // // // // //   }
 // // // // // }
-
-
-
 
 // // // // // import 'package:flutter/material.dart';
 // // // // // import '/widgets/department_card.dart';
@@ -705,8 +697,6 @@
 // // // // //   }
 // // // // // }
 
-
-
 // // // // import 'package:flutter/material.dart';
 // // // // import '/widgets/department_card.dart';
 // // // // import '/widgets/info_card.dart';
@@ -1063,8 +1053,6 @@
 // // // //   }
 // // // // }
 
-
-
 // // // // import 'package:flutter/material.dart';
 // // // // import '/widgets/department_card.dart';
 // // // // import '/widgets/info_card.dart';
@@ -1398,8 +1386,6 @@
 // // // //   }
 // // // // }
 
-
-
 // // // import 'package:flutter/material.dart';
 // // // import '/widgets/department_card.dart';
 // // // import '/widgets/info_card.dart';
@@ -1456,11 +1442,9 @@
 // // //     final totalPatients =
 // // //     queueData.fold<int>(0, (sum, item) => sum + (item['count'] as int));
 
-
 // // //     final avgWaitTime =
 // // //     queueData.fold<int>(0, (sum, item) => sum + (item['avgWait'] as int)) ~/
 // // //         queueData.length;
-
 
 // // //     return Scaffold(
 // // //       backgroundColor: const Color(0xFFF5F6FA),
@@ -1734,8 +1718,6 @@
 // // //     );
 // // //   }
 // // // }
-
-
 
 // // import 'package:flutter/material.dart';
 // // import 'package:firebase_auth/firebase_auth.dart'; // ADD THIS IMPORT
@@ -2265,8 +2247,6 @@
 // //   }
 // // }
 
-
-
 // import 'package:flutter/material.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 // import '/widgets/department_card.dart';
@@ -2550,7 +2530,6 @@
 //   }
 // }
 
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../services/user_service.dart';
@@ -2618,6 +2597,18 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   void initState() {
     super.initState();
     _userService = UserService();
+    _checkHospitalAssignment();
+  }
+
+  Future<void> _checkHospitalAssignment() async {
+    // Check if admin has hospital assigned
+    final hasHospital = await _userService.hasHospitalAssigned();
+    if (!hasHospital && mounted) {
+      // Navigate to hospital selection screen
+      Navigator.of(context).pushReplacementNamed('/select-hospital');
+      return;
+    }
+    // Load user data if hospital is assigned
     _loadUserData();
   }
 
@@ -2775,8 +2766,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (_) => const ManageQueueScreen(
-                                      department: null)));
+                                  builder: (_) => const ManageQueueScreen()));
                         },
                         icon: Icons.edit,
                         backgroundColor: Colors.blue,
@@ -2814,7 +2804,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (_) => ManageQueueScreen(
-                                  department: dept['department'])),
+                                  departmentName: dept['department'])),
                         );
                       },
                       title: '',
@@ -2884,11 +2874,21 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                 MaterialPageRoute(builder: (_) => const AdminProfileScreen()),
               );
             }),
+            _drawerItem(Icons.local_hospital_outlined, 'Manage Hospital', () {
+              Navigator.pushNamed(context, '/manage-hospital');
+            }),
+            _drawerItem(Icons.medical_services_outlined, 'Manage Doctors', () {
+              Navigator.pushNamed(context, '/manage-doctors');
+            }),
             _drawerItem(Icons.notifications_none, 'Notification', () {}),
             _drawerItem(Icons.history, 'History', () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const HistoryScreen(visit: {}, visits: [],)),
+                MaterialPageRoute(
+                    builder: (_) => const HistoryScreen(
+                          visit: {},
+                          visits: [],
+                        )),
               );
             }),
             const SizedBox(height: 12),

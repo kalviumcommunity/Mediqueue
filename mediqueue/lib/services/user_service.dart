@@ -156,6 +156,7 @@ class UserService {
       rethrow;
     }
   }
+
   // Get current user's data from appropriate collection
   Future<Map<String, dynamic>?> getCurrentUserData() async {
     try {
@@ -383,5 +384,50 @@ class UserService {
       print('❌ Error deleting user profile: $e');
       rethrow;
     }
+  }
+
+  // Update admin's hospital assignment
+  Future<void> updateAdminHospital(String hospitalId) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        throw Exception("User not authenticated");
+      }
+
+      // Update staff document with hospital ID
+      await _firestore.collection('staff').doc(user.uid).update({
+        'hospitalId': hospitalId,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+
+      print('✅ Admin hospital updated: $hospitalId');
+    } catch (e) {
+      print('❌ Error updating admin hospital: $e');
+      rethrow;
+    }
+  }
+
+  // Get admin's hospital ID
+  Future<String?> getAdminHospitalId() async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) return null;
+
+      final staffDoc = await _firestore.collection('staff').doc(user.uid).get();
+
+      if (staffDoc.exists && staffDoc.data() != null) {
+        return staffDoc.data()!['hospitalId'] as String?;
+      }
+      return null;
+    } catch (e) {
+      print('❌ Error getting admin hospital: $e');
+      return null;
+    }
+  }
+
+  // Check if admin has hospital assigned
+  Future<bool> hasHospitalAssigned() async {
+    final hospitalId = await getAdminHospitalId();
+    return hospitalId != null && hospitalId.isNotEmpty;
   }
 }
