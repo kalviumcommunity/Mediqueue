@@ -12,6 +12,8 @@ class ManageQueueScreen extends StatefulWidget {
   final String? hospitalId;
 
   const ManageQueueScreen({super.key, this.departmentName, this.hospitalId});
+  
+  get department => null;
 
   @override
   State<ManageQueueScreen> createState() => _ManageQueueScreenState();
@@ -26,6 +28,8 @@ class _ManageQueueScreenState extends State<ManageQueueScreen> {
   String? _selectedDepartmentName;
   bool _selectionInitialized = false;
   bool _isActionLoading = false;
+  
+  bool get _isLoading => false;
 
   HospitalModel? _findHospitalById(List<HospitalModel> hospitals, String? id) {
     if (id == null) return null;
@@ -110,7 +114,7 @@ class _ManageQueueScreenState extends State<ManageQueueScreen> {
         success: result['success'] == true);
   }
 
-  void _showSnack(String message, {bool success = true}) {
+  Future<void> _showSnack(String message, {bool success = true}) async {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -171,7 +175,7 @@ class _ManageQueueScreenState extends State<ManageQueueScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
+    if (_isLoading ?? false) {
       return Scaffold(
         backgroundColor: const Color(0xFFF6FAFD),
         body: Center(
@@ -419,14 +423,14 @@ class _ManageQueueScreenState extends State<ManageQueueScreen> {
           itemBuilder: (context, index) {
             final queue = queues[index];
             final isNext = index == 0 && queue.status == QueueStatus.waiting;
-            return _queueTile(queue, isNext);
+            return _queueTile(queue, isNext, queue);
           },
         );
       },
     );
   }
 
-  Widget _queueTile(QueueModel queue, bool isNext) {
+  Widget _queueTile(QueueModel queue, bool isNext, dynamic patient) {
     final timeLabel =
         DateFormat('MMM d • hh:mm a').format(queue.joinedAt.toLocal());
 
@@ -474,7 +478,7 @@ class _ManageQueueScreenState extends State<ManageQueueScreen> {
                       ),
                     ),
                     StatusBadge(
-                      status: queue.status,
+                      status: queue.status.toString().split('.').last,
                       label: queue.statusText,
                       compact: true,
                     ),
