@@ -6,6 +6,7 @@ import '../../models/queue_model.dart';
 import '../../services/queue_service.dart';
 import '../../widgets/status_badge.dart';
 import 'hospitals_list_screen.dart';
+import 'patient_home_screen.dart' hide HospitalsListScreen;
 
 class MyQueuesScreen extends StatefulWidget {
   const MyQueuesScreen({super.key});

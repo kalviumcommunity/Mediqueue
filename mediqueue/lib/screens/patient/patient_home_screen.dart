@@ -1774,75 +1774,569 @@
 //   }
 // }
 
+// import 'package:flutter/material.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:mediqueue/utils/logout_notifier.dart';
+// import '../../utils/app_colors.dart';
+// import '../../widgets/profile_header.dart';
+// import '../../widgets/hospital_card.dart';
+// import 'patient_profile_screen.dart';
+// import 'join_queue_screen.dart';
+// import 'my_queues_screen.dart';
+// import 'hospitals_list_screen.dart';
+// import 'hospital_location_screen.dart';
+// import '../auth_screen.dart';
+// import '../backend_test_screen.dart';
+// import '../../services/user_service.dart';
+// import '../../services/firestore_service.dart';
+// import '../../models/hospital_model.dart';
+// import '../common/history_screen.dart';
+
+// class PatientHomeScreen extends StatefulWidget {
+//   const PatientHomeScreen({super.key});
+
+//   @override
+//   State<PatientHomeScreen> createState() => _PatientHomeScreenState();
+// }
+
+// class _PatientHomeScreenState extends State<PatientHomeScreen> {
+//   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+//   bool _isLoggingOut = false;
+//   late UserService _userService;
+//   late FirestoreService _firestoreService;
+//   String _userName = 'Patient';
+//   bool _isLoading = true;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _userService = UserService();
+//     _firestoreService = FirestoreService();
+//     _loadUserData();
+//   }
+
+//   Future<void> _loadUserData() async {
+//     try {
+//       final userName = await _userService.getDisplayName();
+//       setState(() {
+//         _userName = userName;
+//         _isLoading = false;
+//       });
+//     } catch (e) {
+//       print('Error loading user data in home screen: $e');
+//       final currentUser = FirebaseAuth.instance.currentUser;
+//       if (currentUser != null) {
+//         setState(() {
+//           _userName = currentUser.displayName ?? 'Patient';
+//           _isLoading = false;
+//         });
+//       } else {
+//         setState(() {
+//           _isLoading = false;
+//         });
+//       }
+//     }
+//   }
+
+//   Future<void> _refreshUserData() async {
+//     setState(() {
+//       _isLoading = true;
+//     });
+//     await _loadUserData();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       key: _scaffoldKey,
+//       backgroundColor: AppColors.bgColor,
+//       drawer: _buildDrawer(context),
+//       body: Stack(
+//         children: [
+//           Column(
+//             children: [
+//               ProfileHeader(
+//                 name: _userName,
+//                 role: 'Patient',
+//                 icon: Icons.person,
+//                 backgroundColor: AppColors.primaryBlue,
+//                 onMenuTap: () {
+//                   _scaffoldKey.currentState?.openDrawer();
+//                 },
+//                 onRefresh: _isLoading ? null : _refreshUserData,
+//                 isLoading: _isLoading,
+//               ),
+//               Container(
+//                 color: AppColors.primaryBlue,
+//                 padding: const EdgeInsets.all(16),
+//                 child: Container(
+//                   padding: const EdgeInsets.symmetric(horizontal: 14),
+//                   decoration: BoxDecoration(
+//                     color: Colors.white,
+//                     borderRadius: BorderRadius.circular(14),
+//                   ),
+//                   child: const TextField(
+//                     decoration: InputDecoration(
+//                       icon: Icon(Icons.search),
+//                       hintText: 'Search hospitals, doctors, specialties...',
+//                       border: InputBorder.none,
+//                     ),
+//                   ),
+//                 ),
+//               ),
+//               Expanded(
+//                 child: ListView(
+//                   padding: const EdgeInsets.all(16),
+//                   children: [
+//                     Row(
+//                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                       children: [
+//                         const Text(
+//                           'Registered Hospitals',
+//                           style: TextStyle(
+//                             fontSize: 18,
+//                             fontWeight: FontWeight.w600,
+//                           ),
+//                         ),
+//                         TextButton.icon(
+//                           onPressed: () {
+//                             Navigator.push(
+//                               context,
+//                               MaterialPageRoute(
+//                                 builder: (_) => const HospitalsListScreen(),
+//                               ),
+//                             );
+//                           },
+//                           icon: const Icon(Icons.list, size: 16),
+//                           label: const Text('View All'),
+//                           style: TextButton.styleFrom(
+//                             foregroundColor: Colors.blue,
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                     const SizedBox(height: 16),
+//                     // Dynamic hospital list from Firebase
+//                     StreamBuilder<List<HospitalModel>>(
+//                       stream: _firestoreService.getHospitals(),
+//                       builder: (context, snapshot) {
+//                         if (snapshot.connectionState ==
+//                             ConnectionState.waiting) {
+//                           return const Center(
+//                             child: Padding(
+//                               padding: EdgeInsets.all(32.0),
+//                               child: CircularProgressIndicator(),
+//                             ),
+//                           );
+//                         }
+
+//                         if (snapshot.hasError) {
+//                           return Center(
+//                             child: Padding(
+//                               padding: const EdgeInsets.all(16.0),
+//                               child: Column(
+//                                 children: [
+//                                   const Icon(
+//                                     Icons.error_outline,
+//                                     size: 48,
+//                                     color: Colors.red,
+//                                   ),
+//                                   const SizedBox(height: 16),
+//                                   Text(
+//                                     'Error loading hospitals',
+//                                     style: TextStyle(
+//                                       fontSize: 16,
+//                                       color: Colors.grey[700],
+//                                     ),
+//                                   ),
+//                                 ],
+//                               ),
+//                             ),
+//                           );
+//                         }
+
+//                         final hospitals = snapshot.data ?? [];
+
+//                         if (hospitals.isEmpty) {
+//                           return Center(
+//                             child: Padding(
+//                               padding: const EdgeInsets.all(32.0),
+//                               child: Column(
+//                                 children: [
+//                                   Icon(
+//                                     Icons.local_hospital,
+//                                     size: 64,
+//                                     color: Colors.grey[400],
+//                                   ),
+//                                   const SizedBox(height: 16),
+//                                   Text(
+//                                     'No hospitals registered yet',
+//                                     style: TextStyle(
+//                                       fontSize: 16,
+//                                       color: Colors.grey[700],
+//                                     ),
+//                                   ),
+//                                   const SizedBox(height: 8),
+//                                   Text(
+//                                     'Check back later for available hospitals',
+//                                     style: TextStyle(
+//                                       fontSize: 14,
+//                                       color: Colors.grey[600],
+//                                     ),
+//                                     textAlign: TextAlign.center,
+//                                   ),
+//                                 ],
+//                               ),
+//                             ),
+//                           );
+//                         }
+
+//                         // Display first 5 hospitals
+//                         final displayHospitals = hospitals.take(5).toList();
+
+//                         return Column(
+//                           children: [
+//                             ...displayHospitals.map((hospital) {
+//                               // Get the first department if available
+//                               final department = hospital.departments.isNotEmpty
+//                                   ? hospital.departments.first.name
+//                                   : 'General';
+//                               final queueCount = hospital.departments.isNotEmpty
+//                                   ? hospital.departments.first.queueCount
+//                                   : 0;
+//                               final waitTime = hospital.departments.isNotEmpty
+//                                   ? hospital.departments.first.averageWaitTime
+//                                   : 15;
+
+//                               return HospitalCard(
+//                                 iconBg: const Color(0xFFD8D5FF),
+//                                 icon: Icons.local_hospital,
+//                                 iconColor: const Color(0xFF4B4DED),
+//                                 name: hospital.name,
+//                                 distance: hospital.location,
+//                                 department: department,
+//                                 rating: hospital.rating?.toString() ?? '4.0',
+//                                 waitTime: '$waitTime mins',
+//                                 onOpen: () {
+//                                   Navigator.push(
+//                                     context,
+//                                     MaterialPageRoute(
+//                                       builder: (_) => HospitalLocationScreen(
+//                                         hospital: hospital,
+//                                       ),
+//                                     ),
+//                                   );
+//                                 },
+//                               );
+//                             }),
+//                             if (hospitals.length > 5)
+//                               Padding(
+//                                 padding: const EdgeInsets.only(top: 16),
+//                                 child: OutlinedButton.icon(
+//                                   onPressed: () {
+//                                     Navigator.push(
+//                                       context,
+//                                       MaterialPageRoute(
+//                                         builder: (_) =>
+//                                             const HospitalsListScreen(),
+//                                       ),
+//                                     );
+//                                   },
+//                                   icon: const Icon(Icons.list),
+//                                   label: Text(
+//                                       'View ${hospitals.length - 5} More Hospitals'),
+//                                   style: OutlinedButton.styleFrom(
+//                                     foregroundColor: Colors.blue,
+//                                     side: const BorderSide(color: Colors.blue),
+//                                     shape: RoundedRectangleBorder(
+//                                       borderRadius: BorderRadius.circular(8),
+//                                     ),
+//                                     padding: const EdgeInsets.symmetric(
+//                                       horizontal: 24,
+//                                       vertical: 12,
+//                                     ),
+//                                   ),
+//                                 ),
+//                               ),
+//                           ],
+//                         );
+//                       },
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ],
+//           ),
+//           if (_isLoggingOut)
+//             Container(
+//               color: Colors.black.withOpacity(0.5),
+//               child: Center(
+//                 child: Container(
+//                   padding: const EdgeInsets.all(24),
+//                   decoration: BoxDecoration(
+//                     color: Colors.white,
+//                     borderRadius: BorderRadius.circular(16),
+//                     boxShadow: [
+//                       BoxShadow(
+//                         color: Colors.black.withOpacity(0.1),
+//                         blurRadius: 20,
+//                         spreadRadius: 2,
+//                       ),
+//                     ],
+//                   ),
+//                   child: Column(
+//                     mainAxisSize: MainAxisSize.min,
+//                     children: [
+//                       SizedBox(
+//                         width: 40,
+//                         height: 40,
+//                         child: CircularProgressIndicator(
+//                           valueColor: AlwaysStoppedAnimation<Color>(
+//                               AppColors.primaryBlue),
+//                           strokeWidth: 3,
+//                         ),
+//                       ),
+//                       const SizedBox(height: 16),
+//                       const Text(
+//                         'Signing out...',
+//                         style: TextStyle(
+//                           fontSize: 16,
+//                           fontWeight: FontWeight.w500,
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//             ),
+//         ],
+//       ),
+//     );
+//   }
+
+//   Drawer _buildDrawer(BuildContext context) {
+//     return Drawer(
+//       shape: const RoundedRectangleBorder(
+//         borderRadius: BorderRadius.horizontal(right: Radius.circular(24)),
+//       ),
+//       child: SafeArea(
+//         child: Padding(
+//           padding: const EdgeInsets.all(16),
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               const Text(
+//                 'MediQueue',
+//                 style: TextStyle(
+//                   fontSize: 20,
+//                   fontWeight: FontWeight.w600,
+//                 ),
+//               ),
+//               const SizedBox(height: 30),
+//               _drawerItem(
+//                 context,
+//                 Icons.person,
+//                 'My Profile',
+//                 () {
+//                   Navigator.push(
+//                     context,
+//                     MaterialPageRoute(
+//                       builder: (_) => const PatientProfileScreen(),
+//                     ),
+//                   );
+//                 },
+//               ),
+//               _drawerItem(
+//                 context,
+//                 Icons.notifications,
+//                 'Notification',
+//                 () {
+//                   ScaffoldMessenger.of(context).showSnackBar(
+//                     const SnackBar(
+//                       content: Text('Notifications coming soon'),
+//                     ),
+//                   );
+//                 },
+//               ),
+//               _drawerItem(
+//                 context,
+//                 Icons.queue,
+//                 'My Queue',
+//                 () {
+//                   Navigator.push(
+//                     context,
+//                     MaterialPageRoute(
+//                       builder: (_) => const MyQueuesScreen(),
+//                     ),
+//                   );
+//                 },
+//               ),
+//               _drawerItem(
+//                 context,
+//                 Icons.history,
+//                 'History',
+//                 () {
+//                   Navigator.push(
+//                     context,
+//                     MaterialPageRoute(
+//                       builder: (_) => const HistoryScreen(
+//                         visit: {},
+//                         visits: [],
+//                       ),
+//                     ),
+//                   );
+//                 },
+//               ),
+//               _drawerItem(
+//                 context,
+//                 Icons.science,
+//                 'Backend Test 🔧',
+//                 () {
+//                   Navigator.push(
+//                     context,
+//                     MaterialPageRoute(
+//                       builder: (_) => const BackendTestScreen(),
+//                     ),
+//                   );
+//                 },
+//               ),
+//               const SizedBox(height: 10),
+//               SizedBox(
+//                 width: double.infinity,
+//                 child: ElevatedButton.icon(
+//                   onPressed: () async {
+//                     Navigator.pop(context);
+//                     setState(() {
+//                       _isLoggingOut = true;
+//                     });
+//                     try {
+//                       LogoutNotifier.setShouldShowMessage();
+//                       await Future.delayed(const Duration(milliseconds: 300));
+//                       await FirebaseAuth.instance.signOut();
+//                       Navigator.of(context).pushAndRemoveUntil(
+//                         MaterialPageRoute(
+//                           builder: (context) => const AuthScreen(),
+//                         ),
+//                         (route) => false,
+//                       );
+//                     } catch (e) {
+//                       if (mounted) {
+//                         setState(() {
+//                           _isLoggingOut = false;
+//                         });
+//                       }
+//                       ScaffoldMessenger.of(context).showSnackBar(
+//                         SnackBar(
+//                           content: Text('Logout failed: ${e.toString()}'),
+//                           backgroundColor: Colors.red,
+//                         ),
+//                       );
+//                     }
+//                   },
+//                   icon: const Icon(Icons.logout),
+//                   label: const Text('Logout'),
+//                   style: ElevatedButton.styleFrom(
+//                     backgroundColor: const Color.fromARGB(255, 221, 238, 251),
+//                     foregroundColor: Colors.black,
+//                     elevation: 0,
+//                     shape: RoundedRectangleBorder(
+//                       borderRadius: BorderRadius.circular(14),
+//                     ),
+//                     padding: const EdgeInsets.symmetric(vertical: 12),
+//                   ),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+
+//   Widget _drawerItem(
+//       BuildContext context, IconData icon, String title, VoidCallback onTap) {
+//     return InkWell(
+//       onTap: () {
+//         Navigator.pop(context); // Close drawer
+//         onTap();
+//       },
+//       child: Padding(
+//         padding: const EdgeInsets.only(bottom: 20),
+//         child: Row(
+//           children: [
+//             Icon(icon),
+//             const SizedBox(width: 14),
+//             Text(title, style: const TextStyle(fontSize: 16)),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mediqueue/utils/logout_notifier.dart';
+
+import '../../models/hospital_model.dart';
+import '../../services/firestore_service.dart';
+import '../../services/user_service.dart';
 import '../../utils/app_colors.dart';
+import '../../utils/logout_notifier.dart';
 import '../../widgets/profile_header.dart';
-import '../../widgets/hospital_card.dart';
-import 'patient_profile_screen.dart';
-import 'join_queue_screen.dart';
-import 'my_queues_screen.dart';
-import 'hospitals_list_screen.dart';
+
 import 'hospital_location_screen.dart';
+import 'hospitals_list_screen.dart';
+import 'patient_profile_screen.dart';
+import 'my_queues_screen.dart';
 import '../auth_screen.dart';
 import '../backend_test_screen.dart';
-import '../../services/user_service.dart';
-import '../../services/firestore_service.dart';
-import '../../models/hospital_model.dart';
 import '../common/history_screen.dart';
 
-class PatientHomeScreen extends StatefulWidget {
-  const PatientHomeScreen({super.key});
+class HospitalsListScreen extends StatefulWidget {
+  const HospitalsListScreen({super.key});
 
   @override
-  State<PatientHomeScreen> createState() => _PatientHomeScreenState();
+  State<HospitalsListScreen> createState() => _HospitalsListScreenState();
 }
 
-class _PatientHomeScreenState extends State<PatientHomeScreen> {
+class _HospitalsListScreenState extends State<HospitalsListScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  bool _isLoggingOut = false;
-  late UserService _userService;
-  late FirestoreService _firestoreService;
+
+  final FirestoreService _firestoreService = FirestoreService();
+  final UserService _userService = UserService();
+  final TextEditingController _searchController = TextEditingController();
+
+  String _searchQuery = '';
   String _userName = 'Patient';
   bool _isLoading = true;
+  bool _isLoggingOut = false;
 
   @override
   void initState() {
     super.initState();
-    _userService = UserService();
-    _firestoreService = FirestoreService();
     _loadUserData();
   }
 
   Future<void> _loadUserData() async {
     try {
-      final userName = await _userService.getDisplayName();
+      final name = await _userService.getDisplayName();
       setState(() {
-        _userName = userName;
+        _userName = name;
         _isLoading = false;
       });
-    } catch (e) {
-      print('Error loading user data in home screen: $e');
-      final currentUser = FirebaseAuth.instance.currentUser;
-      if (currentUser != null) {
-        setState(() {
-          _userName = currentUser.displayName ?? 'Patient';
-          _isLoading = false;
-        });
-      } else {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+    } catch (_) {
+      final user = FirebaseAuth.instance.currentUser;
+      setState(() {
+        _userName = user?.displayName ?? 'Patient';
+        _isLoading = false;
+      });
     }
   }
 
-  Future<void> _refreshUserData() async {
-    setState(() {
-      _isLoading = true;
-    });
-    await _loadUserData();
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -1851,10 +2345,12 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
       key: _scaffoldKey,
       backgroundColor: AppColors.bgColor,
       drawer: _buildDrawer(context),
+
       body: Stack(
         children: [
           Column(
             children: [
+              /// ===== HEADER (same as PatientHomeScreen) =====
               ProfileHeader(
                 name: _userName,
                 role: 'Patient',
@@ -1863,9 +2359,10 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                 onMenuTap: () {
                   _scaffoldKey.currentState?.openDrawer();
                 },
-                onRefresh: _isLoading ? null : _refreshUserData,
                 isLoading: _isLoading,
               ),
+
+              /// ===== SEARCH BAR =====
               Container(
                 color: AppColors.primaryBlue,
                 padding: const EdgeInsets.all(16),
@@ -1875,198 +2372,72 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(14),
                   ),
-                  child: const TextField(
-                    decoration: InputDecoration(
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: const InputDecoration(
                       icon: Icon(Icons.search),
-                      hintText: 'Search hospitals, doctors, specialties...',
+                      hintText: 'Search hospitals...',
                       border: InputBorder.none,
                     ),
+                    onChanged: (value) {
+                      setState(() {
+                        _searchQuery = value.toLowerCase();
+                      });
+                    },
                   ),
                 ),
               ),
+
+              /// ===== HOSPITAL LIST =====
               Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.all(16),
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Registered Hospitals',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        TextButton.icon(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const HospitalsListScreen(),
-                              ),
-                            );
-                          },
-                          icon: const Icon(Icons.list, size: 16),
-                          label: const Text('View All'),
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.blue,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    // Dynamic hospital list from Firebase
-                    StreamBuilder<List<HospitalModel>>(
-                      stream: _firestoreService.getHospitals(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(32.0),
-                              child: CircularProgressIndicator(),
-                            ),
-                          );
-                        }
+                child: StreamBuilder<List<HospitalModel>>(
+                  stream: _firestoreService.getHospitals(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
 
-                        if (snapshot.hasError) {
-                          return Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                children: [
-                                  const Icon(
-                                    Icons.error_outline,
-                                    size: 48,
-                                    color: Colors.red,
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    'Error loading hospitals',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.grey[700],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }
+                    if (snapshot.hasError) {
+                      return const Center(
+                        child: Text('Error loading hospitals'),
+                      );
+                    }
 
-                        final hospitals = snapshot.data ?? [];
+                    final hospitals = snapshot.data ?? [];
 
-                        if (hospitals.isEmpty) {
-                          return Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(32.0),
-                              child: Column(
-                                children: [
-                                  Icon(
-                                    Icons.local_hospital,
-                                    size: 64,
-                                    color: Colors.grey[400],
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    'No hospitals registered yet',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.grey[700],
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    'Check back later for available hospitals',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.grey[600],
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }
+                    if (hospitals.isEmpty) {
+                      return const Center(
+                        child: Text('No hospitals registered yet'),
+                      );
+                    }
 
-                        // Display first 5 hospitals
-                        final displayHospitals = hospitals.take(5).toList();
+                    final filteredHospitals = _searchQuery.isEmpty
+                        ? hospitals
+                        : hospitals.where((h) =>
+                            h.name.toLowerCase().contains(_searchQuery) ||
+                            h.location.toLowerCase().contains(_searchQuery)).toList();
 
-                        return Column(
-                          children: [
-                            ...displayHospitals.map((hospital) {
-                              // Get the first department if available
-                              final department = hospital.departments.isNotEmpty
-                                  ? hospital.departments.first.name
-                                  : 'General';
-                              final queueCount = hospital.departments.isNotEmpty
-                                  ? hospital.departments.first.queueCount
-                                  : 0;
-                              final waitTime = hospital.departments.isNotEmpty
-                                  ? hospital.departments.first.averageWaitTime
-                                  : 15;
+                    if (filteredHospitals.isEmpty) {
+                      return const Center(
+                        child: Text('No hospitals found'),
+                      );
+                    }
 
-                              return HospitalCard(
-                                iconBg: const Color(0xFFD8D5FF),
-                                icon: Icons.local_hospital,
-                                iconColor: const Color(0xFF4B4DED),
-                                name: hospital.name,
-                                distance: hospital.location,
-                                department: department,
-                                rating: hospital.rating?.toString() ?? '4.0',
-                                waitTime: '$waitTime mins',
-                                onOpen: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => HospitalLocationScreen(
-                                        hospital: hospital,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
-                            }),
-                            if (hospitals.length > 5)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 16),
-                                child: OutlinedButton.icon(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) =>
-                                            const HospitalsListScreen(),
-                                      ),
-                                    );
-                                  },
-                                  icon: const Icon(Icons.list),
-                                  label: Text(
-                                      'View ${hospitals.length - 5} More Hospitals'),
-                                  style: OutlinedButton.styleFrom(
-                                    foregroundColor: Colors.blue,
-                                    side: const BorderSide(color: Colors.blue),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 24,
-                                      vertical: 12,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                          ],
-                        );
+                    return ListView.builder(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: filteredHospitals.length,
+                      itemBuilder: (context, index) {
+                        final hospital = filteredHospitals[index];
+                        return _buildHospitalCard(hospital);
                       },
-                    ),
-                  ],
+                    );
+                  },
                 ),
               ),
             ],
           ),
+
+          /// ===== LOGOUT OVERLAY =====
           if (_isLoggingOut)
             Container(
               color: Colors.black.withOpacity(0.5),
@@ -2076,34 +2447,13 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 20,
-                        spreadRadius: 2,
-                      ),
-                    ],
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        width: 40,
-                        height: 40,
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                              AppColors.primaryBlue),
-                          strokeWidth: 3,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      const Text(
-                        'Signing out...',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+                    children: const [
+                      CircularProgressIndicator(),
+                      SizedBox(height: 16),
+                      Text('Signing out...'),
                     ],
                   ),
                 ),
@@ -2114,6 +2464,82 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
     );
   }
 
+  /// ===== HOSPITAL CARD =====
+  Widget _buildHospitalCard(HospitalModel hospital) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 16),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => HospitalLocationScreen(hospital: hospital),
+            ),
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                hospital.name,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                hospital.location,
+                style: TextStyle(color: Colors.grey[600]),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      icon: const Icon(Icons.location_on),
+                      label: const Text('View Location'),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                HospitalLocationScreen(hospital: hospital),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      icon: const Icon(Icons.info_outline),
+                      label: const Text('Details'),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                HospitalLocationScreen(hospital: hospital),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// ===== FULL DRAWER (COPIED FROM PATIENT HOME) =====
   Drawer _buildDrawer(BuildContext context) {
     return Drawer(
       shape: const RoundedRectangleBorder(
@@ -2127,123 +2553,75 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
             children: [
               const Text(
                 'MediQueue',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 30),
-              _drawerItem(
-                context,
-                Icons.person,
-                'My Profile',
-                () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const PatientProfileScreen(),
-                    ),
-                  );
-                },
-              ),
-              _drawerItem(
-                context,
-                Icons.notifications,
-                'Notification',
-                () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Notifications coming soon'),
-                    ),
-                  );
-                },
-              ),
-              _drawerItem(
-                context,
-                Icons.queue,
-                'My Queue',
-                () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const MyQueuesScreen(),
-                    ),
-                  );
-                },
-              ),
-              _drawerItem(
-                context,
-                Icons.history,
-                'History',
-                () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const HistoryScreen(
-                        visit: {},
-                        visits: [],
-                      ),
-                    ),
-                  );
-                },
-              ),
-              _drawerItem(
-                context,
-                Icons.science,
-                'Backend Test 🔧',
-                () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const BackendTestScreen(),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 10),
+
+              _drawerItem(context, Icons.person, 'My Profile', () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const PatientProfileScreen(),
+                  ),
+                );
+              }),
+
+              _drawerItem(context, Icons.notifications, 'Notification', () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Notifications coming soon')),
+                );
+              }),
+
+              _drawerItem(context, Icons.queue, 'My Queue', () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const MyQueuesScreen(),
+                  ),
+                );
+              }),
+
+              _drawerItem(context, Icons.history, 'History', () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        const HistoryScreen(visit: {}, visits: []),
+                  ),
+                );
+              }),
+
+              _drawerItem(context, Icons.science, 'Backend Test 🔧', () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const BackendTestScreen(),
+                  ),
+                );
+              }),
+
+              const Spacer(),
+
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: () async {
-                    Navigator.pop(context);
-                    setState(() {
-                      _isLoggingOut = true;
-                    });
-                    try {
-                      LogoutNotifier.setShouldShowMessage();
-                      await Future.delayed(const Duration(milliseconds: 300));
-                      await FirebaseAuth.instance.signOut();
-                      Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                          builder: (context) => const AuthScreen(),
-                        ),
-                        (route) => false,
-                      );
-                    } catch (e) {
-                      if (mounted) {
-                        setState(() {
-                          _isLoggingOut = false;
-                        });
-                      }
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Logout failed: ${e.toString()}'),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                    }
-                  },
                   icon: const Icon(Icons.logout),
                   label: const Text('Logout'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 221, 238, 251),
+                    backgroundColor: const Color(0xFFDDEEFF),
                     foregroundColor: Colors.black,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    setState(() => _isLoggingOut = true);
+                    LogoutNotifier.setShouldShowMessage();
+                    await FirebaseAuth.instance.signOut();
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (_) => const AuthScreen()),
+                      (route) => false,
+                    );
+                  },
                 ),
               ),
             ],
@@ -2254,10 +2632,14 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
   }
 
   Widget _drawerItem(
-      BuildContext context, IconData icon, String title, VoidCallback onTap) {
+    BuildContext context,
+    IconData icon,
+    String title,
+    VoidCallback onTap,
+  ) {
     return InkWell(
       onTap: () {
-        Navigator.pop(context); // Close drawer
+        Navigator.pop(context);
         onTap();
       },
       child: Padding(

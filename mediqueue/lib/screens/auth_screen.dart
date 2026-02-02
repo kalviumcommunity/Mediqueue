@@ -958,6 +958,7 @@ import '../services/user_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../screens/patient/patient_home_screen.dart';
 import '../screens/admin/admin_dashboard_screen.dart';
+import 'patient/hospitals_list_screen.dart' hide HospitalsListScreen;
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -1893,7 +1894,7 @@ class _AuthScreenState extends State<AuthScreen>
           MaterialPageRoute(
             builder: (context) => userType == 'admin'
                 ? const AdminDashboardScreen()
-                : const PatientHomeScreen(),
+                : const HospitalsListScreen(),
           ),
           (route) => false, // Remove all previous routes
         );
@@ -1904,7 +1905,7 @@ class _AuthScreenState extends State<AuthScreen>
       if (mounted) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const PatientHomeScreen()),
+          MaterialPageRoute(builder: (context) => const HospitalsListScreen()),
           (route) => false,
         );
       }

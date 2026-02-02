@@ -1,10 +1,653 @@
+// // import 'package:flutter/material.dart';
+// // import '../../models/hospital_model.dart';
+// // import '../../services/firestore_service.dart';
+// // import 'select_doctor_screen.dart';
+
+// // class HospitalDetailsScreen extends StatelessWidget {
+// //   const HospitalDetailsScreen({super.key});
+
+// //   static final FirestoreService _firestoreService = FirestoreService();
+
+// //   @override
+// //   Widget build(BuildContext context) {
+// //     final hospital =
+// //         ModalRoute.of(context)!.settings.arguments as HospitalModel;
+
+// //     return Scaffold(
+// //       appBar: AppBar(
+// //         title: Text(hospital.name),
+// //         backgroundColor: Colors.blue,
+// //         foregroundColor: Colors.white,
+// //       ),
+// //       body: Column(
+// //         children: [
+// //           // Hospital info card
+// //           Container(
+// //             width: double.infinity,
+// //             padding: const EdgeInsets.all(20),
+// //             decoration: BoxDecoration(
+// //               gradient: LinearGradient(
+// //                 colors: [Colors.blue.shade600, Colors.blue.shade400],
+// //               ),
+// //             ),
+// //             child: Column(
+// //               crossAxisAlignment: CrossAxisAlignment.start,
+// //               children: [
+// //                 Text(
+// //                   hospital.name,
+// //                   style: const TextStyle(
+// //                     fontSize: 24,
+// //                     fontWeight: FontWeight.bold,
+// //                     color: Colors.white,
+// //                   ),
+// //                 ),
+// //                 const SizedBox(height: 8),
+// //                 Row(
+// //                   children: [
+// //                     const Icon(Icons.location_on,
+// //                         size: 16, color: Colors.white70),
+// //                     const SizedBox(width: 4),
+// //                     Expanded(
+// //                       child: Text(
+// //                         hospital.location,
+// //                         style: const TextStyle(
+// //                           fontSize: 14,
+// //                           color: Colors.white70,
+// //                         ),
+// //                       ),
+// //                     ),
+// //                   ],
+// //                 ),
+// //                 if (hospital.phoneNumber != null) ...[
+// //                   const SizedBox(height: 4),
+// //                   Row(
+// //                     children: [
+// //                       const Icon(Icons.phone, size: 16, color: Colors.white70),
+// //                       const SizedBox(width: 4),
+// //                       Text(
+// //                         hospital.phoneNumber!,
+// //                         style: const TextStyle(
+// //                           fontSize: 14,
+// //                           color: Colors.white70,
+// //                         ),
+// //                       ),
+// //                     ],
+// //                   ),
+// //                 ],
+// //               ],
+// //             ),
+// //           ),
+// //           // Departments list
+// //           Expanded(
+// //             child: hospital.departments.isEmpty
+// //                 ? Center(
+// //                     child: Column(
+// //                       mainAxisAlignment: MainAxisAlignment.center,
+// //                       children: [
+// //                         Icon(
+// //                           Icons.medical_services_outlined,
+// //                           size: 64,
+// //                           color: Colors.grey[400],
+// //                         ),
+// //                         const SizedBox(height: 16),
+// //                         Text(
+// //                           'No departments available',
+// //                           style: TextStyle(
+// //                             fontSize: 16,
+// //                             color: Colors.grey[600],
+// //                           ),
+// //                         ),
+// //                       ],
+// //                     ),
+// //                   )
+// //                 : ListView.builder(
+// //                     padding: const EdgeInsets.all(16),
+// //                     itemCount: hospital.departments.length,
+// //                     itemBuilder: (context, index) {
+// //                       final dept = hospital.departments[index];
+// //                       return _buildDepartmentCard(
+// //                         context,
+// //                         hospital,
+// //                         dept,
+// //                       );
+// //                     },
+// //                   ),
+// //           ),
+// //         ],
+// //       ),
+// //     );
+// //   }
+
+// //   Widget _buildDepartmentCard(
+// //     BuildContext context,
+// //     HospitalModel hospital,
+// //     DepartmentModel department,
+// //   ) {
+// //     return Card(
+// //       margin: const EdgeInsets.only(bottom: 16),
+// //       elevation: 2,
+// //       shape: RoundedRectangleBorder(
+// //         borderRadius: BorderRadius.circular(12),
+// //       ),
+// //       child: InkWell(
+// //         onTap: () async {
+// //           if (department.doctors.isEmpty) {
+// //             ScaffoldMessenger.of(context).showSnackBar(
+// //               const SnackBar(
+// //                 content: Text('No doctors available in this department'),
+// //                 backgroundColor: Colors.orange,
+// //               ),
+// //             );
+// //             return;
+// //           }
+// //           // Fetch latest hospital data to ensure doctor availability is fresh
+// //           final latestHospital =
+// //               await _firestoreService.getHospitalById(hospital.id);
+// //           final resolvedHospital = latestHospital ?? hospital;
+// //           DepartmentModel resolvedDepartment = department;
+// //           if (latestHospital != null) {
+// //             try {
+// //               resolvedDepartment = latestHospital.departments
+// //                   .firstWhere((d) => d.id == department.id);
+// //             } catch (_) {
+// //               // keep original department if not found
+// //             }
+// //           }
+
+// //           if (resolvedDepartment.doctors.isEmpty) {
+// //             if (!context.mounted) return;
+// //             ScaffoldMessenger.of(context).showSnackBar(
+// //               const SnackBar(
+// //                 content: Text('No doctors available in this department'),
+// //                 backgroundColor: Colors.orange,
+// //               ),
+// //             );
+// //             return;
+// //           }
+
+// //           if (!context.mounted) return;
+// //           Navigator.push(
+// //             context,
+// //             MaterialPageRoute(
+// //               builder: (_) => SelectDoctorScreen(
+// //                 hospital: resolvedHospital,
+// //                 department: resolvedDepartment,
+// //               ),
+// //             ),
+// //           );
+// //         },
+// //         borderRadius: BorderRadius.circular(12),
+// //         child: Padding(
+// //           padding: const EdgeInsets.all(16),
+// //           child: Column(
+// //             crossAxisAlignment: CrossAxisAlignment.start,
+// //             children: [
+// //               Row(
+// //                 children: [
+// //                   Container(
+// //                     padding: const EdgeInsets.all(12),
+// //                     decoration: BoxDecoration(
+// //                       color: Colors.blue.withOpacity(0.1),
+// //                       borderRadius: BorderRadius.circular(10),
+// //                     ),
+// //                     child: const Icon(
+// //                       Icons.medical_services,
+// //                       color: Colors.blue,
+// //                       size: 24,
+// //                     ),
+// //                   ),
+// //                   const SizedBox(width: 12),
+// //                   Expanded(
+// //                     child: Column(
+// //                       crossAxisAlignment: CrossAxisAlignment.start,
+// //                       children: [
+// //                         Text(
+// //                           department.name,
+// //                           style: const TextStyle(
+// //                             fontSize: 18,
+// //                             fontWeight: FontWeight.bold,
+// //                           ),
+// //                         ),
+// //                         const SizedBox(height: 4),
+// //                         Text(
+// //                           '${department.doctors.length} ${department.doctors.length == 1 ? 'doctor' : 'doctors'} available',
+// //                           style: TextStyle(
+// //                             fontSize: 14,
+// //                             color: Colors.grey[600],
+// //                           ),
+// //                         ),
+// //                       ],
+// //                     ),
+// //                   ),
+// //                   if (!department.isOpen)
+// //                     Container(
+// //                       padding: const EdgeInsets.symmetric(
+// //                         horizontal: 8,
+// //                         vertical: 4,
+// //                       ),
+// //                       decoration: BoxDecoration(
+// //                         color: Colors.red.withOpacity(0.1),
+// //                         borderRadius: BorderRadius.circular(6),
+// //                       ),
+// //                       child: const Text(
+// //                         'Closed',
+// //                         style: TextStyle(
+// //                           fontSize: 12,
+// //                           color: Colors.red,
+// //                           fontWeight: FontWeight.w600,
+// //                         ),
+// //                       ),
+// //                     ),
+// //                 ],
+// //               ),
+// //               const SizedBox(height: 12),
+// //               Row(
+// //                 children: [
+// //                   Icon(
+// //                     Icons.people,
+// //                     size: 16,
+// //                     color: Colors.grey[600],
+// //                   ),
+// //                   const SizedBox(width: 4),
+// //                   Text(
+// //                     '${department.queueCount} in queue',
+// //                     style: TextStyle(
+// //                       fontSize: 14,
+// //                       color: Colors.grey[600],
+// //                     ),
+// //                   ),
+// //                   const SizedBox(width: 16),
+// //                   Icon(
+// //                     Icons.schedule,
+// //                     size: 16,
+// //                     color: Colors.grey[600],
+// //                   ),
+// //                   const SizedBox(width: 4),
+// //                   Text(
+// //                     '~${department.averageWaitTime} min wait',
+// //                     style: TextStyle(
+// //                       fontSize: 14,
+// //                       color: Colors.grey[600],
+// //                     ),
+// //                   ),
+// //                 ],
+// //               ),
+// //               if (department.doctors.isNotEmpty) ...[
+// //                 const SizedBox(height: 12),
+// //                 const Divider(),
+// //                 const SizedBox(height: 8),
+// //                 const Text(
+// //                   'Doctors:',
+// //                   style: TextStyle(
+// //                     fontSize: 14,
+// //                     fontWeight: FontWeight.w600,
+// //                   ),
+// //                 ),
+// //                 const SizedBox(height: 8),
+// //                 ...department.doctors.take(2).map(
+// //                       (doctor) => Padding(
+// //                         padding: const EdgeInsets.only(bottom: 4),
+// //                         child: Row(
+// //                           children: [
+// //                             Icon(
+// //                               Icons.person,
+// //                               size: 16,
+// //                               color: Colors.grey[600],
+// //                             ),
+// //                             const SizedBox(width: 8),
+// //                             Expanded(
+// //                               child: Text(
+// //                                 doctor.name,
+// //                                 style: const TextStyle(fontSize: 14),
+// //                               ),
+// //                             ),
+// //                             if (doctor.isAvailable)
+// //                               Container(
+// //                                 width: 8,
+// //                                 height: 8,
+// //                                 decoration: const BoxDecoration(
+// //                                   color: Colors.green,
+// //                                   shape: BoxShape.circle,
+// //                                 ),
+// //                               )
+// //                             else
+// //                               Container(
+// //                                 width: 8,
+// //                                 height: 8,
+// //                                 decoration: const BoxDecoration(
+// //                                   color: Colors.red,
+// //                                   shape: BoxShape.circle,
+// //                                 ),
+// //                               ),
+// //                           ],
+// //                         ),
+// //                       ),
+// //                     ),
+// //                 if (department.doctors.length > 2)
+// //                   Padding(
+// //                     padding: const EdgeInsets.only(top: 4),
+// //                     child: Text(
+// //                       '+${department.doctors.length - 2} more',
+// //                       style: TextStyle(
+// //                         fontSize: 12,
+// //                         color: Colors.grey[600],
+// //                       ),
+// //                     ),
+// //                   ),
+// //               ],
+// //             ],
+// //           ),
+// //         ),
+// //       ),
+// //     );
+// //   }
+// // }
+
+
+
+// import 'package:flutter/material.dart';
+// import '../../models/hospital_model.dart';
+// import '../../services/firestore_service.dart';
+// import 'select_doctor_screen.dart';
+
+// class HospitalDetailsScreen extends StatelessWidget {
+//   const HospitalDetailsScreen({super.key, required HospitalModel hospital});
+
+//   static final FirestoreService _firestoreService = FirestoreService();
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final hospital =
+//         ModalRoute.of(context)!.settings.arguments as HospitalModel;
+
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text(hospital.name),
+//         backgroundColor: const Color.fromRGBO(13, 27, 140, 1),
+//         foregroundColor: Colors.white,
+//         elevation: 0,
+//       ),
+//       body: Column(
+//         children: [
+//           // 🔵 TOP HOSPITAL INFO (UPDATED GRADIENT)
+//           Container(
+//             width: double.infinity,
+//             padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
+//             decoration: const BoxDecoration(
+//               gradient: LinearGradient(
+//                 colors: [
+//                   Color.fromRGBO(13, 27, 140, 1),
+//                   Color.fromRGBO(90, 140, 255, 1),
+//                 ],
+//                 begin: Alignment.topLeft,
+//                 end: Alignment.bottomRight,
+//               ),
+//             ),
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Text(
+//                   hospital.name,
+//                   style: const TextStyle(
+//                     fontSize: 24,
+//                     fontWeight: FontWeight.bold,
+//                     color: Colors.white,
+//                   ),
+//                 ),
+//                 const SizedBox(height: 10),
+//                 Row(
+//                   children: [
+//                     const Icon(Icons.location_on,
+//                         size: 16, color: Colors.white70),
+//                     const SizedBox(width: 6),
+//                     Expanded(
+//                       child: Text(
+//                         hospital.location,
+//                         style: const TextStyle(
+//                           fontSize: 14,
+//                           color: Colors.white70,
+//                         ),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//                 if (hospital.phoneNumber != null) ...[
+//                   const SizedBox(height: 6),
+//                   Row(
+//                     children: [
+//                       const Icon(Icons.phone,
+//                           size: 16, color: Colors.white70),
+//                       const SizedBox(width: 6),
+//                       Text(
+//                         hospital.phoneNumber!,
+//                         style: const TextStyle(
+//                           fontSize: 14,
+//                           color: Colors.white70,
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ],
+//               ],
+//             ),
+//           ),
+
+//           // 🏥 DEPARTMENTS LIST
+//           Expanded(
+//             child: hospital.departments.isEmpty
+//                 ? Center(
+//                     child: Column(
+//                       mainAxisAlignment: MainAxisAlignment.center,
+//                       children: [
+//                         Icon(
+//                           Icons.medical_services_outlined,
+//                           size: 64,
+//                           color: Colors.grey[400],
+//                         ),
+//                         const SizedBox(height: 16),
+//                         Text(
+//                           'No departments available',
+//                           style: TextStyle(
+//                             fontSize: 16,
+//                             color: Colors.grey[600],
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   )
+//                 : ListView.builder(
+//                     padding: const EdgeInsets.all(16),
+//                     itemCount: hospital.departments.length,
+//                     itemBuilder: (context, index) {
+//                       final dept = hospital.departments[index];
+//                       return _buildDepartmentCard(
+//                         context,
+//                         hospital,
+//                         dept,
+//                       );
+//                     },
+//                   ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+
+//   Widget _buildDepartmentCard(
+//     BuildContext context,
+//     HospitalModel hospital,
+//     DepartmentModel department,
+//   ) {
+//     return Card(
+//       margin: const EdgeInsets.only(bottom: 16),
+//       elevation: 2,
+//       shape: RoundedRectangleBorder(
+//         borderRadius: BorderRadius.circular(14),
+//       ),
+//       child: InkWell(
+//         onTap: () async {
+//           if (department.doctors.isEmpty) {
+//             ScaffoldMessenger.of(context).showSnackBar(
+//               const SnackBar(
+//                 content: Text('No doctors available in this department'),
+//                 backgroundColor: Colors.orange,
+//               ),
+//             );
+//             return;
+//           }
+
+//           final latestHospital =
+//               await _firestoreService.getHospitalById(hospital.id);
+//           final resolvedHospital = latestHospital ?? hospital;
+
+//           DepartmentModel resolvedDepartment = department;
+//           if (latestHospital != null) {
+//             try {
+//               resolvedDepartment = latestHospital.departments
+//                   .firstWhere((d) => d.id == department.id);
+//             } catch (_) {}
+//           }
+
+//           if (!context.mounted) return;
+
+//           Navigator.push(
+//             context,
+//             MaterialPageRoute(
+//               builder: (_) => SelectDoctorScreen(
+//                 hospital: resolvedHospital,
+//                 department: resolvedDepartment,
+//               ),
+//             ),
+//           );
+//         },
+//         borderRadius: BorderRadius.circular(14),
+//         child: Padding(
+//           padding: const EdgeInsets.all(16),
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               // Header row
+//               Row(
+//                 children: [
+//                   Container(
+//                     padding: const EdgeInsets.all(12),
+//                     decoration: BoxDecoration(
+//                       color: const Color.fromRGBO(90, 140, 255, 0.15),
+//                       borderRadius: BorderRadius.circular(10),
+//                     ),
+//                     child: const Icon(
+//                       Icons.medical_services,
+//                       color: Color.fromRGBO(13, 27, 140, 1),
+//                       size: 24,
+//                     ),
+//                   ),
+//                   const SizedBox(width: 12),
+//                   Expanded(
+//                     child: Column(
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: [
+//                         Text(
+//                           department.name,
+//                           style: const TextStyle(
+//                             fontSize: 18,
+//                             fontWeight: FontWeight.bold,
+//                           ),
+//                         ),
+//                         const SizedBox(height: 4),
+//                         Text(
+//                           '${department.doctors.length} doctor(s) available',
+//                           style: TextStyle(
+//                             fontSize: 14,
+//                             color: Colors.grey[600],
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   ),
+//                   if (!department.isOpen)
+//                     Container(
+//                       padding: const EdgeInsets.symmetric(
+//                           horizontal: 8, vertical: 4),
+//                       decoration: BoxDecoration(
+//                         color: Colors.red.withOpacity(0.1),
+//                         borderRadius: BorderRadius.circular(6),
+//                       ),
+//                       child: const Text(
+//                         'Closed',
+//                         style: TextStyle(
+//                           fontSize: 12,
+//                           color: Colors.red,
+//                           fontWeight: FontWeight.w600,
+//                         ),
+//                       ),
+//                     ),
+//                 ],
+//               ),
+
+//               const SizedBox(height: 12),
+
+//               Row(
+//                 children: [
+//                   Icon(Icons.people, size: 16, color: Colors.grey[600]),
+//                   const SizedBox(width: 4),
+//                   Text(
+//                     '${department.queueCount} in queue',
+//                     style: TextStyle(color: Colors.grey[600]),
+//                   ),
+//                   const SizedBox(width: 16),
+//                   Icon(Icons.schedule, size: 16, color: Colors.grey[600]),
+//                   const SizedBox(width: 4),
+//                   Text(
+//                     '~${department.averageWaitTime} min wait',
+//                     style: TextStyle(color: Colors.grey[600]),
+//                   ),
+//                 ],
+//               ),
+
+//               if (department.doctors.isNotEmpty) ...[
+//                 const SizedBox(height: 12),
+//                 const Divider(),
+//                 const SizedBox(height: 8),
+//                 const Text(
+//                   'Doctors:',
+//                   style: TextStyle(fontWeight: FontWeight.w600),
+//                 ),
+//                 const SizedBox(height: 8),
+//                 ...department.doctors.take(2).map(
+//                       (doctor) => Row(
+//                         children: [
+//                           const Icon(Icons.person,
+//                               size: 16, color: Colors.grey),
+//                           const SizedBox(width: 8),
+//                           Expanded(child: Text(doctor.name)),
+//                           Container(
+//                             width: 8,
+//                             height: 8,
+//                             decoration: BoxDecoration(
+//                               color: doctor.isAvailable
+//                                   ? Colors.green
+//                                   : Colors.red,
+//                               shape: BoxShape.circle,
+//                             ),
+//                           ),
+//                         ],
+//                       ),
+//                     ),
+//               ],
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
 import 'package:flutter/material.dart';
 import '../../models/hospital_model.dart';
 import '../../services/firestore_service.dart';
 import 'select_doctor_screen.dart';
 
 class HospitalDetailsScreen extends StatelessWidget {
-  const HospitalDetailsScreen({super.key});
+  const HospitalDetailsScreen({super.key, required HospitalModel hospital});
 
   static final FirestoreService _firestoreService = FirestoreService();
 
@@ -14,25 +657,35 @@ class HospitalDetailsScreen extends StatelessWidget {
         ModalRoute.of(context)!.settings.arguments as HospitalModel;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(hospital.name),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-      ),
       body: Column(
         children: [
-          // Hospital info card
+          // 🔵 TOP HOSPITAL INFO (WITH BACK BUTTON)
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
+            padding: const EdgeInsets.fromLTRB(16, 40, 16, 24),
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [Colors.blue.shade600, Colors.blue.shade400],
+                colors: [
+                  Color.fromRGBO(13, 27, 140, 1),
+                  Color.fromRGBO(90, 140, 255, 1),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // 🔙 Back Button
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
+
+                const SizedBox(height: 12),
+
                 Text(
                   hospital.name,
                   style: const TextStyle(
@@ -41,12 +694,13 @@ class HospitalDetailsScreen extends StatelessWidget {
                     color: Colors.white,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
+
                 Row(
                   children: [
                     const Icon(Icons.location_on,
                         size: 16, color: Colors.white70),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: 6),
                     Expanded(
                       child: Text(
                         hospital.location,
@@ -58,12 +712,14 @@ class HospitalDetailsScreen extends StatelessWidget {
                     ),
                   ],
                 ),
+
                 if (hospital.phoneNumber != null) ...[
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 6),
                   Row(
                     children: [
-                      const Icon(Icons.phone, size: 16, color: Colors.white70),
-                      const SizedBox(width: 4),
+                      const Icon(Icons.phone,
+                          size: 16, color: Colors.white70),
+                      const SizedBox(width: 6),
                       Text(
                         hospital.phoneNumber!,
                         style: const TextStyle(
@@ -77,7 +733,8 @@ class HospitalDetailsScreen extends StatelessWidget {
               ],
             ),
           ),
-          // Departments list
+
+          // 🏥 DEPARTMENTS LIST
           Expanded(
             child: hospital.departments.isEmpty
                 ? Center(
@@ -127,9 +784,10 @@ class HospitalDetailsScreen extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
       ),
       child: InkWell(
+        borderRadius: BorderRadius.circular(14),
         onTap: () async {
           if (department.doctors.isEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -140,32 +798,21 @@ class HospitalDetailsScreen extends StatelessWidget {
             );
             return;
           }
-          // Fetch latest hospital data to ensure doctor availability is fresh
+
           final latestHospital =
               await _firestoreService.getHospitalById(hospital.id);
           final resolvedHospital = latestHospital ?? hospital;
+
           DepartmentModel resolvedDepartment = department;
           if (latestHospital != null) {
             try {
               resolvedDepartment = latestHospital.departments
                   .firstWhere((d) => d.id == department.id);
-            } catch (_) {
-              // keep original department if not found
-            }
-          }
-
-          if (resolvedDepartment.doctors.isEmpty) {
-            if (!context.mounted) return;
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('No doctors available in this department'),
-                backgroundColor: Colors.orange,
-              ),
-            );
-            return;
+            } catch (_) {}
           }
 
           if (!context.mounted) return;
+
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -176,7 +823,6 @@ class HospitalDetailsScreen extends StatelessWidget {
             ),
           );
         },
-        borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -187,12 +833,12 @@ class HospitalDetailsScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.blue.withOpacity(0.1),
+                      color: const Color.fromRGBO(90, 140, 255, 0.15),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: const Icon(
                       Icons.medical_services,
-                      color: Colors.blue,
+                      color: Color.fromRGBO(13, 27, 140, 1),
                       size: 24,
                     ),
                   ),
@@ -210,7 +856,7 @@ class HospitalDetailsScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          '${department.doctors.length} ${department.doctors.length == 1 ? 'doctor' : 'doctors'} available',
+                          '${department.doctors.length} doctor(s) available',
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey[600],
@@ -222,9 +868,7 @@ class HospitalDetailsScreen extends StatelessWidget {
                   if (!department.isOpen)
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
+                          horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
                         color: Colors.red.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(6),
@@ -240,100 +884,56 @@ class HospitalDetailsScreen extends StatelessWidget {
                     ),
                 ],
               ),
+
               const SizedBox(height: 12),
+
               Row(
                 children: [
-                  Icon(
-                    Icons.people,
-                    size: 16,
-                    color: Colors.grey[600],
-                  ),
+                  Icon(Icons.people, size: 16, color: Colors.grey[600]),
                   const SizedBox(width: 4),
                   Text(
                     '${department.queueCount} in queue',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(color: Colors.grey[600]),
                   ),
                   const SizedBox(width: 16),
-                  Icon(
-                    Icons.schedule,
-                    size: 16,
-                    color: Colors.grey[600],
-                  ),
+                  Icon(Icons.schedule, size: 16, color: Colors.grey[600]),
                   const SizedBox(width: 4),
                   Text(
                     '~${department.averageWaitTime} min wait',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(color: Colors.grey[600]),
                   ),
                 ],
               ),
+
               if (department.doctors.isNotEmpty) ...[
                 const SizedBox(height: 12),
                 const Divider(),
                 const SizedBox(height: 8),
                 const Text(
                   'Doctors:',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 8),
                 ...department.doctors.take(2).map(
-                      (doctor) => Padding(
-                        padding: const EdgeInsets.only(bottom: 4),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.person,
-                              size: 16,
-                              color: Colors.grey[600],
+                      (doctor) => Row(
+                        children: [
+                          const Icon(Icons.person,
+                              size: 16, color: Colors.grey),
+                          const SizedBox(width: 8),
+                          Expanded(child: Text(doctor.name)),
+                          Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: doctor.isAvailable
+                                  ? Colors.green
+                                  : Colors.red,
+                              shape: BoxShape.circle,
                             ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                doctor.name,
-                                style: const TextStyle(fontSize: 14),
-                              ),
-                            ),
-                            if (doctor.isAvailable)
-                              Container(
-                                width: 8,
-                                height: 8,
-                                decoration: const BoxDecoration(
-                                  color: Colors.green,
-                                  shape: BoxShape.circle,
-                                ),
-                              )
-                            else
-                              Container(
-                                width: 8,
-                                height: 8,
-                                decoration: const BoxDecoration(
-                                  color: Colors.red,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                if (department.doctors.length > 2)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Text(
-                      '+${department.doctors.length - 2} more',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ),
               ],
             ],
           ),
