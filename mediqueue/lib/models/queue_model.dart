@@ -18,6 +18,8 @@ class QueueModel {
   final String patientName;
   final String patientEmail;
   final String? patientPhone;
+  final String? doctorId;
+  final String? doctorName;
   final int queueNumber;
   final int estimatedWaitTime; // in minutes
   final QueueStatus status;
@@ -37,6 +39,8 @@ class QueueModel {
     required this.patientName,
     required this.patientEmail,
     this.patientPhone,
+    this.doctorId,
+    this.doctorName,
     required this.queueNumber,
     required this.estimatedWaitTime,
     required this.status,
@@ -60,6 +64,8 @@ class QueueModel {
       patientName: data['patientName'] ?? '',
       patientEmail: data['patientEmail'] ?? '',
       patientPhone: data['patientPhone'],
+      doctorId: data['doctorId'],
+      doctorName: data['doctorName'],
       queueNumber: data['queueNumber'] ?? 0,
       estimatedWaitTime: data['estimatedWaitTime'] ?? 0,
       status: _statusFromString(data['status'] ?? 'waiting'),
@@ -86,6 +92,8 @@ class QueueModel {
       'patientName': patientName,
       'patientEmail': patientEmail,
       'patientPhone': patientPhone,
+      'doctorId': doctorId,
+      'doctorName': doctorName,
       'queueNumber': queueNumber,
       'estimatedWaitTime': estimatedWaitTime,
       'status': _statusToString(status),

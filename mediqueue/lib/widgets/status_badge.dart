@@ -1,28 +1,8 @@
 import 'package:flutter/material.dart';
+import '../models/queue_model.dart';
 
 /// A reusable status badge widget for displaying queue and appointment statuses
 /// across the MediQueue app.
-///
-/// Supports different status types with appropriate colors and icons:
-/// - Active/In Progress
-/// - Waiting
-/// - Completed
-/// - Cancelled
-/// - No Show
-///
-/// Features:
-/// - Consistent visual design
-/// - Color-coded status indicators
-/// - Optional icons
-/// - Compact or expanded display modes
-///
-/// Example usage:
-/// ```dart
-/// StatusBadge(
-///   status: QueueStatus.active,
-///   label: 'In Queue',
-/// )
-/// ```
 
 class StatusBadge extends StatelessWidget {
   final String status;
@@ -35,19 +15,19 @@ class StatusBadge extends StatelessWidget {
     required this.status,
     this.label,
     this.showIcon = true,
-    this.compact = false, 
+    this.compact = false,
   }) : super(key: key);
 
   // Get color based on status
   Color get _statusColor {
-    switch (status.toLowerCase()) {
-      case 'called':
-      case 'active':
-        return Colors.green;
-      case 'waiting':
+    switch (status) {
+      case QueueStatus.waiting:
         return Colors.orange;
-      case 'inprogress':
-      case 'completed':
+      case QueueStatus.called:
+        return Colors.blue;
+      case QueueStatus.inProgress:
+        return Colors.blueGrey;
+      case QueueStatus.completed:
         return Colors.blue;
       case 'cancelled':
         return Colors.red;
@@ -55,55 +35,42 @@ class StatusBadge extends StatelessWidget {
         return Colors.grey;
       default:
         return Colors.grey;
-      case QueueStatus.inProgress:
-        // TODO: Handle this case.
-        throw UnimplementedError();
-      case QueueStatus.called:
-        // TODO: Handle this case.
-        throw UnimplementedError();
     }
   }
 
   // Get icon based on status string
   IconData get _statusIcon {
-    switch (status.toLowerCase()) {
-      case 'called':
-      case 'active':
-        return Icons.volume_up;
-      case 'waiting':
+    switch (status) {
+      case QueueStatus.waiting:
         return Icons.schedule;
-      case 'inprogress':
-        return Icons.play_circle;
-      case 'completed':
+      case QueueStatus.called:
+        return Icons.campaign;
+      case QueueStatus.inProgress:
+        return Icons.play_arrow;
+      case QueueStatus.completed:
         return Icons.check_circle;
       case 'cancelled':
         return Icons.cancel;
       case 'noshow':
         return Icons.person_off;
-      default:
-        return Icons.help_outline;
     }
   }
 
   // Get default label based on status string
   String get _defaultLabel {
-    switch (status.toLowerCase()) {
-      case 'called':
-        return 'Called';
-      case 'active':
-        return 'Active';
-      case 'waiting':
+    switch (status) {
+      case QueueStatus.waiting:
         return 'Waiting';
-      case 'inprogress':
+      case QueueStatus.called:
+        return 'Called';
+      case QueueStatus.inProgress:
         return 'In Progress';
-      case 'completed':
+      case QueueStatus.completed:
         return 'Completed';
       case 'cancelled':
         return 'Cancelled';
       case 'noshow':
         return 'No Show';
-      default:
-        return status;
     }
   }
 

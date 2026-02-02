@@ -57,7 +57,7 @@
 //   State<AppFlowManager> createState() => _AppFlowManagerState();
 // }
 
-// class _AppFlowManagerState extends State<AppFlowManager> {
+ // class _AppFlowManagerState extends State<AppFlowManager> {
 //   bool _isProcessingLogout = false;
 //   DateTime? _lastLogoutTime;
 
@@ -304,7 +304,6 @@
 //   }
 // }
 
-
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -312,6 +311,9 @@ import 'firebase_options.dart';
 import 'screens/welcome_screen.dart';
 import 'screens/patient/patient_home_screen.dart';
 import 'screens/admin/admin_dashboard_screen.dart';
+import 'screens/admin/select_hospital_screen.dart';
+import 'screens/admin/manage_hospital_screen.dart';
+import 'screens/admin/manage_doctors_screen.dart';
 import 'screens/auth_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -336,6 +338,12 @@ class MediQueueApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const AuthWrapper(),
+      routes: {
+        '/select-hospital': (context) => const SelectHospitalScreen(),
+        '/manage-hospital': (context) => const ManageHospitalScreen(),
+        '/manage-doctors': (context) => const ManageDoctorsScreen(),
+        '/admin-dashboard': (context) => const AdminDashboardScreen(),
+      },
     );
   }
 }

@@ -1196,11 +1196,6 @@
 //   }
 // }
 
-
-
-
-
-
 // import 'package:flutter/material.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:mediqueue/utils/logout_notifier.dart';
@@ -1215,7 +1210,6 @@
 // import '../backend_test_screen.dart';
 // import '../../services/user_service.dart'; // Import UserService
 // import '../common/history_screen.dart';
-
 
 // class PatientHomeScreen extends StatefulWidget {
 //   const PatientHomeScreen({super.key});
@@ -1780,8 +1774,6 @@
 //   }
 // }
 
-
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mediqueue/utils/logout_notifier.dart';
@@ -1790,11 +1782,14 @@ import '../../widgets/profile_header.dart';
 import '../../widgets/hospital_card.dart';
 import 'patient_profile_screen.dart';
 import 'join_queue_screen.dart';
-import '../hospital_map_screen.dart';
-import '../add_sample_data_screen.dart';
+import 'my_queues_screen.dart';
+import 'hospitals_list_screen.dart';
+import 'hospital_location_screen.dart';
 import '../auth_screen.dart';
 import '../backend_test_screen.dart';
 import '../../services/user_service.dart';
+import '../../services/firestore_service.dart';
+import '../../models/hospital_model.dart';
 import '../common/history_screen.dart';
 
 class PatientHomeScreen extends StatefulWidget {
@@ -1808,6 +1803,7 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isLoggingOut = false;
   late UserService _userService;
+  late FirestoreService _firestoreService;
   String _userName = 'Patient';
   bool _isLoading = true;
 
@@ -1815,6 +1811,7 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
   void initState() {
     super.initState();
     _userService = UserService();
+    _firestoreService = FirestoreService();
     _loadUserData();
   }
 
@@ -1895,209 +1892,173 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(
-                          'Nearby Hospitals',
+                          'Registered Hospitals',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        Row(
-                          children: [
-                            const Icon(Icons.location_on,
-                                size: 16, color: Colors.blue),
-                            const SizedBox(width: 4),
-                            const Text(
-                              '2.5 km radius',
-                              style: TextStyle(color: Colors.blue),
-                            ),
-                            const SizedBox(width: 8),
-                            InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => const HospitalMapScreen(),
-                                  ),
-                                );
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 6,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.blue,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: const Row(
-                                  children: [
-                                    Icon(
-                                      Icons.map,
-                                      size: 14,
-                                      color: Colors.white,
-                                    ),
-                                    SizedBox(width: 4),
-                                    Text(
-                                      'Map',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                        TextButton.icon(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const HospitalsListScreen(),
                               ),
-                            ),
-                          ],
+                            );
+                          },
+                          icon: const Icon(Icons.list, size: 16),
+                          label: const Text('View All'),
+                          style: TextButton.styleFrom(
+                            foregroundColor: Colors.blue,
+                          ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 16),
-
-                    HospitalCard(
-                      iconBg: const Color(0xFFD8D5FF),
-                      icon: Icons.add,
-                      iconColor: const Color(0xFF4B4DED),
-                      name: 'City General Hospital',
-                      distance: '1.2 km • Downtown',
-                      department: 'General Medicine',
-                      rating: '4.5',
-                      waitTime: '20 mins',
-                      onOpen: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const JoinQueueScreen(
-                              departmentName: '',
+                    // Dynamic hospital list from Firebase
+                    StreamBuilder<List<HospitalModel>>(
+                      stream: _firestoreService.getHospitals(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(32.0),
+                              child: CircularProgressIndicator(),
                             ),
-                          ),
-                        );
-                      },
-                    ),
+                          );
+                        }
 
-                    HospitalCard(
-                      iconBg: const Color(0xFFCFF5EF),
-                      icon: Icons.local_hospital,
-                      iconColor: const Color(0xFF2EC4B6),
-                      name: 'MediCare Clinic',
-                      distance: '0.8 km • Medical District',
-                      department: 'Multi-Speciality',
-                      rating: '4.2',
-                      waitTime: '15 mins',
-                      onOpen: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const JoinQueueScreen(
-                              departmentName: '',
+                        if (snapshot.hasError) {
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                children: [
+                                  const Icon(
+                                    Icons.error_outline,
+                                    size: 48,
+                                    color: Colors.red,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    'Error loading hospitals',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey[700],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
+                          );
+                        }
 
-                    HospitalCard(
-                      iconBg: const Color(0xFFFFE0CC),
-                      icon: Icons.healing,
-                      iconColor: const Color(0xFFFF8A50),
-                      name: 'St. Mary\'s Medical Center',
-                      distance: '1.5 km • Central',
-                      department: 'Cardiology',
-                      rating: '4.7',
-                      waitTime: '25 mins',
-                      onOpen: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const JoinQueueScreen(
-                              departmentName: '',
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                        final hospitals = snapshot.data ?? [];
 
-                    HospitalCard(
-                      iconBg: const Color(0xFFE3F2FD),
-                      icon: Icons.local_hospital_outlined,
-                      iconColor: const Color(0xFF1E88E5),
-                      name: 'LifeCare Hospital',
-                      distance: '2.0 km • East End',
-                      department: 'Orthopedics',
-                      rating: '4.3',
-                      waitTime: '18 mins',
-                      onOpen: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const JoinQueueScreen(
-                              departmentName: '',
+                        if (hospitals.isEmpty) {
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(32.0),
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.local_hospital,
+                                    size: 64,
+                                    color: Colors.grey[400],
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    'No hospitals registered yet',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey[700],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'Check back later for available hospitals',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey[600],
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
+                          );
+                        }
 
-                    HospitalCard(
-                      iconBg: const Color(0xFFFCE4EC),
-                      icon: Icons.favorite,
-                      iconColor: const Color(0xFFD81B60),
-                      name: 'HeartPlus Clinic',
-                      distance: '2.2 km • Riverside',
-                      department: 'Cardiology',
-                      rating: '4.6',
-                      waitTime: '22 mins',
-                      onOpen: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const JoinQueueScreen(
-                              departmentName: '',
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                        // Display first 5 hospitals
+                        final displayHospitals = hospitals.take(5).toList();
 
-                    HospitalCard(
-                      iconBg: const Color(0xFFE8F5E9),
-                      icon: Icons.medical_services,
-                      iconColor: const Color(0xFF43A047),
-                      name: 'GreenCross Hospital',
-                      distance: '1.9 km • Park Area',
-                      department: 'General Surgery',
-                      rating: '4.1',
-                      waitTime: '30 mins',
-                      onOpen: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const JoinQueueScreen(
-                              departmentName: '',
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                        return Column(
+                          children: [
+                            ...displayHospitals.map((hospital) {
+                              // Get the first department if available
+                              final department = hospital.departments.isNotEmpty
+                                  ? hospital.departments.first.name
+                                  : 'General';
+                              final queueCount = hospital.departments.isNotEmpty
+                                  ? hospital.departments.first.queueCount
+                                  : 0;
+                              final waitTime = hospital.departments.isNotEmpty
+                                  ? hospital.departments.first.averageWaitTime
+                                  : 15;
 
-                    HospitalCard(
-                      iconBg: const Color(0xFFFFF3E0),
-                      icon: Icons.child_care,
-                      iconColor: const Color(0xFFFB8C00),
-                      name: 'LittleCare Children Hospital',
-                      distance: '2.4 km • West Avenue',
-                      department: 'Pediatrics',
-                      rating: '4.8',
-                      waitTime: '12 mins',
-                      onOpen: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const JoinQueueScreen(
-                              departmentName: '',
-                            ),
-                          ),
+                              return HospitalCard(
+                                iconBg: const Color(0xFFD8D5FF),
+                                icon: Icons.local_hospital,
+                                iconColor: const Color(0xFF4B4DED),
+                                name: hospital.name,
+                                distance: hospital.location,
+                                department: department,
+                                rating: hospital.rating?.toString() ?? '4.0',
+                                waitTime: '$waitTime mins',
+                                onOpen: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => HospitalLocationScreen(
+                                        hospital: hospital,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            }),
+                            if (hospitals.length > 5)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 16),
+                                child: OutlinedButton.icon(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) =>
+                                            const HospitalsListScreen(),
+                                      ),
+                                    );
+                                  },
+                                  icon: const Icon(Icons.list),
+                                  label: Text(
+                                      'View ${hospitals.length - 5} More Hospitals'),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: Colors.blue,
+                                    side: const BorderSide(color: Colors.blue),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 24,
+                                      vertical: 12,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
                         );
                       },
                     ),
@@ -2172,7 +2133,6 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                 ),
               ),
               const SizedBox(height: 30),
-
               _drawerItem(
                 context,
                 Icons.person,
@@ -2186,7 +2146,6 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                   );
                 },
               ),
-
               _drawerItem(
                 context,
                 Icons.notifications,
@@ -2199,7 +2158,19 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                   );
                 },
               ),
-
+              _drawerItem(
+                context,
+                Icons.queue,
+                'My Queue',
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const MyQueuesScreen(),
+                    ),
+                  );
+                },
+              ),
               _drawerItem(
                 context,
                 Icons.history,
@@ -2208,40 +2179,14 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const HistoryScreen(visit: {}, visits: [],),
+                      builder: (_) => const HistoryScreen(
+                        visit: {},
+                        visits: [],
+                      ),
                     ),
                   );
                 },
               ),
-
-              _drawerItem(
-                context,
-                Icons.map_outlined,
-                'Hospital Map',
-                () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const HospitalMapScreen(),
-                    ),
-                  );
-                },
-              ),
-
-              _drawerItem(
-                context,
-                Icons.add_location_alt,
-                'Add Sample Data 🧪',
-                () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const AddSampleDataScreen(),
-                    ),
-                  );
-                },
-              ),
-
               _drawerItem(
                 context,
                 Icons.science,
@@ -2255,9 +2200,7 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                   );
                 },
               ),
-
               const SizedBox(height: 10),
-
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(

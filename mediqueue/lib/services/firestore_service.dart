@@ -90,11 +90,14 @@ class FirestoreService {
       final updatedDepartments = hospital.departments.map((dept) {
         if (dept.name == departmentName) {
           return DepartmentModel(
+            id: dept.id,
             name: dept.name,
-            queueCount: newCount,
-            averageWaitTime: dept.averageWaitTime,
+            description: dept.description,
+            openingTime: dept.openingTime,
+            closingTime: dept.closingTime,
             isOpen: dept.isOpen,
-            openingHours: dept.openingHours,
+            queueCount: newCount,
+            doctors: dept.doctors,
           );
         }
         return dept;
