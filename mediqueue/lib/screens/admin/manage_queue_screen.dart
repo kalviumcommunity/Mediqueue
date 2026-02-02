@@ -118,10 +118,70 @@ class _ManageQueueScreenState extends State<ManageQueueScreen> {
         backgroundColor: success ? Colors.green : Colors.red,
       ),
     );
+
+    try {
+      const hospitalId = 'default_hospital_id';
+
+      final result = await _queueService.callNextPatientWithNotification(
+        hospitalId: hospitalId,
+        departmentName: widget.department ?? 'General',
+      );
+
+      Navigator.pop(context);
+
+      if (result['success'] == true) {
+        final notificationResult =
+            result['notificationResult'] as Map<String, dynamic>? ?? {};
+        final smsSent = notificationResult['smsSent'] ?? false;
+        final smsEnabled = notificationResult['smsEnabled'] ?? false;
+
+        String message = 'Patient has been notified';
+        if (smsEnabled && smsSent) {
+          message += ' (SMS sent successfully)';
+        } else if (smsEnabled) {
+          message += ' (SMS not sent - check phone number)';
+        } else {
+          message += ' (In-app notification only - SMS disabled)';
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result['message'] ?? 'Failed to notify patient'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Scaffold(
+        backgroundColor: const Color(0xFFF6FAFD),
+        body: Center(
+          child: CircularProgressIndicator(
+            color: Colors.blue,
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xFFF6FAFD),
       appBar: AppBar(
@@ -488,6 +548,30 @@ class _ManageQueueScreenState extends State<ManageQueueScreen> {
                     ),
                   ],
                 ),
+                if (patient.priority != 'normal' && patient.priority != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: patient.priority == 'urgent'
+                            ? Colors.orange[100]
+                            : Colors.red[100],
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        patient.priority!.toUpperCase(),
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: patient.priority == 'urgent'
+                              ? Colors.orange[800]
+                              : Colors.red[800],
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),

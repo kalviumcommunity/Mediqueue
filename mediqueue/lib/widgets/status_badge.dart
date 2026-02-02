@@ -5,7 +5,7 @@ import '../models/queue_model.dart';
 /// across the MediQueue app.
 
 class StatusBadge extends StatelessWidget {
-  final QueueStatus status;
+  final String status;
   final String? label;
   final bool showIcon;
   final bool compact;
@@ -29,14 +29,16 @@ class StatusBadge extends StatelessWidget {
         return Colors.blueGrey;
       case QueueStatus.completed:
         return Colors.blue;
-      case QueueStatus.cancelled:
+      case 'cancelled':
         return Colors.red;
-      case QueueStatus.noShow:
+      case 'noshow':
+        return Colors.grey;
+      default:
         return Colors.grey;
     }
   }
 
-  // Get icon based on status
+  // Get icon based on status string
   IconData get _statusIcon {
     switch (status) {
       case QueueStatus.waiting:
@@ -47,14 +49,14 @@ class StatusBadge extends StatelessWidget {
         return Icons.play_arrow;
       case QueueStatus.completed:
         return Icons.check_circle;
-      case QueueStatus.cancelled:
+      case 'cancelled':
         return Icons.cancel;
-      case QueueStatus.noShow:
+      case 'noshow':
         return Icons.person_off;
     }
   }
 
-  // Get default label based on status
+  // Get default label based on status string
   String get _defaultLabel {
     switch (status) {
       case QueueStatus.waiting:
@@ -65,9 +67,9 @@ class StatusBadge extends StatelessWidget {
         return 'In Progress';
       case QueueStatus.completed:
         return 'Completed';
-      case QueueStatus.cancelled:
+      case 'cancelled':
         return 'Cancelled';
-      case QueueStatus.noShow:
+      case 'noshow':
         return 'No Show';
     }
   }

@@ -457,4 +457,72 @@ class QueueService {
       };
     }
   }
+
+  // In QueueService class
+  /// Call next patient with SMS notification
+  Future<Map<String, dynamic>> callNextPatientWithNotification({
+    required String hospitalId,
+    required String departmentName,
+  }) async {
+    try {
+      // Get all waiting patients
+      final queues = await _firestoreService
+          .getQueuesByHospitalAndDepartment(hospitalId, departmentName)
+          .first;
+
+      final waitingQueues = queues
+          .where((q) => q.status == QueueStatus.waiting)
+          .toList()
+        ..sort((a, b) => a.queueNumber.compareTo(b.queueNumber));
+
+      if (waitingQueues.isEmpty) {
+        return {
+          'success': false,
+          'message': 'No patients in queue',
+        };
+      }
+
+      final nextPatient = waitingQueues.first;
+
+      // Send notification WITH SMS option
+      final notificationResult =
+          await _notificationService.sendPatientCalledNotificationWithSms(
+        patientId: nextPatient.patientId,
+        patientEmail: nextPatient.patientEmail,
+        patientPhone: nextPatient.patientPhone,
+        hospitalName: nextPatient.hospitalName,
+        departmentName: nextPatient.departmentName,
+        queueNumber: nextPatient.queueNumber,
+      );
+
+      // Update status to called
+      final success = await _firestoreService.updateQueueStatus(
+          nextPatient.id, QueueStatus.called);
+
+      if (success) {
+        // ✅ ADD THIS: Update department queue count (like in original callNextPatient)
+        await _updateDepartmentQueueCount(
+            nextPatient.hospitalId, nextPatient.departmentName, -1);
+
+        return {
+          'success': true,
+          'message': 'Patient called successfully',
+          'notificationResult': notificationResult,
+          'queue': nextPatient,
+        };
+      }
+
+      return {
+        'success': false,
+        'message': 'Failed to call patient',
+        'notificationResult': notificationResult,
+      };
+    } catch (e) {
+      print('❌ Error calling next patient: $e');
+      return {
+        'success': false,
+        'message': 'An error occurred: ${e.toString()}',
+      };
+    }
+  }
 }
